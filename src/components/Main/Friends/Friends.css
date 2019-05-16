@@ -1,0 +1,12 @@
+#friends {
+  text-align: center;
+}
+
+#friends-list {
+}
+
+#friends-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

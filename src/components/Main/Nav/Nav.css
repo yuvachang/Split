@@ -1,0 +1,35 @@
+#nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  position: absolute;
+  top: 0;
+  height: 75px;
+  width: 100vw;
+  /* background-color: white; */
+  /* color: black; */
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  margin: 0 15%;
+}
+
+.nav-links > a {
+  /* margin: 0px 100px; */
+  text-decoration: none;
+  color: inherit;
+}
+
+.nav-links > .current {
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: 1.2em;
+}

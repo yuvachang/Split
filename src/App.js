@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { connect } from 'react-redux'
+import './App.css'
+import { Routes, LoadingScreen, Nav } from './components'
+import { checkUserIndex } from './store/actions/authActions'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  componentDidUpdate = async prevProps => {
+    if (prevProps !== this.props) {
+      if (this.props.isLoggedIn) {
+        this.props.checkUserIndex(this.props.currentUser.uid)
+      }
+    }
+  }
+
+  render() {
+    const { isLoggedIn, isLoaded } = this.props
+    return (
+      <div className='App'>
+        {isLoggedIn && <Nav />}
+        {isLoaded ? (
+          <Routes isLoggedIn={isLoggedIn} isLoaded={isLoaded} />
+        ) : (
+          <LoadingScreen />
+        )}
+      </div>
+    )
+  }
 }
 
-export default App;
+const mapState = state => ({
+  isLoaded: state.firebase.profile.isLoaded,
+  isLoggedIn: !state.firebase.profile.isEmpty,
+  currentUser: state.firebase.auth,
+})
+
+const mapDispatch = dispatch => ({
+  checkUserIndex: (uid) => dispatch(checkUserIndex(uid)),
+})
+
+export default connect(
+  mapState,
+  mapDispatch
+)(App)

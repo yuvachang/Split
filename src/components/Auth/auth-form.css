@@ -1,0 +1,9 @@
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  /* padding: 10px; */
+  max-width: 30vw;
+}
+
+.auth-form > * {
+}

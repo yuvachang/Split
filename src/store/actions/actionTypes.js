@@ -1,0 +1,13 @@
+export const AUTH_START = 'AUTH_START'
+export const AUTH_END = 'AUTH_END'
+export const AUTH_SUCCESS = 'AUTH_SUCCESS'
+export const AUTH_FAIL = 'AUTH_FAIL'
+export const AUTH_CREDS = 'AUTH_CREDS'
+
+// FRIENDS
+
+export const FRIENDS_LOADING = 'FRIENDS_LOADING'
+export const FRIENDS_ADD = 'FRIENDS_ADD'
+export const FRIENDS_SELECT = 'FRIENDS_SELECT'
+export const FRIENDS_ERROR = 'FRIENDS_ERROR'
+export const FRIENDS_ENDLOADING = 'FRIENDS_ENDLOADING'
