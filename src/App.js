@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import './App.css'
 import { Routes, LoadingScreen, Nav } from './components'
 import { checkUserIndex } from './store/actions/authActions'
 

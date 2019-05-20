@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
+import 'firebase/functions'
 
 const config = {
   apiKey: process.env.REACT_APP_apikey,
@@ -18,6 +19,7 @@ const config = {
 
 firebase.initializeApp(config) 
 firebase.firestore()
+// export const functions = firebase.functions()
 
 export default firebase
 

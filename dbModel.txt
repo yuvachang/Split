@@ -1,0 +1,87 @@
+users(
+  displayName
+  email
+  tel
+  friends: [
+    {
+      user: ref,
+      friendship: ref
+    }, 
+    {
+      user: ref,
+      friendship: ref
+    },
+  ]
+
+  receipts: [receiptRefs]
+  groups: [groupRefs]
+  balances: [
+    balanceRefs
+  ]
+  totalBalance: +/-num(sum of balanceRefs)
+
+  subCollection(
+    balances
+  )
+)
+
+receipts{
+  date, 
+  group: groupRef,
+  rows: [{id, name, cost, users: []}],
+  owner: userUID,
+  userAmounts: {
+    userUID: {
+      name: string,
+      amount: num,
+      items: { itemID: amount }
+    }
+  },
+  image? 
+}
+
+groups(
+  
+)
+
+friendships(
+  friendshipUID: {
+    balance: {
+      payer: {user, amount}
+      userRef1History: [ {date, receipt, amount}, {date, receipt, amount} ]
+      userRef2History: [ {date, receipt, amount}, {date, receipt, amount} ]
+    }
+    sharedReceipts: [ref, ref, ref, ref]
+  }
+)
+
+//////////////////////////////////////
+balance1 = [{user, receipt, amount}]
+balance2 = [{user, receipt, amount}]
+p = {user, amount}
+
+// using all balance history
+const calcPayer = (p, balance1, balance2) => {
+  let payer
+  let net = 0
+  let total1 = 0
+  let total2 = 0
+  
+  balance1.forEach( row => {
+    total1 += row.amount
+  })
+
+  balance2.forEach( row => {
+    total1 += row.amount
+  })
+
+  net = Math.abs(total1-total2)
+
+  if(total1>total2) {
+    payer=balance1
+  } else { 
+    payer=balance2 
+  }
+
+  return {user: payer, amount: net} 
+}

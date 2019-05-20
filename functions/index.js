@@ -23,3 +23,13 @@ exports.firestoretest = functions.firestore
       console.log('snap(): ', newValue)
       // perform desired operations ...
   })
+
+exports.mapFriends = functions.https
+  .onCall(async (currentUID) => {
+    const ref = await admin.firestore().collection('users').doc(currentUID)
+    const userGet = await ref.get()
+    const user = await userGet.data()
+
+    console.log(user)
+    return 'this is the cloud function return value'
+  })

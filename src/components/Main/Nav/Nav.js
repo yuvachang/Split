@@ -5,7 +5,6 @@ import {
   logoutThunk,
   googleLoginThunk,
 } from '../../../store/actions/authActions'
-import './Nav.css'
 
 const Nav = ({ logout, displayName, location }) => {
   const capName = displayName => {
@@ -25,6 +24,7 @@ const Nav = ({ logout, displayName, location }) => {
         <Link
           className={location.pathname === '/home' ? 'current' : ''}
           to='/home'>
+          {/* <img src='./images/home.svg' className='icon large' /> */}
           Home
         </Link>
         {/* <Link
@@ -35,16 +35,19 @@ const Nav = ({ logout, displayName, location }) => {
         <Link
           className={location.pathname === '/friends' ? 'current' : ''}
           to='/friends'>
+          {/* <img src='./images/people.svg' className='icon large' /> */}
           Friends
         </Link>
         <Link
           className={location.pathname === '/receipts' ? 'current' : ''}
           to='/receipts'>
+          {/* <img src='./images/receipts.svg' className='icon large' /> */}
           Receipts
         </Link>
         <Link
           className={location.pathname === '/groups' ? 'current' : ''}
           to='/groups'>
+          {/* <img src='./images/group.png' className='icon large' /> */}
           Groups
         </Link>
         <a

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import AuthForm from './AuthForm'
-import {connect} from 'react-redux'
-import { signupThunk } from '../../store/actions/authActions';
+import { connect } from 'react-redux'
+import { signupThunk } from '../../store/actions/authActions'
 
 class Signup extends Component {
   state = {
@@ -11,18 +11,42 @@ class Signup extends Component {
     email: '',
     password: '',
     passwordCheck: '',
+    error: '',
   }
 
-  handleChange = e => {
-    this.setState({
+  handleChange = async e => {
+    await this.setState({
       [e.target.name]: e.target.value,
     })
   }
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault()
-    this.props.signup(this.state)
-    console.log('submitted')
+
+    // validation
+
+    if (this.state.password !== this.state.passwordCheck) {
+      this.setState({ error: 'Passwords need to be the same.' })
+      return
+    }
+ 
+    
+
+    await this.props.signup(this.state)
+
+    if (this.props.error) {
+      await this.setState({ error: this.props.error })
+    } else {
+      await this.setState({
+        firstName: '',
+        lastName: '',
+        tel: '',
+        email: '',
+        password: '',
+        passwordCheck: '',
+        error: '',
+      })
+    }
   }
 
   render() {
@@ -34,6 +58,7 @@ class Signup extends Component {
       firstName,
       lastName,
       tel,
+      error,
     } = this.state
 
     return (
@@ -45,6 +70,7 @@ class Signup extends Component {
         email={email}
         password={password}
         passwordCheck={passwordCheck}
+        error={error}
         handleChange={this.handleChange}
         handleSubmit={this.handleSubmit}
       />
@@ -54,11 +80,14 @@ class Signup extends Component {
 
 const mapState = state => ({
   userProfile: state.firebase.profile,
-  error: state.auth.error
+  error: state.auth.error,
 })
 
 const mapDispatch = dispatch => ({
   signup: user => dispatch(signupThunk(user)),
 })
 
-export default connect(mapState, mapDispatch)(Signup)
+export default connect(
+  mapState,
+  mapDispatch
+)(Signup)

@@ -1,52 +1,106 @@
-import React from 'react'
-import {connect} from 'react-redux'
-import { logoutThunk, googleLoginThunk } from '../../../store/actions/authActions';
-import { Nav, UserRoutes } from '../../index'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import {
+  fetchFriends,
+  addFriend,
+  findPerson,
+} from '../../../store/actions/friendsActions'
 import FriendsList from './FriendsList'
-import AddFriend from './AddFriend'
-import './Friends.css'
+import FindFriends from './FindFriends'
 
-const Friends = ({isLoaded, isLoggedIn}) => {
-  return (
-    <div id='friends'>
-      ::Add Friend::
-      <br/>
-      options: import from contacts, scan qr code, find by email/tel
-      <br/>
-      show found/scanned/selected friend, add button
+class Friends extends Component {
+  state = {
+    view: 'friends',
+  }
 
-      <br/>
-      <br/>
-      <AddFriend/>
-      <br/>
-      <br/>
-      ::Search bar::
-      <br/>
-      <br/>
-      Friends list: 
-      <br/>
-      filter by Search, onclick show friend profile, item show iou
-      <br/>
-      <FriendsList/>
-  
-      {/* <UserRoutes isLoggedIn={isLoggedIn} isLoaded={isLoaded}/> */}
-      {/* 
-        metrics, user info here. 
-      */}
-    </div>
-  )
+  switchView = view => {
+    this.setState({ view })
+  }
+
+  componentDidMount = async () => {
+    await this.props.fetchFriends(this.props.currentUID)
+  }
+
+  render() {
+    const {
+      friends,
+      addFriend,
+      findPerson,
+      currentEmail,
+      currentUID,
+      fetchFriends,
+      loading,
+      searchResults,
+    } = this.props
+    const { view } = this.state
+
+    return (
+      <div id='friends'>
+        <div className='views'>
+          <div
+            className={
+              view === 'friends' ? 'button-icon selected' : 'button-icon'
+            }>
+            <img
+              src='./images/people.svg'
+              className='icon large'
+              onClick={() => {
+                fetchFriends(currentUID)
+                this.switchView('friends')
+              }}
+            />
+          </div>
+          <div
+            className={
+              view === 'search' ? 'button-icon selected' : 'button-icon'
+            }>
+            <img
+              src='./images/search.svg'
+              className='icon large'
+              onClick={() => this.switchView('search')}
+            />
+          </div>
+        </div>
+        <hr />
+        <br />
+        {view === 'search' && (
+          <FindFriends
+            friends={friends}
+            addFriend={addFriend}
+            findPerson={findPerson}
+            fetchFriends={fetchFriends}
+            currentUID={currentUID}
+            currentEmail={currentEmail}
+            loading={loading}
+            searchResults={searchResults}
+          />
+        )}
+        {view === 'friends' && (
+          <FriendsList friends={friends} fetchFriends={fetchFriends} />
+        )}
+      </div>
+    )
+  }
 }
 
 const mapState = state => ({
-  displayName: state.firebase.profile.displayName,
-  isLoaded: state.firebase.profile.isLoaded,
-  isLoggedIn: !state.firebase.profile.isEmpty,
+  currentUID: state.firebase.auth.uid,
+  currentEmail: state.firebase.auth.email,
+  searchResults: state.friends.searchResults,
+  selected: state.friends.selected,
+  error: state.friends.error,
+  friends: state.friends.friends,
+  loading: state.friends.loading,
 })
 
 const mapDispatch = dispatch => ({
-  logout: () => dispatch(logoutThunk()),
-  googleOauth: () => dispatch(googleLoginThunk())
+  fetchFriends: uid => dispatch(fetchFriends(uid)),
+  addFriend: (email, uid) => dispatch(addFriend(email, uid)),
+  findPerson: (input, email, friends) =>
+    dispatch(findPerson(input, email, friends)),
 })
 
-export default connect(mapState, mapDispatch)(Friends)
-
+export default connect(
+  mapState,
+  mapDispatch
+)(Friends)

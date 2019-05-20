@@ -1,11 +1,12 @@
+@import './components/Main/Elements/Variables.scss';
+
 .App {
   color: #f2f2f2;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  top: 10vh;
   height: 100vh;
-  background-color: #041f38;
-  /* background-color: #3a3749; */
+  background-color: $app-bg-color;
 }
-

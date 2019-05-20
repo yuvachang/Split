@@ -6,13 +6,13 @@ import { firestoreReducer } from 'redux-firestore';
 
 import authReducer from './authReducer'
 // import billsReducer from './reducers/billsReducer'
-// import groupsReducer from './reducers/groupsReducer'
+import groupsReducer from './groupsReducer'
 import friendsReducer from './friendsReducer'
 
 export default combineReducers({
   auth: authReducer,
   // bills: billsReducer,
-  // groups: groupsReducer,
+  groups: groupsReducer,
   friends: friendsReducer,
   firebase: firebaseReducer,
   firestore: firestoreReducer

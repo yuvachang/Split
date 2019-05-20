@@ -14,36 +14,36 @@ googleAuthProvider.setCustomParameters({
 googleAuthProvider.addScope('https://www.googleapis.com/auth/contacts.readonly')
 googleAuthProvider.addScope('https://www.googleapis.com/auth/userinfo.profile')
 
+// Indexing function => creates array of substrings
 const indexFunc = (string) => {
+
   const index = []
   const stringArr = string.split('')
   let curr = ''
   stringArr.forEach(letter=> {
-    curr += letter
+    curr += letter.toLowerCase()
     index.push(curr)
   })
   return index
 }
 
 // THUNK CREATORS
-
 export const checkUserIndex = currentUserUid => async dispatch => {
   try {
-    console.log('checking userIndex', currentUserUid)
+    // console.log('checking user index for user', currentUserUid)
     const document = await firestore.collection('users').doc(currentUserUid)
     const documentGet = await document.get()
     const user = await documentGet.data()
-    if (!user.emailIndex) {
-      console.log(user.email, user.displayName, user)
+    if (!user.index) {
+      console.log('creating user index')
       const emailIndex = indexFunc(user.email)
       const nameIndex = indexFunc(user.displayName)
-
-
+      const index = emailIndex.concat(nameIndex)
       await document.update({
-        emailIndex,
-        nameIndex
+        index
       })
-    }
+    } 
+    // else { console.log('user already indexed')}
   } catch (error) {
     console.error(error)
   }
