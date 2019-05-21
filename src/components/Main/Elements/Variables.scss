@@ -9,5 +9,7 @@ $button-success-bg-color: #5b677a;
 $button-hover-bg-color: rgba(150, 150, 150, 0.7); 
 $error-bg-color: #775e5e;
 
-$no-shadow: 7px 5px 4px rgba(0, 0, 0, 0);
-$shadow: 7px 5px 4px rgba(0, 0, 0, 0.5);
+$no-shadow: 5px 5px 4px rgba(0, 0, 0, 0);
+$shadow: 5px 5px 4px rgba(0, 0, 0, 0.5);
+
+$height-with-header: calc(100vh - 75px);

@@ -17,10 +17,6 @@ class Friends extends Component {
     this.setState({ view })
   }
 
-  componentDidMount = async () => {
-    await this.props.fetchFriends(this.props.currentUID)
-  }
-
   render() {
     const {
       friends,
@@ -45,7 +41,6 @@ class Friends extends Component {
               src='./images/people.svg'
               className='icon large'
               onClick={() => {
-                fetchFriends(currentUID)
                 this.switchView('friends')
               }}
             />
@@ -76,7 +71,7 @@ class Friends extends Component {
           />
         )}
         {view === 'friends' && (
-          <FriendsList friends={friends} fetchFriends={fetchFriends} />
+          <FriendsList friends={friends} fetchFriends={()=>fetchFriends(currentUID)} />
         )}
       </div>
     )

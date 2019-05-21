@@ -17,9 +17,6 @@ const Nav = ({ logout, displayName, location }) => {
 
   return (
     <div id='nav'>
-      {/* <div className='nav-message'>
-        <h3>Logged in as {capName(displayName)}! </h3>
-      </div> */}
       <div className='nav-links'>
         <Link
           className={location.pathname === '/home' ? 'current' : ''}
@@ -27,11 +24,6 @@ const Nav = ({ logout, displayName, location }) => {
           {/* <img src='./images/home.svg' className='icon large' /> */}
           Home
         </Link>
-        {/* <Link
-          className={location.pathname === '/user' ? 'current' : ''}
-          to='/user'>
-          User
-        </Link> */}
         <Link
           className={location.pathname === '/friends' ? 'current' : ''}
           to='/friends'>

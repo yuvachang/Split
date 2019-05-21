@@ -15,7 +15,7 @@ const ListItem = ({
       className={success ? 'button success' : 'button'}
       onClick={() => clickAction(content)}>
       {leftIcon && <img src={leftIcon} className='icon left' />}
-      {content.displayName}
+      {content.displayName || content.groupName}
       {rightIcon && <img src={rightIcon} className='icon right' />}
     </div>
   )

@@ -15,6 +15,10 @@ class FriendsList extends Component {
     this.setState({ viewFriend: {} })
   }
 
+  componentDidMount = async () => {
+    await this.props.fetchFriends()
+  }
+
   render() {
     const { friends } = this.props
     const { viewFriend } = this.state

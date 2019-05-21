@@ -32,11 +32,14 @@ export default (state = initialState, { type, payload }) => {
     case actions.GROUPS_CREATE:
       return {
         ...state,
-        groups: [...state.GROUPS, payload],
-        searchResults: state.searchResults.filter(
-          result => result.email !== payload.email
-        ),
+        groups: [...state.groups, payload],
+        beingCreated: {},
         error: null,
+      }
+    case actions.GROUPS_DELETE:
+      return {
+        ...state,
+        groups: state.groups.filter(group=> group.id!==payload)
       }
     case actions.GROUPS_SELECT:
       return { ...state, selected: payload, error: null }

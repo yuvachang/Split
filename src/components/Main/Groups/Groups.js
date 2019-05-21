@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetchGroups, createGroup, createGroupInProgress } from '../../../store/actions/groupsActions'
+import {
+  fetchGroups,
+  createGroup,
+  createGroupInProgress,
+  deleteGroup
+} from '../../../store/actions/groupsActions'
 import { fetchFriends } from '../../../store/actions/friendsActions'
 import CreateGroup from './CreateGroup'
 import GroupsList from './GroupsList'
@@ -24,31 +29,42 @@ class Groups extends Component {
       fetchFriends,
       createGroup,
       createGroupInProgress,
-      beingCreated
+      beingCreated,
+      deleteGroup
     } = this.props
     const { view } = this.state
 
     return (
       <div id='groups'>
         <div className='views'>
-          <img
-            src='./images/group.png'
-            className='icon large'
-            onClick={() => {
-              fetchGroups(currentUID)
-              this.switchView('groups')
-            }}
-          />
-          <img
-            src='./images/add.svg'
-            className='icon large'
-            onClick={() => this.switchView('add')}
-          />
+          <div
+            className={
+              view === 'groups' ? 'button-icon selected' : 'button-icon'
+            }>
+            <img
+              src='./images/group.png'
+              className='icon large'
+              onClick={() => {
+                this.switchView('groups')
+              }}
+            />
+          </div>
+          <div
+            className={
+              view === 'add' ? 'button-icon selected' : 'button-icon'
+            }>
+            <img
+              src='./images/add.svg'
+              className='icon large'
+              onClick={() => this.switchView('add')}
+            />
+          </div>
         </div>
         <hr />
         <br />
         {view === 'add' && (
           <CreateGroup
+          switchView={this.switchView}
             groups={groups}
             currentUID={currentUID}
             loading={loading}
@@ -60,7 +76,7 @@ class Groups extends Component {
           />
         )}
         {view === 'groups' && (
-          <GroupsList groups={groups} fetchGroups={fetchGroups} />
+          <GroupsList groups={groups} fetchGroups={()=>fetchGroups(currentUID)} deleteGroup={deleteGroup}/>
         )}
       </div>
     )
@@ -81,6 +97,7 @@ const mapDispatch = dispatch => ({
   createGroup: (group, uid) => dispatch(createGroup(group, uid)),
   fetchFriends: uid => dispatch(fetchFriends(uid)),
   createGroupInProgress: group => dispatch(createGroupInProgress(group)),
+  deleteGroup: groupId => dispatch(deleteGroup(groupId)),
 })
 
 export default connect(

@@ -11,6 +11,7 @@ class GroupsList extends Component {
       members: [],
       receipts: [],
     },
+    error: null,
   }
 
   addMember = member => {
@@ -26,6 +27,7 @@ class GroupsList extends Component {
     const members = this.state.createGroup.members.filter(
       addedMember => addedMember.email !== member.email
     )
+
     this.setState({
       createGroup: {
         ...this.state.createGroup,
@@ -34,23 +36,39 @@ class GroupsList extends Component {
     })
   }
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault()
-    console.log('inside handlesubmit')
-    // this.props.createGroup(this.state.createGroup, this.props.currentUID)
+    //validation
+    if (!this.state.createGroup.members.length) {
+      this.setState({
+        error: 'Please add one or more members.',
+      })
+      return
+    }
+
+    await this.props.createGroup(this.state.createGroup, this.props.currentUID)
+
+    await this.setState({
+      createGroup: {
+        groupName: '',
+        members: [],
+        receipts: [],
+      },
+    })
+    
+    this.props.switchView('groups')
   }
 
-  handleChange = e => {
-    this.setState({
+  handleChange = async e => {
+    await this.setState({
       createGroup: {
         ...this.state.createGroup,
         [e.target.name]: e.target.value,
       },
     })
-
-    // this.setState({
-    //   [e.target.name]: e.target.value
-    // })
+    if (this.state.createGroup.groupName || this.state.createGroup.members) {
+      await this.props.createGroupInProgress(this.state.createGroup)
+    }
   }
 
   componentDidMount = async () => {
@@ -62,15 +80,16 @@ class GroupsList extends Component {
     }
   }
 
-  componentWillUnmount = async () => {
-    await this.props.createGroupInProgress(this.state.createGroup)
-  }
+  // componentWillUnmount = async () => {
+  //   if (this.state.createGroup.groupName || this.state.createGroup.members) {
+  //     await this.props.createGroupInProgress(this.state.createGroup)
+  //   }
+  // }
 
   render() {
     const { friends, groups, fetchGroups } = this.props
     const { displayModal, createGroup } = this.state
     const { members } = this.state.createGroup
-    console.log(this.state.createGroup)
     return (
       <div id='groups-add'>
         <Modal
@@ -82,6 +101,9 @@ class GroupsList extends Component {
           cancel={this.closeModal}
         />
         Members:
+        {this.state.error && (
+          <ListItem content={{ error: this.state.error }} error={true} />
+        )}
         <div>
           {members[0]
             ? members.map(member => (

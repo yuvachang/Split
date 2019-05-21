@@ -1,34 +1,11 @@
 import * as actions from './actionTypes'
 import { getFirebase } from 'react-redux-firebase'
 import { getFirestore } from 'redux-firestore'
+import { getCurrentUser, getDataWithRef, getUserByEmail } from './utilActions'
 
 const firebase = getFirebase()
 const firestore = getFirestore()
 // const functions = firebase.functions()
-
-const getCurrentUser = async uid => {
-  const userRef = await firestore.collection('users').doc(uid)
-  const userGet = await userRef.get()
-  const userData = await userGet.data()
-  return { userRef, userData }
-}
-
-const getDataWithRef = async ref => {
-  const get = await ref.get()
-  const data = await get.data()
-  return data
-}
-
-const getUserByEmail = async email => {
-  const querySnapshop = await firestore
-    .collection('users')
-    .where('email', '==', email)
-    .get()
-  const queryDocumentSnapshop = querySnapshop.docs[0]
-  const userId = queryDocumentSnapshop.id
-  const userData = await queryDocumentSnapshop.data()
-  return { userId, userData }
-}
 
 // THUNK CREATORS
 export const findPerson = (

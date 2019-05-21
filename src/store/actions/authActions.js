@@ -66,6 +66,7 @@ export const signupThunk = userData => async dispatch => {
         email: userData.email,
         displayName: userData.firstName + ' ' + userData.lastName,
         tel: userData.tel,
+        groups: [],
       })
 
     // Send the verfication email
