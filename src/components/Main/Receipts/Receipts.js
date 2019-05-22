@@ -1,29 +1,22 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-  fetchGroups,
+  fetchReceipts,
   createGroup,
   createGroupInProgress,
   deleteGroup,
-  selectGroup,
-} from '../../../store/actions/groupsActions'
-import { fetchFriends } from '../../../store/actions/friendsActions'
-import CreateGroup from './CreateGroup'
-import ListPage from '../Elements/ListPage'
-import SingleGroup from './SingleGroup'
+} from '../../../store/actions/receiptsActions'
 
-class Groups extends Component {
+class Receipts extends Component {
   state = {
     view: 'list',
-    singleGroup: {},
+    singleReceipt: {},
   }
 
-  switchView = async (view, group) => {
+  switchView = (view, group) => {
     if (group) {
-      await this.props.selectGroup(group.id)
-
-      await this.setState({
-        singleGroup: this.props.selectedGroup,
+      this.setState({
+        singleGroup: group,
         view: 'singleView',
       })
     } else {
@@ -34,10 +27,10 @@ class Groups extends Component {
   render() {
     const {
       groups,
-      friends,
+      receipts,
       currentUID,
       loading,
-      fetchGroups,
+      fetchReceipts,
       fetchFriends,
       createGroup,
       createGroupInProgress,
@@ -88,7 +81,7 @@ class Groups extends Component {
         {view === 'list' && (
           <ListPage
             groups={groups}
-            fetchGroups={() => fetchGroups(currentUID)}
+            fetchReceipts={() => fetchReceipts(currentUID)}
             viewItem={this.switchView}
           />
         )}
@@ -111,23 +104,20 @@ class Groups extends Component {
 const mapState = state => ({
   currentUID: state.firebase.auth.uid,
   currentEmail: state.firebase.auth.email,
-  groups: state.groups.groups,
-  loading: state.groups.loading,
-  friends: state.friends.friends,
-  beingCreated: state.groups.beingCreated,
-  selectedGroup: state.groups.selected,
+  receipts: state.receipts.receipts,
+  loading: state.receipts.loading,
+  beingCreated: state.receipts.beingCreated,
 })
 
 const mapDispatch = dispatch => ({
-  fetchGroups: uid => dispatch(fetchGroups(uid)),
+  fetchReceipts: uid => dispatch(fetchReceipts(uid)),
   createGroup: (group, uid) => dispatch(createGroup(group, uid)),
   fetchFriends: uid => dispatch(fetchFriends(uid)),
   createGroupInProgress: group => dispatch(createGroupInProgress(group)),
   deleteGroup: groupId => dispatch(deleteGroup(groupId)),
-  selectGroup: groupId => dispatch(selectGroup(groupId)),
 })
 
 export default connect(
   mapState,
   mapDispatch
-)(Groups)
+)(Receipts)

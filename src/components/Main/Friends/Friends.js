@@ -4,17 +4,27 @@ import {
   fetchFriends,
   addFriend,
   findPerson,
+  removeFriend,
 } from '../../../store/actions/friendsActions'
-import FriendsList from './FriendsList'
 import FindFriends from './FindFriends'
+import ListPage from '../Elements/ListPage'
+import SingleFriend from './SingleFriend'
 
 class Friends extends Component {
   state = {
-    view: 'friends',
+    view: 'list',
+    singleFriend: {},
   }
 
-  switchView = view => {
-    this.setState({ view })
+  switchView = (view, friend) => {
+    if (friend) {
+      this.setState({
+        singleFriend: friend,
+        view: 'singleView',
+      })
+    } else {
+      this.setState({ view })
+    }
   }
 
   render() {
@@ -27,21 +37,22 @@ class Friends extends Component {
       fetchFriends,
       loading,
       searchResults,
+      removeFriend,
     } = this.props
-    const { view } = this.state
+    const { view, singleFriend } = this.state
 
     return (
       <div id='friends'>
         <div className='views'>
           <div
             className={
-              view === 'friends' ? 'button-icon selected' : 'button-icon'
+              view === 'list' ? 'button-icon selected' : 'button-icon'
             }>
             <img
               src='./images/people.svg'
               className='icon large'
               onClick={() => {
-                this.switchView('friends')
+                this.switchView('list')
               }}
             />
           </div>
@@ -70,8 +81,23 @@ class Friends extends Component {
             searchResults={searchResults}
           />
         )}
-        {view === 'friends' && (
-          <FriendsList friends={friends} fetchFriends={()=>fetchFriends(currentUID)} />
+        {view === 'list' && (
+          <ListPage
+            friends={friends}
+            fetchFriends={() => fetchFriends(currentUID)}
+            viewItem={this.switchView}
+          />
+        )}
+
+        {view === 'singleView' && (
+          <div id='groups-list'>
+            <SingleFriend
+              backToList={() => this.switchView('list')}
+              friend={singleFriend}
+              removeFriend={() => removeFriend(singleFriend.email, currentUID)}
+              loading={loading}
+            />
+          </div>
         )}
       </div>
     )
@@ -93,6 +119,7 @@ const mapDispatch = dispatch => ({
   addFriend: (email, uid) => dispatch(addFriend(email, uid)),
   findPerson: (input, email, friends) =>
     dispatch(findPerson(input, email, friends)),
+  removeFriend: (email, uid) => dispatch(removeFriend(email, uid)),
 })
 
 export default connect(

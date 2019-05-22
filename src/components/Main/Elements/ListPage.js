@@ -1,25 +1,10 @@
 import React, { Component } from 'react'
-import Modal from '../Elements/Modal'
-import SingleGroup from './SingleGroup'
 import ListItem from '../Elements/ListItem'
 
 class ListPage extends Component {
   state = {
-    viewListItem: {},
     listFadeBottom: false,
     listFadeTop: false,
-  }
-
-  viewFriend = friend => {
-    this.setState({ viewFriend: friend })
-  }
-
-  viewList = () => {
-    this.setState({ viewFriend: {} })
-  }
-
-  closeModal = async () => {
-    await this.setState({ displayModal: false, person: {} })
   }
 
   scrollListener = e => {
@@ -47,7 +32,14 @@ class ListPage extends Component {
   }
 
   componentDidMount = async () => {
-    await this.props.fetchGroups()
+
+    if (this.props.groups) {
+      await this.props.fetchGroups()
+    }
+    
+    if (this.props.friends) {
+      await this.props.fetchFriends() 
+    }
 
     if (this.list) {
       this.list.addEventListener('scroll', e => this.scrollListener(e))
@@ -67,39 +59,25 @@ class ListPage extends Component {
   }
 
   render() {
-    const { groups, friends } = this.props
-    const { viewListItem, listFadeBottom, listFadeTop } = this.state
+    const { groups, friends, viewItem } = this.props
+    const { listFadeBottom, listFadeTop } = this.state
     const list = groups ? groups : friends
     return (
       <div id='groups-list'>
-        {viewListItem.hasOwnProperty('id') ? (
-          <div>
-            <div className='button' onClick={this.viewList}>
-              Back to list
-            </div>
-            <br />
-            {groups && (
-              <SingleGroup backToList={this.viewList} group={viewListItem} />
-            )}
-            {friends && (
-              <SingleFriend backToList={this.viewList} friend={viewListItem} />
-            )}
-          </div>
-        ) : list[0] ? (
+        { list[0] ? (
           <div>
             <div>Your {groups ? 'groups:' : 'friends:'}</div>
-            <br />
             <div
               className={
                 listFadeBottom && listFadeTop
-                  ? 'actual-list fade-top fade-bottom'
+                  ? 'scroll-div fade-top fade-bottom'
                   : listFadeBottom
-                  ? 'actual-list fade-bottom'
+                  ? 'scroll-div fade-bottom'
                   : listFadeTop
-                  ? 'actual-list fade-top'
-                  : 'actual-list'
+                  ? 'scroll-div fade-top'
+                  : 'scroll-div'
               }
-              ref={node => (this.list = node)}>
+              ref={node=>{this.list=node}}>
               <br />
               {list.map(item => {
                 return (
@@ -107,9 +85,13 @@ class ListPage extends Component {
                     key={item.id}
                     error={false}
                     content={item}
-                    clickAction={this.viewList}
+                    clickAction={()=>viewItem('singleView', item)}
                     leftIcon={
-                      group.avatarURL ? group.avatarURL : './images/people.svg'
+                      item.avatarURL
+                        ? item.avatarURL
+                        : groups
+                        ? './images/people.svg'
+                        : './images/person.svg'
                     }
                   />
                 )

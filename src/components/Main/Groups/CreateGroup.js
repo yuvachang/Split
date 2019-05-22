@@ -56,7 +56,7 @@ class GroupsList extends Component {
       },
     })
     
-    this.props.switchView('groups')
+    this.props.backToList()
   }
 
   handleChange = async e => {
@@ -80,14 +80,8 @@ class GroupsList extends Component {
     }
   }
 
-  // componentWillUnmount = async () => {
-  //   if (this.state.createGroup.groupName || this.state.createGroup.members) {
-  //     await this.props.createGroupInProgress(this.state.createGroup)
-  //   }
-  // }
-
   render() {
-    const { friends, groups, fetchGroups } = this.props
+    const { friends, groups, fetchGroups, loading } = this.props
     const { displayModal, createGroup } = this.state
     const { members } = this.state.createGroup
     return (
@@ -100,34 +94,22 @@ class GroupsList extends Component {
           yesAction={async () => {}}
           cancel={this.closeModal}
         />
-        Members:
+        {loading && <h3>Saving...</h3>}
+        
         {this.state.error && (
           <ListItem content={{ error: this.state.error }} error={true} />
         )}
-        <div>
-          {members[0]
-            ? members.map(member => (
-                <ListItem
-                  key={member.email}
-                  success={true}
-                  content={member}
-                  clickAction={this.removeMember}
-                  leftIcon={
-                    member.avatarURL ? member.avatarURL : './images/person.svg'
-                  }
-                  rightIcon='./images/remove.svg'
-                />
-              ))
-            : null}
-        </div>
-        <br />
+       
         <CreateGroupForm
           friends={friends}
           addMember={this.addMember}
+          members={members}
           handleChange={this.handleChange}
           handleSubmit={this.handleSubmit}
           createGroup={createGroup}
+          removeMember={this.removeMember}
         />
+        
       </div>
     )
   }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Modal from '../Elements/Modal'
-import {removeFriend} from '../../../store/actions/friendsActions'
-import { connect } from 'react-redux'
+import ListItem from '../Elements/ListItem'
 
 class SingleGroup extends Component {
   state = {
@@ -14,7 +13,7 @@ class SingleGroup extends Component {
   }
 
   closeModal = async () => {
-    await this.setState({ displayModal: false, person: {} })
+    await this.setState({ displayModal: false, group: {} })
   }
 
   toggleDropdown = () => {
@@ -22,26 +21,28 @@ class SingleGroup extends Component {
   }
 
   render() {
-    const { friend, removeFriend, currentUID, backToList } = this.props
+    const { group, deleteGroup, backToList, loading } = this.props
     const { displayModal, showDropdown } = this.state
     return (
-      <div>
+      <div className='scroll-div'>
         <Modal
           display={displayModal}
-          header='Unfriend'
-          message={`Remove ${friend.displayName} from friends?`}
+          header='Delete Group'
+          message={`Delete ${group.groupName} forever?`}
           yesMsg={'Yes'}
           yesAction={async () => {
-            await removeFriend(friend.email, currentUID)
+            await deleteGroup(group.id)
             this.closeModal()
             backToList()
           }}
           noMsg={'No'}
           noAction={this.closeModal}
         />
+
+        {loading && <h3>Deleting...</h3>}
         <div className='profile'>
           <img
-            src={friend.avatarURL ? friend.avatarURL : './images/person.svg'}
+            src={group.avatarURL ? group.avatarURL : './images/people.svg'}
             className='icon large'
           />
           <img
@@ -62,21 +63,42 @@ class SingleGroup extends Component {
             onClick={this.openModal}
           />
         </div>
-        {friend.displayName}:
+        <div>
+          <h3>{group.groupName}:</h3>
+
+          <div>group receipts, group spendings</div>
+          <br />
+          <div>Group members:</div>
+          <div>
+            {/* {group.members[0]
+              ? group.members.map(member => (
+                  <ListItem
+                    key={member.email}
+                    success={true}
+                    content={member}
+                    clickAction={() => null}
+                    leftIcon={
+                      member.avatarURL
+                        ? member.avatarURL
+                        : './images/person.svg'
+                    }
+                    rightIcon='./images/remove.svg'
+                  />
+                ))
+              : null} */}
+
+            {group.members[0]
+              ? group.members.map(member => <route>{member.displayName}</p>)
+              : null}
+          </div>
+        </div>
         <br />
-        <br />
-        <div>friend iou's here and stats here</div>
+        <div className='button' onClick={backToList}>
+          Back to list
+        </div>
       </div>
     )
   }
 }
 
-const mapState = state => ({
-  currentUID: state.firebase.auth.uid,
-})
-
-const mapDispatch = dispatch => ({
-  removeFriend: (email, uid) => dispatch(removeFriend(email, uid))
-})
-
-export default connect(mapState, mapDispatch)(SingleGroup)
+export default SingleGroup

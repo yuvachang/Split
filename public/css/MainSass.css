@@ -152,6 +152,12 @@ button {
   button.success {
     background-color: #5b677a;
     filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
+  .button > .innertext,
+  button > .innertext {
+    width: 65%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
   .button-icon,
   button-icon {
     border: 1.5px solid white;
@@ -216,6 +222,42 @@ button {
   @media (hover: hover) {
     .icon:hover {
       cursor: pointer; } }
+
+.scroll-div {
+  height: calc(100vh - 250px);
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center; }
+  .scroll-div > * {
+    width: 90%;
+    max-width: 225px; }
+  .scroll-div:after {
+    content: '';
+    opacity: 0;
+    z-index: -11;
+    transition: 0.2s; }
+  .scroll-div.fade-bottom:after {
+    content: '';
+    position: absolute;
+    z-index: 22;
+    top: 90%;
+    left: 0;
+    width: 100%;
+    background-image: linear-gradient(to bottom, rgba(1, 1, 1, 0), #5b677a 90%);
+    height: 10%;
+    opacity: 1;
+    transition: 0.2s; }
+  .scroll-div.fade-top:before {
+    content: '';
+    position: absolute;
+    z-index: 22;
+    left: 0;
+    width: 100%;
+    background-image: linear-gradient(to top, rgba(1, 1, 1, 0), #5b677a 90%);
+    height: 9%;
+    opacity: 1;
+    transition: 0.2s; }
 
 ::-webkit-scrollbar {
   width: 15px;
@@ -316,42 +358,6 @@ button {
       justify-content: center;
       flex-direction: column;
       width: 100%; }
-
-.actual-list {
-  height: calc(100vh - 250px);
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-  align-items: center; }
-  .actual-list > * {
-    width: 90%;
-    max-width: 225px; }
-  .actual-list:after {
-    content: '';
-    opacity: 0;
-    z-index: -11;
-    transition: 0.2s; }
-  .actual-list.fade-bottom:after {
-    content: '';
-    position: absolute;
-    z-index: 22;
-    top: 90%;
-    left: 0;
-    width: 100%;
-    background-image: linear-gradient(to bottom, rgba(1, 1, 1, 0), #5b677a 90%);
-    height: 10%;
-    opacity: 1;
-    transition: 0.2s; }
-  .actual-list.fade-top:before {
-    content: '';
-    position: absolute;
-    z-index: 22;
-    left: 0;
-    width: 100%;
-    background-image: linear-gradient(to top, rgba(1, 1, 1, 0), #5b677a 90%);
-    height: 9%;
-    opacity: 1;
-    transition: 0.2s; }
 
 .form {
   display: flex;

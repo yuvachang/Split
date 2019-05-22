@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import Modal from '../Elements/Modal'
-import {removeFriend} from '../../../store/actions/friendsActions'
-import { connect } from 'react-redux'
 
 class SingleFriend extends Component {
   state = {
@@ -22,7 +20,7 @@ class SingleFriend extends Component {
   }
 
   render() {
-    const { friend, removeFriend, currentUID, backToList } = this.props
+    const { friend, removeFriend, backToList, loading } = this.props
     const { displayModal, showDropdown } = this.state
     return (
       <div>
@@ -32,13 +30,14 @@ class SingleFriend extends Component {
           message={`Remove ${friend.displayName} from friends?`}
           yesMsg={'Yes'}
           yesAction={async () => {
-            await removeFriend(friend.email, currentUID)
+            await removeFriend()
             this.closeModal()
             backToList()
           }}
           noMsg={'No'}
           noAction={this.closeModal}
         />
+        {loading && <h3>Deleting...</h3>}
         <div className='profile'>
           <img
             src={friend.avatarURL ? friend.avatarURL : './images/person.svg'}
@@ -66,17 +65,13 @@ class SingleFriend extends Component {
         <br />
         <br />
         <div>friend iou's here and stats here</div>
+        <br />
+        <div className='button' onClick={backToList}>
+          Back to list
+        </div>
       </div>
     )
   }
 }
 
-const mapState = state => ({
-  currentUID: state.firebase.auth.uid,
-})
-
-const mapDispatch = dispatch => ({
-  removeFriend: (email, uid) => dispatch(removeFriend(email, uid))
-})
-
-export default connect(mapState, mapDispatch)(SingleFriend)
+export default SingleFriend

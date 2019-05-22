@@ -78,6 +78,13 @@ button {
     filter: drop-shadow($no-shadow);
   }
 
+  & > .innertext {
+    width: 65%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   &-icon {
     border: 1.5px solid white;
     border-radius: 5px;
@@ -164,6 +171,62 @@ button {
       cursor: pointer;
     }
   }
+}
+
+.scroll-div {
+  height: calc(100vh - 250px);
+  overflow-y: scroll;
+  display: flex;
+  // justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+  & > * {
+    width: 90%;
+    max-width: 225px;
+  }
+
+  &:after {
+    content: '';
+    opacity: 0;
+    z-index: -11;
+    transition: 0.2s;
+  }
+
+  &.fade-bottom:after {
+    content: '';
+    position: absolute;
+    z-index: 22;
+    // bottom: 0;
+    top: 90%;
+    left: 0;
+    width: 100%;
+    background-image: linear-gradient(
+      to bottom,
+      rgba(1, 1, 1, 0),
+      $app-bg-color 90%
+    );
+    height: 10%;
+    opacity: 1;
+    transition: 0.2s;
+  }
+
+  &.fade-top:before {
+    content: '';
+    position: absolute;
+    z-index: 22;
+    // top: 150px;
+    left: 0;
+    width: 100%;
+    background-image: linear-gradient(
+      to top,
+      rgba(1, 1, 1, 0),
+      $app-bg-color 90%
+    );
+    height: 9%;
+    opacity: 1;
+    transition: 0.2s;
+  } 
 }
 
 ::-webkit-scrollbar {

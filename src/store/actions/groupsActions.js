@@ -2,6 +2,7 @@ import * as actions from './actionTypes'
 import { getFirebase } from 'react-redux-firebase'
 import { getFirestore } from 'redux-firestore'
 import { getCurrentUser, getDataWithRef, getUserByEmail } from './utilActions'
+import { typeCastExpression } from '@babel/types';
 
 const firebase = getFirebase()
 const firestore = getFirestore()
@@ -124,6 +125,31 @@ export const fetchGroups = currentUID => async dispatch => {
     dispatch({ type: actions.GROUPS_ENDLOADING })
   } catch (error) {
     console.log('ERROR: fetchGroups => ', error)
+    dispatch({ type: actions.GROUPS_ERROR, payload: error.message })
+  }
+}
+
+export const selectGroup = groupId => async dispatch => {
+  try {
+    dispatch({ type: actions.GROUPS_LOADING })
+
+    const groupRef = await firestore.collection('groups').doc(groupId)
+
+    const groupData = await getDataWithRef(groupRef)
+    
+    
+    const groupMembers = await Promise.all(
+      groupData.members.map( async memberRef=>{
+        return await getDataWithRef(memberRef)
+      })
+    )
+
+    groupData.members = groupMembers
+
+    dispatch({ type: actions.GROUPS_SELECT, payload: groupData })
+    dispatch({ type: actions.GROUPS_ENDLOADING })
+  } catch (error) {
+    console.log('ERROR: selectGroup => ', error)
     dispatch({ type: actions.GROUPS_ERROR, payload: error.message })
   }
 }
