@@ -37,8 +37,8 @@ class Auth extends Component {
               )}
             </div>
             {/* SIGN UP */}
-            {authType === 'signup' ? (
-              <Signup showForm={authType === 'signup' ? true : false} />
+            {authType === 'login' ? (
+              <Login showForm={authType === 'login' ? true : false} />
             ) : (
               authType === 'none' && (
                 <div className='button' onClick={() => this.toggleForm('login')}>Log In</div>
@@ -46,8 +46,8 @@ class Auth extends Component {
             )}
 
             {/* EMAIL LOGIN */}
-            {authType === 'login' ? (
-              <Login showForm={authType === 'login' ? true : false} />
+            {authType === 'signup' ? (
+              <Signup showForm={authType === 'signup' ? true : false} />
             ) : (
               authType === 'none' && (
                 <div className='button' onClick={() => this.toggleForm('signup')}>
@@ -59,8 +59,8 @@ class Auth extends Component {
             {/* GOOGLE LOGIN */}
             {authType === 'none' ? (
               <div className='button' onClick={() => this.props.googleOauth()}>
-                <img src='./images/google.svg' className='icon' />
-                oogle Login
+                <img src='./images/google.svg' className='icon left' />
+                Google Login
               </div>
             ) : (
               <div />

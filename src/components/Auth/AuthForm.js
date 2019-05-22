@@ -24,7 +24,7 @@ const AuthForm = ({
             name='firstName'
             value={firstName}
             onChange={handleChange}
-            required={true}
+            required={type === 'signup' ? true : false}
           />
         </div>
         <div className={type === 'signup' ? 'auth-form-div' : 'hidden'}>
@@ -36,7 +36,7 @@ const AuthForm = ({
             name='lastName'
             value={lastName}
             onChange={handleChange}
-            required={true}
+            required={type === 'signup' ? true : false}
           />
         </div>
         <div className={type === 'signup' ? 'auth-form-div' : 'hidden'}>
@@ -83,7 +83,7 @@ const AuthForm = ({
             name='passwordCheck'
             value={passwordCheck}
             onChange={handleChange}
-            required={true}
+            required={type === 'signup' ? true : false}
           />
         </div>
         {error && <div>{error}</div>}

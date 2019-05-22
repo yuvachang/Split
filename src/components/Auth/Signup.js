@@ -29,9 +29,7 @@ class Signup extends Component {
       this.setState({ error: 'Passwords need to be the same.' })
       return
     }
- 
     
-
     await this.props.signup(this.state)
 
     if (this.props.error) {

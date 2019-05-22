@@ -57,7 +57,12 @@
   .auth-right {
     padding: 0;
     align-items: center;
-    width: 75%; } }
+    width: 75%; }
+    .auth-right-container {
+      width: 100%; } }
+
+.hidden {
+  display: none; }
 
 #modal {
   position: fixed;
@@ -231,63 +236,50 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: calc(100vh - 75px);
-  bottom: 0;
+  top: 75px;
   text-align: center; }
-
-#friends > * {
-  display: flex;
-  max-width: 250px;
-  min-width: 225px; }
-
-#friends > .views {
-  display: flex;
-  justify-content: space-around;
-  width: 60vw;
-  max-width: 150px; }
-
-.views {
-  /* box-shadow: 7px 5px 4px rgba(0,0,0,0.5); */ }
-
-#friends-list {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center; }
-
-#friends-list > * {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%; }
-
-#friends-add {
-  display: flex;
-  flex-direction: column;
-  align-items: center; }
-
-#friends-add > * {
-  display: flex;
-  justify-content: center;
-  width: 100%; }
+  #friends > * {
+    display: flex;
+    max-width: 250px;
+    min-width: 245px; }
+  #friends > .views {
+    display: flex;
+    justify-content: space-around;
+    width: 60vw;
+    max-width: 150px;
+    min-height: 90px; }
+  #friends-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden; }
+    #friends-list > * {
+      display: flex;
+      flex-direction: column;
+      width: 100%; }
+  #friends-add {
+    display: flex;
+    flex-direction: column;
+    align-items: center; }
+    #friends-add > * {
+      display: flex;
+      justify-content: center;
+      width: 100%; }
 
 .profile {
   display: flex;
   justify-content: center;
   align-items: center; }
-
-.profile-menu {
-  height: 30px;
-  transform: scaleY(1);
-  transition: 0.5s; }
-
-.profile-menu > * {
-  margin: 0px 6px; }
-
-.profile-menu.hidden {
-  height: 0;
-  transform: scaleY(0);
-  transition: 0.5s; }
+  .profile-menu {
+    height: 30px;
+    transform: scaleY(1);
+    transition: 0.5s; }
+    .profile-menu > * {
+      margin: 0px 6px; }
+    .profile-menu.hidden {
+      height: 0;
+      transform: scaleY(0);
+      transition: 0.5s; }
 
 #groups {
   position: absolute;
@@ -306,16 +298,24 @@ button {
     width: 60vw;
     max-width: 150px;
     min-height: 90px; }
-
-#groups-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden; }
-  #groups-list > * {
+  #groups-list {
     display: flex;
     flex-direction: column;
-    width: 100%; }
+    align-items: center;
+    overflow: hidden; }
+    #groups-list > * {
+      display: flex;
+      flex-direction: column;
+      width: 100%; }
+  #groups-add {
+    display: flex;
+    flex-direction: column;
+    align-items: center; }
+    #groups-add > * {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      width: 100%; }
 
 .actual-list {
   height: calc(100vh - 250px);
@@ -352,16 +352,6 @@ button {
     height: 9%;
     opacity: 1;
     transition: 0.2s; }
-
-#groups-add {
-  display: flex;
-  flex-direction: column;
-  align-items: center; }
-  #groups-add > * {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    width: 100%; }
 
 .form {
   display: flex;

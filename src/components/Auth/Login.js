@@ -25,12 +25,12 @@ class Login extends Component {
   }
 
   render() {
-    const { showForm, toggleForm } = this.props
+    const { showForm, toggleForm, authType } = this.props
     const { email, password } = this.state
 
     return (
       <AuthForm
-        type='login'
+        type={authType}
         email={email}
         password={password}
         handleChange={this.handleChange}

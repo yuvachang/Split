@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import SingleFriend from './SingleFriend'
+import Modal from '../Elements/Modal'
+import SingleGroup from './SingleGroup'
 import ListItem from '../Elements/ListItem'
 
-class FriendsList extends Component {
+class ListPage extends Component {
   state = {
-    viewFriend: {},
+    viewListItem: {},
     listFadeBottom: false,
     listFadeTop: false,
   }
@@ -15,6 +16,10 @@ class FriendsList extends Component {
 
   viewList = () => {
     this.setState({ viewFriend: {} })
+  }
+
+  closeModal = async () => {
+    await this.setState({ displayModal: false, person: {} })
   }
 
   scrollListener = e => {
@@ -42,7 +47,7 @@ class FriendsList extends Component {
   }
 
   componentDidMount = async () => {
-    await this.props.fetchFriends()
+    await this.props.fetchGroups()
 
     if (this.list) {
       this.list.addEventListener('scroll', e => this.scrollListener(e))
@@ -62,21 +67,27 @@ class FriendsList extends Component {
   }
 
   render() {
-    const { friends } = this.props
-    const { viewFriend, listFadeBottom, listFadeTop } = this.state
+    const { groups, friends } = this.props
+    const { viewListItem, listFadeBottom, listFadeTop } = this.state
+    const list = groups ? groups : friends
     return (
-      <div id='friends-list'>
-        {viewFriend.hasOwnProperty('email') ? (
+      <div id='groups-list'>
+        {viewListItem.hasOwnProperty('id') ? (
           <div>
             <div className='button' onClick={this.viewList}>
               Back to list
             </div>
             <br />
-            <SingleFriend backToList={this.viewList} friend={viewFriend}/>
+            {groups && (
+              <SingleGroup backToList={this.viewList} group={viewListItem} />
+            )}
+            {friends && (
+              <SingleFriend backToList={this.viewList} friend={viewListItem} />
+            )}
           </div>
-        ) : friends[0] ? (
+        ) : list[0] ? (
           <div>
-            <div>Your friends:</div>
+            <div>Your {groups ? 'groups:' : 'friends:'}</div>
             <br />
             <div
               className={
@@ -90,13 +101,13 @@ class FriendsList extends Component {
               }
               ref={node => (this.list = node)}>
               <br />
-              {friends.map(group => {
+              {list.map(item => {
                 return (
                   <ListItem
-                    key={group.id}
+                    key={item.id}
                     error={false}
-                    content={group}
-                    clickAction={this.viewFriend}
+                    content={item}
+                    clickAction={this.viewList}
                     leftIcon={
                       group.avatarURL ? group.avatarURL : './images/people.svg'
                     }
@@ -115,46 +126,6 @@ class FriendsList extends Component {
       </div>
     )
   }
-
-  // render() {
-  //   const { friends } = this.props
-  //   const { viewFriend } = this.state
-  //   return (
-  //     <div id='friends-list'>
-  //       {viewFriend.hasOwnProperty('email') ? (
-  //         <div>
-  //            <div className='button' onClick={this.viewList}>
-  //             Back to list
-  //           </div>
-  //           <br/>
-  //           <SingleFriend backToList={this.viewList} friend={viewFriend}/>
-            
-           
-  //         </div>
-  //       ) : friends[0] ? (
-  //         <div>
-  //           <div>Your friends:</div>
-  //           <br />
-  //           {friends.map(friend => {
-  //             return (
-  //               <ListItem
-  //                 key={friend.email}
-  //                 error={false}
-  //                 content={friend}
-  //                 clickAction={this.viewFriend}
-  //                 leftIcon={
-  //                   friend.avatarURL ? friend.avatarURL : './images/person.svg'
-  //                 }
-  //               />
-  //             )
-  //           })}
-  //         </div>
-  //       ) : (
-  //         <ListItem key={'error-list-item'} error={true} content={{error: 'You have no friends.'}} />
-  //       )}
-  //     </div>
-  //   )
-  // }
 }
 
-export default FriendsList
+export default ListPage
