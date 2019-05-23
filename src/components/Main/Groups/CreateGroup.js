@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Modal from '../Elements/Modal'
 import CreateGroupForm from './CreateGroupForm'
 import ListItem from '../Elements/ListItem'
+import FadingScroll from '../Elements/FadingScroll'
 
 class GroupsList extends Component {
   state = {
@@ -41,7 +42,7 @@ class GroupsList extends Component {
     //validation
     if (!this.state.createGroup.members.length) {
       this.setState({
-        error: 'Please add one or more members.',
+        error: 'Please add one or more friends.',
       })
       return
     }
@@ -82,7 +83,7 @@ class GroupsList extends Component {
 
   render() {
     const { friends, groups, fetchGroups, loading } = this.props
-    const { displayModal, createGroup } = this.state
+    const { displayModal, createGroup, error } = this.state
     const { members } = this.state.createGroup
     return (
       <div id='groups-add'>
@@ -94,25 +95,20 @@ class GroupsList extends Component {
           yesAction={async () => {}}
           cancel={this.closeModal}
         />
-        <div className='scroll-div-container'>
-          <div className='scroll-div'>
-            {loading && <h3>Saving...</h3>}
+        <FadingScroll>
+          {loading && <h3>Saving...</h3>}
 
-            {this.state.error && (
-              <ListItem content={{ error: this.state.error }} error={true} />
-            )}
-
-            <CreateGroupForm
-              friends={friends}
-              addMember={this.addMember}
-              members={members}
-              handleChange={this.handleChange}
-              handleSubmit={this.handleSubmit}
-              createGroup={createGroup}
-              removeMember={this.removeMember}
-            />
-          </div>
-        </div>
+          <CreateGroupForm
+            friends={friends}
+            error={error}
+            addMember={this.addMember}
+            members={members}
+            handleChange={this.handleChange}
+            handleSubmit={this.handleSubmit}
+            createGroup={createGroup}
+            removeMember={this.removeMember}
+          />
+        </FadingScroll>
       </div>
     )
   }

@@ -115,7 +115,8 @@ input {
   box-sizing: border-box;
   background-color: #5b677a;
   color: white;
-  text-align: center; }
+  text-align: center;
+  box-shadow: inset 0px 0px 10px 0px #333333; }
   input::placeholder {
     color: white; }
   input:valid {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import ListItem from '../Elements/ListItem'
 import Modal from '../Elements/Modal'
+import FadingScroll from '../Elements/FadingScroll'
 
 // needs to be class component to have ref on input node
 class FindFriends extends Component {
@@ -81,25 +82,23 @@ class FindFriends extends Component {
         {loading && <div>Loading.</div>}
         {added && <div>{added}</div>}
         <br />
-        <div className='scroll-div-container'>
-          <div className='scroll-div'>
-            {searchResults.map(person =>
-              person.error ? (
-                <ListItem key={person.error} error={true} content={person} />
-              ) : (
-                <ListItem
-                  key={person.email}
-                  error={false}
-                  content={person}
-                  clickAction={this.openModal}
-                  leftIcon={'./images/person.svg'}
-                  rightIcon={'./images/add.svg'}
-                  success={!!person.added}
-                />
-              )
-            )}
-          </div>
-        </div>
+        <FadingScroll styles={{ height: 'calc(100vh - 350px)' }}>
+          {searchResults.map(person =>
+            person.error ? (
+              <ListItem key={person.error} error={true} content={person} />
+            ) : (
+              <ListItem
+                key={person.email}
+                error={false}
+                content={person}
+                clickAction={this.openModal}
+                leftIcon={'./images/person.svg'}
+                rightIcon={'./images/add.svg'}
+                success={!!person.added}
+              />
+            )
+          )}
+        </FadingScroll>
       </div>
     )
   }

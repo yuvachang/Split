@@ -5,9 +5,10 @@ import {
   dismissConfirm,
   confirmFriendRequest,
   rejectFriendRequest,
-  cancelOutgoingRequest
+  cancelOutgoingRequest,
 } from '../../../store/actions/friendsActions'
 import ListItem from '../Elements/ListItem'
+import FadingScroll from '../Elements/FadingScroll'
 
 class FriendsPending extends Component {
   componentDidUpdate = async prevProps => {
@@ -34,7 +35,7 @@ class FriendsPending extends Component {
       dismissConfirm,
       confirmFriendRequest,
       rejectFriendRequest,
-      cancelOutgoingRequest
+      cancelOutgoingRequest,
     } = this.props
     const nothingNew =
       !pendingFriends.receivedRequest[0] &&
@@ -42,57 +43,59 @@ class FriendsPending extends Component {
       !pendingFriends.confirmed[0]
 
     return (
-      <div className='friends-pending'>
-        {pendingFriends.receivedRequest[0] ? (
-          <div>
-            Received Requests:
-            {pendingFriends.receivedRequest.map(user => (
-              <ListItem
-                key={user.email}
-                success={true}
-                content={user}
-                leftAction={() => rejectFriendRequest(user.id, currentUID)}
-                leftIcon='./images/remove.svg'
-                rightAction={() => confirmFriendRequest(user.id, currentUID)}
-                rightIcon='./images/check.svg'
-              />
-            ))}
-          </div>
-        ) : null}
+      <FadingScroll>
+        <div className='friends-pending'>
+          {pendingFriends.receivedRequest[0] ? (
+            <div>
+              Received Requests:
+              {pendingFriends.receivedRequest.map(user => (
+                <ListItem
+                  key={user.email}
+                  success={true}
+                  content={user}
+                  leftAction={() => rejectFriendRequest(user.id, currentUID)}
+                  leftIcon='./images/remove.svg'
+                  rightAction={() => confirmFriendRequest(user.id, currentUID)}
+                  rightIcon='./images/check.svg'
+                />
+              ))}
+            </div>
+          ) : null}
 
-        {pendingFriends.madeRequest[0] ? (
-          <div>
-            Awaiting Confirmation:
-            {pendingFriends.madeRequest.map(user => (
-              <ListItem
-                key={user.email}
-                success={true}
-                content={user}
-                rightAction={() => cancelOutgoingRequest(user.id, currentUID)}
-                rightIcon='./images/trash.svg'
-              />
-            ))}
-          </div>
-        ) : null}
+          {pendingFriends.madeRequest[0] ? (
+            <div>
+              Awaiting Confirmation:
+              {pendingFriends.madeRequest.map(user => (
+                <ListItem
+                  key={user.email}
+                  success={true}
+                  content={user}
+                  rightAction={() => cancelOutgoingRequest(user.id, currentUID)}
+                  rightIcon='./images/trash.svg'
+                />
+              ))}
+            </div>
+          ) : null}
 
-        {pendingFriends.confirmed[0] ? (
-          <div>
-            Confirmed Friendships:
-            {pendingFriends.confirmed.map(user => (
-              <ListItem
-                key={user.email}
-                success={true}
-                content={user}
-                clickAction={() => null}
-                rightAction={() => dismissConfirm(user.id, currentUID)}
-                rightIcon='./images/check.svg'
-              />
-            ))}
-          </div>
-        ) : null}
+          {pendingFriends.confirmed[0] ? (
+            <div>
+              Confirmed Friendships:
+              {pendingFriends.confirmed.map(user => (
+                <ListItem
+                  key={user.email}
+                  success={true}
+                  content={user}
+                  clickAction={() => null}
+                  rightAction={() => dismissConfirm(user.id, currentUID)}
+                  rightIcon='./images/check.svg'
+                />
+              ))}
+            </div>
+          ) : null}
 
-        {!!nothingNew && <h3>Nothing new.</h3>}
-      </div>
+          {!!nothingNew && <h3>Nothing new.</h3>}
+        </div>
+      </FadingScroll>
     )
   }
 }
@@ -111,7 +114,8 @@ const mapDispatch = dispatch => ({
     dispatch(rejectFriendRequest(friendId, currentUID)),
   dismissConfirm: (friendId, currentUID) =>
     dispatch(dismissConfirm(friendId, currentUID)),
-    cancelOutgoingRequest: (friendId, currentUID) => dispatch(cancelOutgoingRequest(friendId, currentUID))
+  cancelOutgoingRequest: (friendId, currentUID) =>
+    dispatch(cancelOutgoingRequest(friendId, currentUID)),
 })
 
 export default connect(

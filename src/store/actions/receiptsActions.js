@@ -8,15 +8,15 @@ const firestore = getFirestore()
 
 // THUNK CREATORS
 
-// export const createGroupInProgress = group => async dispatch => {
-//   try {
-//     console.log('inside createGroupInProgress  thunk', group)
-//     dispatch({ type: actions.RECEIPTS_CREATING, payload: group })
-//   } catch (error) {
-//     console.log('ERROR: createGroupInProgress => ', error)
-//     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
-//   }
-// }
+export const createGroupInProgress = group => async dispatch => {
+  try {
+    console.log('inside createGroupInProgress  thunk', group)
+    dispatch({ type: actions.RECEIPTS_CREATING, payload: group })
+  } catch (error) {
+    console.log('ERROR: createGroupInProgress => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
 
 // export const createGroup = (group, currentUID) => async dispatch => {
 //   try {
@@ -100,30 +100,30 @@ const firestore = getFirestore()
 //   }
 // }
 
-export const fetchReceipts = currentUID => async dispatch => {
-  try {
-    dispatch({ type: actions.RECEIPTS_LOADING })
+// export const fetchReceipts = currentUID => async dispatch => {
+//   try {
+//     dispatch({ type: actions.RECEIPTS_LOADING })
 
-    // get current user
-    const { userData: user } = await getCurrentUser(currentUID)
+//     // get current user
+//     const { userData: user } = await getCurrentUser(currentUID)
 
-    let results = []
+//     let results = []
 
-    if (user.receipts) {
-      results = await Promise.all(
-        user.receipts.map(async receipt => {
-          const receiptDoc = await receipt.get()
-          const receiptData = await receiptDoc.data()
-          receiptData.id = receipt.id
-          return receiptData
-        })
-      )
-    }
+//     if (user.receipts) {
+//       results = await Promise.all(
+//         user.receipts.map(async receipt => {
+//           const receiptDoc = await receipt.get()
+//           const receiptData = await receiptDoc.data()
+//           receiptData.id = receipt.id
+//           return receiptData
+//         })
+//       )
+//     }
 
-    dispatch({ type: actions.RECEIPTS_FETCH, payload: results })
-    dispatch({ type: actions.RECEIPTS_ENDLOADING })
-  } catch (error) {
-    console.log('ERROR: fetchReceipts => ', error)
-    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
-  }
-}
+//     dispatch({ type: actions.RECEIPTS_FETCH, payload: results })
+//     dispatch({ type: actions.RECEIPTS_ENDLOADING })
+//   } catch (error) {
+//     console.log('ERROR: fetchReceipts => ', error)
+//     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+//   }
+// }

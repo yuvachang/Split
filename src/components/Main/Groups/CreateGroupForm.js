@@ -48,16 +48,58 @@ class CreateGroupForm extends Component {
       addMember,
       members,
       removeMember,
+      error,
     } = this.props
     const { friends } = this.state
     const memberEmails = createGroup.members.map(member => member.email)
     return (
       <div className='form'>
-        <div>Your friends:</div>
+        <form onSubmit={handleSubmit}>
+          <label>Group Name</label>
+          <input
+            type='text'
+            required={true}
+            name='groupName'
+            placeholder='Enter a group name'
+            value={createGroup.groupName}
+            onChange={handleChange}
+          />
+
+          <div>Group members:</div>
+          <div>
+            {members[0] ? (
+              members.map(member => (
+                <ListItem
+                  key={member.email}
+                  success={true}
+                  content={member}
+                  leftIcon={
+                    member.avatarURL ? member.avatarURL : './images/person.svg'
+                  }
+                  rightAction={() => removeMember(member)}
+                  rightIcon='./images/remove.svg'
+                />
+              ))
+            ) : (
+              <ListItem
+                key={'errormessage'}
+                error={true}
+                content={
+                  error ? { error: error } : { error: 'Add your friends.' }
+                }
+              />
+            )}
+          </div>
+
+          <button type='submit'>Create Group</button>
+        </form>
+        <hr style={{ minWidth: '100%' }} />
+        <br />
+        <div>Add friends:</div>
         <div className='add-friends-list'>
           <input
             type='text'
-            placeholder='name or email'
+            placeholder='search friends'
             ref={node => {
               this.searchInput = node
             }}
@@ -89,40 +131,6 @@ class CreateGroupForm extends Component {
             />
           )}
         </div>
-        <hr style={{ minWidth: '100%' }} />
-        <form onSubmit={handleSubmit}>
-          <label>Group Name</label>
-          <input
-            type='text'
-            required={true}
-            name='groupName'
-            placeholder='Enter a group name'
-            value={createGroup.groupName}
-            onChange={handleChange}
-          />
-
-          <div>Group members:</div>
-          <div>
-            {members[0]
-              ? members.map(member => (
-                  <ListItem
-                    key={member.email}
-                    success={true}
-                    content={member}
-                    clickAction={removeMember}
-                    leftIcon={
-                      member.avatarURL
-                        ? member.avatarURL
-                        : './images/person.svg'
-                    }
-                    rightIcon='./images/remove.svg'
-                  />
-                ))
-              : null}
-          </div>
-
-          <button type='submit'>Create Group</button>
-        </form>
       </div>
     )
   }

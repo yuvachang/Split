@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { Route, Switch, Redirect } from 'react-router-dom'
-import { Auth, Home, Friends, Groups } from './index'
+import { Auth, Home, Friends, Groups, Receipts } from './index'
 
 const Routes = ({ isLoggedIn, isLoaded }) => {
   return (

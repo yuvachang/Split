@@ -27,9 +27,10 @@ users(
 
 receipts{
   date, 
+  isEditing: true/false,
   group: groupRef,
-  rows: [{id, name, cost, users: []}],
-  owner: userUID,
+  rows: [{uid, name: string, cost: num, users: [] isEditing: T/F},],
+  owner: userRef,
   userAmounts: {
     userUID: {
       name: string,
