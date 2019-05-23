@@ -32,3 +32,15 @@ export const getUserByEmail = async email => {
   const userData = await queryDocumentSnapshop.data()
   return { userId, userData }
 }
+
+// Indexing function => creates array of substrings
+export const indexFunc = (string) => {
+  const index = []
+  const stringArr = string.split('')
+  let curr = ''
+  stringArr.forEach(letter=> {
+    curr += letter.toLowerCase()
+    index.push(curr)
+  })
+  return index
+}

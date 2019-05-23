@@ -1,7 +1,12 @@
 import * as actions from './actionTypes'
 import { getFirebase } from 'react-redux-firebase'
 import { getFirestore } from 'redux-firestore'
-// import firebase from '../../firebase/firebase';
+import {
+  getCurrentUser,
+  getDataWithRef,
+  getUserByEmail,
+  indexFunc,
+} from './utilActions'
 
 const firebase = getFirebase()
 const firestore = getFirestore()
@@ -14,38 +19,49 @@ googleAuthProvider.setCustomParameters({
 googleAuthProvider.addScope('https://www.googleapis.com/auth/contacts.readonly')
 googleAuthProvider.addScope('https://www.googleapis.com/auth/userinfo.profile')
 
-// Indexing function => creates array of substrings
-const indexFunc = (string) => {
-
-  const index = []
-  const stringArr = string.split('')
-  let curr = ''
-  stringArr.forEach(letter=> {
-    curr += letter.toLowerCase()
-    index.push(curr)
-  })
-  return index
+// THUNK CREATORS
+export const checkUserNotifs = currentUID => async dispatch => {
+  try {
+  } catch (error) {
+    console.log('ERROR: checkUserNotifs => ', error)
+  }
 }
 
-// THUNK CREATORS
-export const checkUserIndex = currentUserUid => async dispatch => {
+export const checkUserIndex = currentUID => async dispatch => {
   try {
-    // console.log('checking user index for user', currentUserUid)
-    const document = await firestore.collection('users').doc(currentUserUid)
-    const documentGet = await document.get()
-    const user = await documentGet.data()
-    if (!user.index) {
+    // get current user reference
+    const { userRef, userData } = await getCurrentUser(currentUID)
+    console.log('inside checkuserindex')
+    if (!userData.index) {
       console.log('creating user index')
-      const emailIndex = indexFunc(user.email)
-      const nameIndex = indexFunc(user.displayName)
+      const emailIndex = indexFunc(userData.email)
+      const nameIndex = indexFunc(userData.displayName)
       const index = emailIndex.concat(nameIndex)
-      await document.update({
-        index
+      await userRef.update({
+        index,
       })
-    } 
-    // else { console.log('user already indexed')}
+    }
+
+    if (
+      !userData.pending.friends.confirmed ||
+      !userData.pending.friends.madeRequest ||
+      !userData.pending.friends.receivedRequest
+    ) {
+      console.log('setting profile pending')
+      await userRef.update({
+        pending: {
+          friends: {
+            confirmed: [],
+            madeRequest: [],
+            receivedRequest: [],
+          },
+        },
+      })
+    }
+
+
   } catch (error) {
-    console.error(error)
+    console.log('ERROR: checkUserIndex => ', error)
   }
 }
 
@@ -57,7 +73,7 @@ export const signupThunk = userData => async dispatch => {
     const res = await firebase
       .auth()
       .createUserWithEmailAndPassword(userData.email, userData.password)
-    
+
     // Retrieve created user, set first & last name and tel.
     await firestore
       .collection('users')
@@ -67,6 +83,10 @@ export const signupThunk = userData => async dispatch => {
         displayName: userData.firstName + ' ' + userData.lastName,
         tel: userData.tel,
         groups: [],
+        pending: {
+          friends: [],
+          groups: [],
+        },
       })
 
     // Send the verfication email
@@ -84,14 +104,12 @@ export const signupThunk = userData => async dispatch => {
 // GOOGLE OAUTH
 export const googleLoginThunk = () => async dispatch => {
   try {
-    console.log('google login start')
-    dispatch({ type: actions.AUTH_START, payload: {test: 'auth start'}})
-    
+    dispatch({ type: actions.AUTH_START, payload: { test: 'auth start' } })
+
     await firebase.auth().signInWithRedirect(googleAuthProvider)
 
     // dispatch({ type: actions.AUTH_SUCCESS })
     // dispatch({ type: actions.AUTH_END })
-    
   } catch (error) {
     console.error(error)
     // // handle account-already-exists-with-different-credential
@@ -129,7 +147,7 @@ export const getGoogleCreds = () => async dispatch => {
       const token = oauthRes.credential.accessToken
       const user = oauthRes.user
       console.log(token, user)
-      dispatch({ type: actions.AUTH_CREDS, payload: {token, user}})
+      dispatch({ type: actions.AUTH_CREDS, payload: { token, user } })
     }
   } catch (error) {
     dispatch({ type: actions.AUTH_FAIL, payload: error.message })

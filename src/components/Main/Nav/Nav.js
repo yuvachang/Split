@@ -6,7 +6,7 @@ import {
   googleLoginThunk,
 } from '../../../store/actions/authActions'
 
-const Nav = ({ logout, displayName, location }) => {
+const Nav = ({ logout, displayName, location, pending }) => {
   const capName = displayName => {
     let nameArr = displayName.split(' ')
     nameArr.forEach((name, idx) => {
@@ -42,6 +42,8 @@ const Nav = ({ logout, displayName, location }) => {
           {/* <img src='./images/group.png' className='icon large' /> */}
           Groups
         </Link>
+
+        {pending[0] && <div>PENDING HERE</div>}
         <a
           href=''
           onClick={e => {
@@ -57,6 +59,8 @@ const Nav = ({ logout, displayName, location }) => {
 
 const mapState = state => ({
   displayName: state.firebase.profile.displayName,
+  pending: state.firebase.profile.pending.friends
+  // notifications: state.auth.notifications
 })
 
 const mapDispatch = dispatch => ({

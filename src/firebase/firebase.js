@@ -21,6 +21,10 @@ firebase.initializeApp(config)
 firebase.firestore()
 // export const functions = firebase.functions()
 
+// const messaging = firebase.messaging()
+// messaging.usePublicVapidKey('BLWGupDK8IUeRo0Q-X5qR-OcriQc1Smi62PYYrarRaaYfWs642eY55349wJREuxG-Tr-8axKLU84uQWF_xVY7Qc')
+
+
 export default firebase
 
 

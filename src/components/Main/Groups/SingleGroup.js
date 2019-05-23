@@ -88,7 +88,7 @@ class SingleGroup extends Component {
               : null} */}
 
             {group.members[0]
-              ? group.members.map(member => <route>{member.displayName}</p>)
+              ? group.members.map(member => <p>{member.displayName}</p>)
               : null}
           </div>
         </div>

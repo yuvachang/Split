@@ -22,6 +22,7 @@ input {
   box-sizing: border-box;
   background-color: $app-bg-color;
   color: white;
+  text-align: center;
 
   &::placeholder {
     color: white;
@@ -102,6 +103,9 @@ button {
       background-color: $button-hover-bg-color;
       box-shadow: $no-shadow;
     }
+    &.notify {
+      background-color: red;
+    }
   }
 
   &.error-msg {
@@ -152,18 +156,20 @@ button {
     position: absolute;
     left: 15px;
     border-radius: 50%;
+    z-index: 11;
   }
 
   &.right {
     position: absolute;
     right: 15px;
     border-radius: 50%;
+    z-index: 55;
   }
 
   &.large {
     width: 35px;
     height: 35px;
-    padding: 20px;
+    padding: 10px;
   }
 
   @media (hover: hover) {
@@ -174,6 +180,23 @@ button {
 }
 
 .scroll-div {
+  &-container {
+    display: flex;
+    flex-direction: column;
+    // justify-content: center;
+    align-items: center;
+    // height: 65vh;
+    // height: calc(0.64 * $height-with-header);
+    overflow: hidden;
+
+    & > * {
+      display: flex;
+      // justify-content: center;
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+
   height: calc(100vh - 250px);
   overflow-y: scroll;
   display: flex;
@@ -226,7 +249,7 @@ button {
     height: 9%;
     opacity: 1;
     transition: 0.2s;
-  } 
+  }
 }
 
 ::-webkit-scrollbar {

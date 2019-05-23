@@ -6,6 +6,11 @@ const initialState = {
   // searchResults: [],
   selected: {},
   friends: [],
+  pending: {
+    confirmed: [],
+    madeRequest: [],
+    receivedRequest: [],
+  },
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -35,14 +40,26 @@ export default (state = initialState, { type, payload }) => {
     case actions.FRIENDS_REMOVE:
       return {
         ...state,
-        friends: state.friends.filter(friend=>friend.email!==payload)
+        friends: state.friends.filter(friend => friend.email !== payload),
       }
-    // case actions.FRIENDS_SEARCH:
+    case actions.FRIENDS_PENDING: 
+      return {
+        ...state,
+        pending: payload
+      }
+    // case actions.FRIENDS_CANCEL_REQUEST:
     //   return {
     //     ...state,
-    //     searchResults: payload,
-    //     error: null,
+    //     pending: payload
     //   }
+    case actions.FRIENDS_CLEARCONFIRM: 
+      return {
+        ...state, 
+        pending: {
+          ...state.pending,
+          confirmed: state.pending.confirmed.filter( user => user.id!==payload)
+        }
+      }
     case actions.FRIENDS_SELECT:
       return { ...state, selected: payload, error: null }
     default:

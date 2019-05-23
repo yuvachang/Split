@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
   fetchFriends,
-  addFriend,
+  makeFriendRequest,
   findPerson,
   removeFriend,
 } from '../../../store/actions/friendsActions'
 import FindFriends from './FindFriends'
 import ListPage from '../Elements/ListPage'
 import SingleFriend from './SingleFriend'
+import FriendsPending from './FriendsPending'
 
 class Friends extends Component {
   state = {
@@ -30,7 +31,7 @@ class Friends extends Component {
   render() {
     const {
       friends,
-      addFriend,
+      makeFriendRequest,
       findPerson,
       currentEmail,
       currentUID,
@@ -38,6 +39,7 @@ class Friends extends Component {
       loading,
       searchResults,
       removeFriend,
+      receivedRequest,
     } = this.props
     const { view, singleFriend } = this.state
 
@@ -58,6 +60,23 @@ class Friends extends Component {
           </div>
           <div
             className={
+              view === 'notifs'
+                ? receivedRequest[0]
+                  ? 'button-icon notify selected'
+                  : 'button-icon selected'
+                : receivedRequest[0]
+                ? 'button-icon notify'
+                : 'button-icon'
+            }>
+            <img
+              src='./images/bell.svg'
+              className='icon large'
+              onClick={() => this.switchView('notifs')}
+            />
+          </div>
+
+          <div
+            className={
               view === 'search' ? 'button-icon selected' : 'button-icon'
             }>
             <img
@@ -72,7 +91,7 @@ class Friends extends Component {
         {view === 'search' && (
           <FindFriends
             friends={friends}
-            addFriend={addFriend}
+            makeFriendRequest={makeFriendRequest}
             findPerson={findPerson}
             fetchFriends={fetchFriends}
             currentUID={currentUID}
@@ -81,6 +100,9 @@ class Friends extends Component {
             searchResults={searchResults}
           />
         )}
+
+        {view === 'notifs' && <FriendsPending />}
+
         {view === 'list' && (
           <ListPage
             friends={friends}
@@ -109,14 +131,14 @@ const mapState = state => ({
   currentEmail: state.firebase.auth.email,
   searchResults: state.friends.searchResults,
   selected: state.friends.selected,
-  error: state.friends.error,
   friends: state.friends.friends,
   loading: state.friends.loading,
+  receivedRequest: state.firebase.profile.pending.friends.receivedRequest,
 })
 
 const mapDispatch = dispatch => ({
   fetchFriends: uid => dispatch(fetchFriends(uid)),
-  addFriend: (email, uid) => dispatch(addFriend(email, uid)),
+  makeFriendRequest: (email, uid) => dispatch(makeFriendRequest(email, uid)),
   findPerson: (input, email, friends) =>
     dispatch(findPerson(input, email, friends)),
   removeFriend: (email, uid) => dispatch(removeFriend(email, uid)),

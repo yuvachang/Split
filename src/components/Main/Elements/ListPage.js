@@ -32,13 +32,12 @@ class ListPage extends Component {
   }
 
   componentDidMount = async () => {
-
     if (this.props.groups) {
       await this.props.fetchGroups()
     }
-    
+
     if (this.props.friends) {
-      await this.props.fetchFriends() 
+      await this.props.fetchFriends()
     }
 
     if (this.list) {
@@ -63,8 +62,8 @@ class ListPage extends Component {
     const { listFadeBottom, listFadeTop } = this.state
     const list = groups ? groups : friends
     return (
-      <div id='groups-list'>
-        { list[0] ? (
+      <div className='scroll-div-container'>
+        {list[0] ? (
           <div>
             <div>Your {groups ? 'groups:' : 'friends:'}</div>
             <div
@@ -77,7 +76,9 @@ class ListPage extends Component {
                   ? 'scroll-div fade-top'
                   : 'scroll-div'
               }
-              ref={node=>{this.list=node}}>
+              ref={node => {
+                this.list = node
+              }}>
               <br />
               {list.map(item => {
                 return (
@@ -85,7 +86,7 @@ class ListPage extends Component {
                     key={item.id}
                     error={false}
                     content={item}
-                    clickAction={()=>viewItem('singleView', item)}
+                    clickAction={() => viewItem('singleView', item)}
                     leftIcon={
                       item.avatarURL
                         ? item.avatarURL
@@ -102,7 +103,9 @@ class ListPage extends Component {
           <ListItem
             key={'error-list-item'}
             error={true}
-            content={{ error: 'You have no groups.' }}
+            content={{
+              error: groups ? 'You have no groups.' : 'You have no friends.',
+            }}
           />
         )}
       </div>

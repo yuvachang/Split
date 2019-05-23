@@ -55,7 +55,7 @@ class GroupsList extends Component {
         receipts: [],
       },
     })
-    
+
     this.props.backToList()
   }
 
@@ -94,22 +94,25 @@ class GroupsList extends Component {
           yesAction={async () => {}}
           cancel={this.closeModal}
         />
-        {loading && <h3>Saving...</h3>}
-        
-        {this.state.error && (
-          <ListItem content={{ error: this.state.error }} error={true} />
-        )}
-       
-        <CreateGroupForm
-          friends={friends}
-          addMember={this.addMember}
-          members={members}
-          handleChange={this.handleChange}
-          handleSubmit={this.handleSubmit}
-          createGroup={createGroup}
-          removeMember={this.removeMember}
-        />
-        
+        <div className='scroll-div-container'>
+          <div className='scroll-div'>
+            {loading && <h3>Saving...</h3>}
+
+            {this.state.error && (
+              <ListItem content={{ error: this.state.error }} error={true} />
+            )}
+
+            <CreateGroupForm
+              friends={friends}
+              addMember={this.addMember}
+              members={members}
+              handleChange={this.handleChange}
+              handleSubmit={this.handleSubmit}
+              createGroup={createGroup}
+              removeMember={this.removeMember}
+            />
+          </div>
+        </div>
       </div>
     )
   }

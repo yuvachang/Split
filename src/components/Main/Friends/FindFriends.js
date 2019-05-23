@@ -9,7 +9,7 @@ class FindFriends extends Component {
     searchResults: [],
     displayModal: false,
     person: {},
-    added: ''
+    added: '',
   }
 
   search = async () => {
@@ -38,7 +38,7 @@ class FindFriends extends Component {
     )
     await this.setState({
       searchResults: newResults,
-      added: `${person.displayName} added!`
+      added: `Request sent to ${person.displayName}!`,
     })
   }
 
@@ -49,18 +49,17 @@ class FindFriends extends Component {
   render() {
     const { displayModal, person, searchResults, added } = this.state
 
-    const { addFriend, currentUID, loading } = this.props
+    const { makeFriendRequest, currentUID, loading } = this.props
 
     return (
       <div id='friends-add'>
-        
         <Modal
           display={displayModal}
           header='Confirm Add Friend'
           message={`Add ${this.state.person.displayName} as a friend?`}
           yesMsg='Yes'
           yesAction={async () => {
-            await addFriend(person.email, currentUID)
+            await makeFriendRequest(person.email, currentUID)
             await this.handleAdd(person)
           }}
           noMsg='Cancel'
@@ -82,21 +81,25 @@ class FindFriends extends Component {
         {loading && <div>Loading.</div>}
         {added && <div>{added}</div>}
         <br />
-        {searchResults.map(person =>
-          person.error ? (
-            <ListItem key={person.error} error={true} content={person} />
-          ) : (
-            <ListItem
-              key={person.email}
-              error={false}
-              content={person}
-              clickAction={this.openModal}
-              leftIcon={'./images/person.svg'}
-              rightIcon={'./images/add.svg'}
-              success={!!person.added}
-            />
-          )
-        )}
+        <div className='scroll-div-container'>
+          <div className='scroll-div'>
+            {searchResults.map(person =>
+              person.error ? (
+                <ListItem key={person.error} error={true} content={person} />
+              ) : (
+                <ListItem
+                  key={person.email}
+                  error={false}
+                  content={person}
+                  clickAction={this.openModal}
+                  leftIcon={'./images/person.svg'}
+                  rightIcon={'./images/add.svg'}
+                  success={!!person.added}
+                />
+              )
+            )}
+          </div>
+        </div>
       </div>
     )
   }
