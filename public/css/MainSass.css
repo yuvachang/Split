@@ -215,13 +215,11 @@ button {
   .icon.left {
     position: absolute;
     left: 15px;
-    border-radius: 50%;
-    z-index: 11; }
+    border-radius: 50%; }
   .icon.right {
     position: absolute;
     right: 15px;
-    border-radius: 50%;
-    z-index: 55; }
+    border-radius: 50%; }
   .icon.large {
     width: 35px;
     height: 35px;
@@ -235,7 +233,8 @@ button {
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  align-items: center; }
+  align-items: center;
+  width: 100%; }
   .scroll-div-container {
     display: flex;
     flex-direction: column;
@@ -257,11 +256,11 @@ button {
     content: '';
     position: absolute;
     z-index: 22;
-    top: 90%;
+    top: 93%;
     left: 0;
     width: 100%;
     background-image: linear-gradient(to bottom, rgba(1, 1, 1, 0), #5b677a 90%);
-    height: 10%;
+    height: 18%;
     opacity: 1;
     transition: 0.2s; }
   .scroll-div.fade-top:before {

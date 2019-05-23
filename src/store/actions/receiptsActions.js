@@ -11,6 +11,7 @@ const firestore = getFirestore()
 export const createGroupInProgress = group => async dispatch => {
   try {
     console.log('inside createGroupInProgress  thunk', group)
+
     dispatch({ type: actions.RECEIPTS_CREATING, payload: group })
   } catch (error) {
     console.log('ERROR: createGroupInProgress => ', error)
@@ -18,59 +19,113 @@ export const createGroupInProgress = group => async dispatch => {
   }
 }
 
-// export const createGroup = (group, currentUID) => async dispatch => {
-//   try {
-//     dispatch({ type: actions.RECEIPTS_LOADING })
+export const createGroup = (data, currentUID) => async dispatch => {
+  try {
+    dispatch({ type: actions.RECEIPTS_LOADING })
 
-//     console.log('inside CREATEGROUP', group, currentUID)
-//     // get myself, add to users list
+    console.log('inside CREATEGROUP', group, currentUID)
+    // add 
 
-//     // array of group members not including currentUser/creator
-//     const memberRefs = await Promise.all(
-//       group.members.map(
-//         async member => await firestore.collection('users').doc(member.id)
-//       )
-//     )
 
-//     // get current user
-//     const { userRef, userData } = await getCurrentUser(currentUID)
+    const createEmptyRows = rowCount => {
+      let count=0
+      const rows = []
+      while (count < rowCount) {
+        rows.push({
+          rowIdx: count,
+          item: '',
+          cost: '',
+          users: [],
+          delete: false
+        })
+        count++
+      }
+      return rows
+    }
 
-//     // push current user into members list
-//     memberRefs.push(userRef)
+    const createUserAmounts = groupId => {
+      const userAmounts = {}
 
-//     // newgroupref.id = uid
-//     const newGroupRef = await firestore.collection('groups').add({
-//       groupName: group.groupName,
-//       members: memberRefs,
-//       receipts: [],
-//     })
+      const groupRef = firestore.collection('groups').doc(groupId)
+      const groupData = getDataWithRef(groupRef)
 
-//     // find all members of group and add the created group to their profiles
-//     await memberRefs.forEach(async member => {
-//       const { userRef: memberRef, userData: memberData } = await getCurrentUser(
-//         member.id
-//       )
+      groupData.members.map( async member=> {
+        const memberData = await getDataWithRef(member)
+        return memberData.id
+      })
 
-//       if (memberData.groups) {
-//         await memberRef.update({
-//           groups: [...memberData.groups, newGroupRef],
-//         })
-//       } else {
-//         await memberRef.update({
-//           groups: [newGroupRef],
-//         })
-//       }
-//     })
 
-//     // append group to redux store
-//     const groupData = await getDataWithRef(newGroupRef)
-//     dispatch({ type: actions.RECEIPTS_CREATE, payload: groupData })
-//     dispatch({ type: actions.RECEIPTS_ENDLOADING })
-//   } catch (error) {
-//     console.log('ERROR: createGroup => ', error)
-//     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
-//   }
-// }
+
+
+      userAmounts[user.email] = {
+        name: user.name,
+        amount: 0,
+        items: {}
+      }
+    }
+
+    const newReceipt = {
+      date: new Date().getTime()/1000,
+      rows: await createEmptyRows(data.rows),
+      payer: data.payer,
+      group: data.group,
+      userAmounts: await createUserAmounts(data.group.id)
+    }
+
+    // create receipt doc
+    await firestore.collection('receipts').add({
+      
+
+    })
+
+    
+
+    // array of group members not including currentUser/creator
+    const memberRefs = await Promise.all(
+      group.members.map(
+        async member => await firestore.collection('users').doc(member.id)
+      )
+    )
+
+    // get current user
+    const { userRef, userData } = await getCurrentUser(currentUID)
+
+    // push current user into members list
+    memberRefs.push(userRef)
+
+    // newgroupref.id = uid
+    const newGroupRef = await firestore.collection('groups').add({
+      groupName: group.groupName,
+      members: memberRefs,
+      receipts: [],
+    })
+
+    // find all members of group and add the created group to their profiles
+    await memberRefs.forEach(async member => {
+      const { userRef: memberRef, userData: memberData } = await getCurrentUser(
+        member.id
+      )
+
+      if (memberData.groups) {
+        await memberRef.update({
+          groups: [...memberData.groups, newGroupRef],
+        })
+      } else {
+        await memberRef.update({
+          groups: [newGroupRef],
+        })
+      }
+    })
+
+    // append group to redux store
+    const groupData = await getDataWithRef(newGroupRef)
+    dispatch({ type: actions.RECEIPTS_CREATE, payload: groupData })
+    dispatch({ type: actions.RECEIPTS_ENDLOADING })
+  } catch (error) {
+    console.log('ERROR: createGroup => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
 
 // export const deleteGroup = groupId => async dispatch => {
 //   try {
