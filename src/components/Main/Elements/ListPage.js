@@ -31,8 +31,8 @@ class ListPage extends Component {
                     content={item}
                     clickAction={() => viewItem('singleView', item)}
                     leftIcon={
-                      item.avatarURL
-                        ? item.avatarURL
+                      item.avatarUrl
+                        ? item.avatarUrl
                         : groups
                         ? './images/people.svg'
                         : './images/person.svg'

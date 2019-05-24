@@ -34,13 +34,49 @@ export const getUserByEmail = async email => {
 }
 
 // Indexing function => creates array of substrings
-export const indexFunc = (string) => {
+export const indexFunc = string => {
   const index = []
   const stringArr = string.split('')
   let curr = ''
-  stringArr.forEach(letter=> {
+  stringArr.forEach(letter => {
     curr += letter.toLowerCase()
     index.push(curr)
   })
   return index
+}
+
+export const createEmptyRows = rowCount => {
+  let count = 0
+  const rows = []
+  while (count < rowCount) {
+    rows.push({
+      saveDate: new Date().getTime() / 1000,
+      rowIdx: count,
+      item: '',
+      cost: '',
+      users: [],
+      delete: false,
+    })
+    count++
+  }
+  return rows
+}
+
+export const createUserAmounts = async groupData => {
+  const userAmounts = {}
+
+  await Promise.all(
+    groupData.members.map(async member => {
+      const memberData = await getDataWithRef(member)
+
+      userAmounts[memberData.id] = {
+        name: memberData.displayName,
+        amount: 0,
+        items: {},
+      }
+      return
+    })
+  )
+
+  return userAmounts
 }

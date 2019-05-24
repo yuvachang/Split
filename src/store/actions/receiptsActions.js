@@ -1,126 +1,68 @@
 import * as actions from './actionTypes'
 import { getFirebase } from 'react-redux-firebase'
 import { getFirestore } from 'redux-firestore'
-import { getCurrentUser, getDataWithRef, getUserByEmail } from './utilActions'
+import { getCurrentUser, getDataWithRef, createEmptyRows, createUserAmounts, getUserByEmail } from './utilActions'
 
 const firebase = getFirebase()
 const firestore = getFirestore()
 
 // THUNK CREATORS
 
-export const createGroupInProgress = group => async dispatch => {
-  try {
-    console.log('inside createGroupInProgress  thunk', group)
+// export const createReceiptInProgress = group => async dispatch => {
+//   try {
+//     console.log('inside createGroupInProgress  thunk', group)
 
-    dispatch({ type: actions.RECEIPTS_CREATING, payload: group })
-  } catch (error) {
-    console.log('ERROR: createGroupInProgress => ', error)
-    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
-  }
-}
+//     dispatch({ type: actions.RECEIPTS_CREATING, payload: group })
+//   } catch (error) {
+//     console.log('ERROR: createGroupInProgress => ', error)
+//     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+//   }
+// }
 
-export const createGroup = (data, currentUID) => async dispatch => {
+export const createReceipt = (data) => async dispatch => {
   try {
     dispatch({ type: actions.RECEIPTS_LOADING })
 
-    console.log('inside CREATEGROUP', group, currentUID)
-    // add 
+    console.log('inside createReceipt')
 
-
-    const createEmptyRows = rowCount => {
-      let count=0
-      const rows = []
-      while (count < rowCount) {
-        rows.push({
-          rowIdx: count,
-          item: '',
-          cost: '',
-          users: [],
-          delete: false
-        })
-        count++
-      }
-      return rows
-    }
-
-    const createUserAmounts = groupId => {
-      const userAmounts = {}
-
-      const groupRef = firestore.collection('groups').doc(groupId)
-      const groupData = getDataWithRef(groupRef)
-
-      groupData.members.map( async member=> {
-        const memberData = await getDataWithRef(member)
-        return memberData.id
-      })
-
-
-
-
-      userAmounts[user.email] = {
-        name: user.name,
-        amount: 0,
-        items: {}
-      }
-    }
+    const groupRef = firestore.collection('groups').doc(data.groupId)
+    const groupData = await getDataWithRef(groupRef)
+    const rows = await createEmptyRows(data.rows)
+    const userAmounts = await createUserAmounts(groupData)
+    const payer = await firebase.collection('users').doc(data.payer.id)
 
     const newReceipt = {
-      date: new Date().getTime()/1000,
-      rows: await createEmptyRows(data.rows),
-      payer: data.payer,
-      group: data.group,
-      userAmounts: await createUserAmounts(data.group.id)
+      date: new Date().getTime() / 1000,
+      rows,
+      payer,
+      members: groupData.members,
+      group: groupRef,
+      userAmounts,
     }
 
     // create receipt doc
-    await firestore.collection('receipts').add({
-      
+    const receiptRef = await firestore.collection('receipts').add(newReceipt)
 
-    })
+    // add receipt ref to group and group members
+    // or just 
+    // const querySnapshot =  firebase.collection('receipts').where('members', 'array_contains', userRef)
+    // const userReceipts = []  
+    // await querySnapshot.forEach( async doc => {
+    //   const docData = await doc.data()
+    //   userReceipts.push(docData)
+    // })
 
-    
 
-    // array of group members not including currentUser/creator
-    const memberRefs = await Promise.all(
-      group.members.map(
-        async member => await firestore.collection('users').doc(member.id)
-      )
-    )
 
-    // get current user
-    const { userRef, userData } = await getCurrentUser(currentUID)
+    console.log(receiptRef.id)
 
-    // push current user into members list
-    memberRefs.push(userRef)
+    // append receipt to redux store
+    newReceipt.id = receiptRef.id
 
-    // newgroupref.id = uid
-    const newGroupRef = await firestore.collection('groups').add({
-      groupName: group.groupName,
-      members: memberRefs,
-      receipts: [],
-    })
-
-    // find all members of group and add the created group to their profiles
-    await memberRefs.forEach(async member => {
-      const { userRef: memberRef, userData: memberData } = await getCurrentUser(
-        member.id
-      )
-
-      if (memberData.groups) {
-        await memberRef.update({
-          groups: [...memberData.groups, newGroupRef],
-        })
-      } else {
-        await memberRef.update({
-          groups: [newGroupRef],
-        })
-      }
-    })
-
-    // append group to redux store
-    const groupData = await getDataWithRef(newGroupRef)
-    dispatch({ type: actions.RECEIPTS_CREATE, payload: groupData })
+    dispatch({ type: actions.RECEIPTS_CREATE, payload: newReceipt })
     dispatch({ type: actions.RECEIPTS_ENDLOADING })
+
+    return newReceipt
   } catch (error) {
     console.log('ERROR: createGroup => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
@@ -155,30 +97,38 @@ export const createGroup = (data, currentUID) => async dispatch => {
 //   }
 // }
 
-// export const fetchReceipts = currentUID => async dispatch => {
-//   try {
-//     dispatch({ type: actions.RECEIPTS_LOADING })
+export const fetchReceipts = currentUID => async dispatch => {
+  try {
+    dispatch({ type: actions.RECEIPTS_LOADING })
 
-//     // get current user
-//     const { userData: user } = await getCurrentUser(currentUID)
+    // get current user
+    const { userData, userRef } = await getCurrentUser(currentUID)
 
-//     let results = []
+    const querySnapshot =  firebase.collection('receipts')
+      .where('members', 'array_contains', userRef)
+    const userReceipts = []  
+    await querySnapshot.forEach( async doc => {
+      const docData = await doc.data()
+      userReceipts.push(docData)
+    })
 
-//     if (user.receipts) {
-//       results = await Promise.all(
-//         user.receipts.map(async receipt => {
-//           const receiptDoc = await receipt.get()
-//           const receiptData = await receiptDoc.data()
-//           receiptData.id = receipt.id
-//           return receiptData
-//         })
-//       )
-//     }
+    // let results = []
 
-//     dispatch({ type: actions.RECEIPTS_FETCH, payload: results })
-//     dispatch({ type: actions.RECEIPTS_ENDLOADING })
-//   } catch (error) {
-//     console.log('ERROR: fetchReceipts => ', error)
-//     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
-//   }
-// }
+    // if (user.receipts) {
+    //   results = await Promise.all(
+    //     user.receipts.map(async receipt => {
+    //       const receiptDoc = await receipt.get()
+    //       const receiptData = await receiptDoc.data()
+    //       receiptData.id = receipt.id
+    //       return receiptData
+    //     })
+    //   )
+    // }
+
+    dispatch({ type: actions.RECEIPTS_FETCH, payload: userReceipts })
+    dispatch({ type: actions.RECEIPTS_ENDLOADING })
+  } catch (error) {
+    console.log('ERROR: fetchReceipts => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}

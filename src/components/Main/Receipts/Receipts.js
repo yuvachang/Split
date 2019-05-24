@@ -25,54 +25,55 @@ class Receipts extends Component {
     const { receipts } = this.props
     const { view, singleReceipt } = this.state
 
-    // return (
-    //   <div id='receipts'>
-    //     <div className='views'>
-    //       <div
-    //         className={
-    //           view === 'list' ? 'button-icon selected' : 'button-icon'
-    //         }>
-    //         <img
-    //           src='./images/receipts.png'
-    //           className='icon large'
-    //           onClick={() => {
-    //             this.switchView('list')
-    //           }}
-    //         />
-    //       </div>
-    //       <div
-    //         className={view === 'add' ? 'button-icon selected' : 'button-icon'}>
-    //         <img
-    //           src='./images/add.svg'
-    //           className='icon large'
-    //           onClick={() => this.switchView('add')}
-    //         />
-    //       </div>
-    //     </div>
-    //     <hr />
-    //     <br />
-    //     {view === 'add' && <CreateReceipt />}
+    return (
+      <div id='receipts'>
+        <div className='views'>
+          <div
+            className={
+              view === 'list' ? 'button-icon selected' : 'button-icon'
+            }>
+            <img
+              src='./images/receipts.svg'
+              className='icon large'
+              onClick={() => {
+                this.switchView('list')
+              }}
+            />
+          </div>
+          <div
+            className={view === 'add' ? 'button-icon selected' : 'button-icon'}>
+            <img
+              src='./images/add.svg'
+              className='icon large'
+              onClick={() => this.switchView('add')}
+            />
+          </div>
+        </div>
+        <hr />
+        <br />
+        {view === 'add' && <CreateReceipt />}
 
-    //     {view === 'list' && (
-    //       <ReceiptsList
-    //         receipts={receipts}
-    //         fetchReceipts={() => fetchReceipts(currentUID)}
-    //         viewItem={this.switchView}
-    //       />
-    //     )}
+        {/* {view === 'list' && (
+          <ReceiptsList
+            receipts={receipts}
+            fetchReceipts={() => fetchReceipts(currentUID)}
+            viewItem={this.switchView}
+          />
+        )} */}
 
-    //     {view === 'singleView' && (
-    //       <div id='groups-list'>
-    //         <SingleGroup
-    //           backToList={() => this.switchView('list')}
-    //           group={singleReceipt}
-    //           deleteGroup={deleteGroup}
-    //           loading={loading}
-    //         />
-    //       </div>
-    //     )}
-    //   </div>
-    // )
+
+        {/* {view === 'singleView' && (
+          <div id='groups-list'>
+            <SingleGroup
+              backToList={() => this.switchView('list')}
+              group={singleReceipt}
+              deleteGroup={deleteGroup}
+              loading={loading}
+            />
+          </div>
+        )} */}
+      </div>
+    )
 
     return null
   }

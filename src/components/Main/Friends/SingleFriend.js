@@ -40,7 +40,7 @@ class SingleFriend extends Component {
         {loading && <h3>Deleting...</h3>}
         <div className='profile'>
           <img
-            src={friend.avatarURL ? friend.avatarURL : './images/person.svg'}
+            src={friend.avatarUrl ? friend.avatarUrl : './images/person.svg'}
             className='icon large'
           />
           <img

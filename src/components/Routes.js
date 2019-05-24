@@ -12,7 +12,7 @@ const Routes = ({ isLoggedIn, isLoaded }) => {
             <Route path='/home' component={Home} />
             <Route path='/friends' component={Friends} />
             <Route path='/groups' component={Groups} />
-            <Route path='/receipts' component={Home} />
+            <Route path='/receipts' component={Receipts} />
             <Redirect to='/home' component={Home} />
           </Switch>
         )}

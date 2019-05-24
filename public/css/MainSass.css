@@ -274,6 +274,21 @@ button {
     opacity: 1;
     transition: 0.2s; }
 
+.drop-down.container {
+  width: 100%; }
+
+.drop-down.open {
+  width: 100%;
+  height: 250px;
+  overflow: scroll;
+  transition: height 1s; }
+
+.drop-down.closed {
+  height: 0px;
+  width: 100%;
+  overflow: scroll;
+  transition: 1s; }
+
 ::-webkit-scrollbar {
   width: 15px;
   margin-right: -15px;
@@ -417,3 +432,38 @@ button {
 @media only screen and (max-width: 720px) {
   .nav-links > a {
     margin: 0px; } }
+
+#receipts {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 75px;
+  text-align: center; }
+  #receipts > * {
+    display: flex;
+    max-width: 250px;
+    min-width: 245px; }
+  #receipts > .views {
+    display: flex;
+    justify-content: space-around;
+    width: 60vw;
+    max-width: 150px;
+    min-height: 90px; }
+  #receipts-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden; }
+    #receipts-list > * {
+      display: flex;
+      flex-direction: column;
+      width: 100%; }
+  #receipts-add {
+    display: flex;
+    flex-direction: column;
+    align-items: center; }
+    #receipts-add > * {
+      display: flex;
+      justify-content: center;
+      width: 100%; }

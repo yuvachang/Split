@@ -1,0 +1,52 @@
+#receipts {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 75px;
+
+  text-align: center;
+
+  & > * {
+    display: flex;
+    max-width: 250px;
+    min-width: 245px;
+  }
+
+  & > .views {
+    display: flex;
+    justify-content: space-around;
+    width: 60vw;
+    max-width: 150px;
+    min-height: 90px;
+  }
+
+  &-list {
+    display: flex;
+    flex-direction: column;
+    // justify-content: center;
+    align-items: center;
+    // height: 65vh;
+    // height: calc(0.64 * $height-with-header);
+    overflow: hidden;
+
+    & > * {
+      display: flex;
+      // justify-content: center;
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+
+  &-add {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    & > * {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+}

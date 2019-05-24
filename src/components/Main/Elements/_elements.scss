@@ -246,6 +246,30 @@ button {
   }
 }
 
+.drop-down {
+  &.container{
+    // display: flex;
+    // position: absolute;
+    width: 100%;
+    // overflow: hidden;
+  }
+
+  &.open {
+    width: 100%;
+    height: 250px;
+    overflow:scroll;
+    transition: height 1s;
+  }
+
+  &.closed{
+    height: 0px;
+    width: 100%;
+    overflow: scroll;
+    transition: 1s;
+  }
+}
+
+
 ::-webkit-scrollbar {
   width: 15px;
   margin-right: -15px;

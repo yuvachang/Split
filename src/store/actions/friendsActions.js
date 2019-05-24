@@ -69,14 +69,19 @@ export const makeFriendRequest = (
     // get current user reference
     const { userRef, userData } = await getCurrentUser(currentUID)
 
-    await userRef.update({
+    const batch = firestore.batch()
+
+    batch.update(userRef, {
       'pending.friends.madeRequest': firestore.FieldValue.arrayUnion(friendRef),
     })
-    await friendRef.update({
+
+    batch.update(friendRef, {
       'pending.friends.receivedRequest': firestore.FieldValue.arrayUnion(
         userRef
       ),
     })
+
+    batch.commit()
 
     dispatch({ type: actions.FRIENDS_ENDLOADING })
   } catch (error) {
@@ -98,16 +103,21 @@ export const cancelOutgoingRequest = (
     // get current user reference
     const { userRef, userData } = await getCurrentUser(currentUID)
 
-    await userRef.update({
+    const batch = firestore.batch()
+
+    batch.update(userRef, {
       'pending.friends.madeRequest': firestore.FieldValue.arrayRemove(
         friendRef
       ),
     })
-    await friendRef.update({
+
+    batch.update(friendRef, {
       'pending.friends.receivedRequest': firestore.FieldValue.arrayRemove(
         userRef
       ),
     })
+
+    batch.commit()
 
     dispatch({ type: actions.FRIENDS_ENDLOADING })
   } catch (error) {
@@ -131,13 +141,15 @@ export const confirmFriendRequest = (
     // get current user reference
     const { userRef, userData } = await getCurrentUser(currentUID)
 
+    const batch = firestore.batch()
+
     // confirm friend request from friend, move friend from pending to friendslist
     if (!userData.friends) {
-      await userRef.update({
+      batch.update(userRef, {
         friends: [friendRef],
       })
     } else {
-      await userRef.update({
+      batch.update(userRef, {
         friends: firestore.FieldValue.arrayUnion(friendRef),
         'pending.friends.receivedRequest': firestore.FieldValue.arrayRemove(
           friendRef
@@ -145,11 +157,13 @@ export const confirmFriendRequest = (
       })
     }
 
-    await friendRef.update({
+    batch.update(friendRef, {
       friends: firestore.FieldValue.arrayUnion(userRef),
       'pending.friends.confirmed': firestore.FieldValue.arrayUnion(userRef),
       'pending.friends.madeRequest': firestore.FieldValue.arrayRemove(userRef),
     })
+
+    batch.commit()
 
     // add friend to redux store's friends list
     dispatch({ type: actions.FRIENDS_ADD, payload: friendData })
@@ -190,15 +204,19 @@ export const rejectFriendRequest = (friendId, currentUID) => async dispatch => {
     // get current user reference
     const { userRef, userData } = await getCurrentUser(currentUID)
 
-    await friendRef.update({
+    const batch = firestore.batch()
+
+    batch.update(friendRef, {
       'pending.friends.madeRequest': firestore.FieldValue.arrayRemove(userRef),
     })
 
-    await userRef.update({
+    batch.update(userRef, {
       'pending.friends.receivedRequest': firestore.FieldValue.arrayRemove(
         friendRef
       ),
     })
+
+    batch.commit()
 
     dispatch({ type: actions.FRIENDS_ENDLOADING })
   } catch (error) {
@@ -293,15 +311,19 @@ export const removeFriend = (email, currentUID) => async dispatch => {
     // get current user reference
     const { userRef, userData } = await getCurrentUser(currentUID)
 
+    const batch = firestore.batch()
+
     // remove friend from current user database
-    await userRef.update({
+    batch.update(userRef, {
       friends: firestore.FieldValue.arrayRemove(friendRef),
     })
 
     // remove self from friend's list
-    await friendRef.update({
+    batch.update(friendRef, {
       friends: firestore.FieldValue.arrayRemove(userRef),
     })
+
+    batch.commit()
 
     dispatch({ type: actions.FRIENDS_REMOVE, payload: friendData.email })
     dispatch({ type: actions.FRIENDS_ENDLOADING })

@@ -1,77 +1,79 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import Modal from '../Elements/Modal'
-import CreateGroupForm from './CreateGroupForm'
 import ListItem from '../Elements/ListItem'
 import FadingScroll from '../Elements/FadingScroll'
-import { getCurrentUser } from '../../../store/actions/utilActions';
+import { fetchGroups } from '../../../store/actions/groupsActions'
+import { fetchReceipts } from '../../../store/actions/receiptsActions'
+import DropDownList from '../Elements/DropDownList';
 
 class CreateReceipt extends Component {
   state = {
     rows: 0,
-    group: {},
-    members: [],
+    groupId: null,
     payer: {},
+
     error: null,
   }
 
-  handleSubmit = async e => {
-    e.preventDefault()
-    //validation
-    if (!this.state.createGroup.members.length) {
-      this.setState({
-        error: 'Please add one or more members.',
-      })
-      return
-    }
+  // handleSubmit = async e => {
+  //   e.preventDefault()
+  //   //validation
+  //   if (!this.state.createGroup.members.length) {
+  //     this.setState({
+  //       error: 'Please add one or more members.',
+  //     })
+  //     return
+  //   }
 
-    await this.props.createGroup(this.state.createGroup, this.props.currentUID)
+  //   const newReceipt = await this.props.createReceipt(this.state)
 
-    await this.setState({
-      createGroup: {
-        groupName: '',
-        members: [],
-        receipts: [],
-      },
-    })
+  //   await this.setState({
+  //     createGroup: {
+  //       groupName: '',
+  //       members: [],
+  //       receipts: [],
+  //     },
+  //   })
 
-    this.props.backToList()
-  }
+  //   this.props.backToList('singleView', newReceipt)
+  // }
 
-  handleChange = async e => {
-    await this.setState({
-      createGroup: {
-        ...this.state.createGroup,
-        [e.target.name]: e.target.value,
-      },
-    })
-    if (this.state.createGroup.groupName || this.state.createGroup.members) {
-      await this.props.createGroupInProgress(this.state.createGroup)
-    }
-  }
+  // handleChange = async e => {
+  //   await this.setState({
+  //     createGroup: {
+  //       ...this.state.createGroup,
+  //       [e.target.name]: e.target.value,
+  //     },
+  //   })
+  //   if (this.state.createGroup.groupName || this.state.createGroup.members) {
+  //     await this.props.createGroupInProgress(this.state.createGroup)
+  //   }
+  // }
 
   componentDidMount = async () => {
-    await this.props.fetchFriends(this.props.currentUID)
-    if (Object.keys(this.props.beingCreated)[0]) {
-      this.setState({
-        createGroup: this.props.beingCreated,
-      })
-    }
+    await this.props.fetchGroups(this.props.currentUID)
+    // if (Object.keys(this.props.beingCreated)[0]) {
+    //   this.setState({
+    //     createGroup: this.props.beingCreated,
+    //   })
+    // }
   }
 
   render() {
     const { friends, groups, fetchGroups, loading } = this.props
     const { displayModal, createGroup } = this.state
-    const { members } = this.state.createGroup
+    // const { members } = this.state.createGroup
     return (
       <div id='groups-add'>
-        <Modal
+        {/* <Modal
           display={displayModal}
           header='Confirm Add Friend'
           message={'friend details here'}
           yes='Yes'
           yesAction={async () => {}}
           cancel={this.closeModal}
-        />
+        /> */}
         <FadingScroll>
           {loading && <h3>Saving...</h3>}
 
@@ -79,7 +81,9 @@ class CreateReceipt extends Component {
             <ListItem content={{ error: this.state.error }} error={true} />
           )}
 
-          <CreateGroupForm
+          <DropDownList listContent={groups} />
+
+          {/* <CreateGroupForm
             friends={friends}
             addMember={this.addMember}
             members={members}
@@ -87,11 +91,51 @@ class CreateReceipt extends Component {
             handleSubmit={this.handleSubmit}
             createGroup={createGroup}
             removeMember={this.removeMember}
-          />
+          /> */}
+
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+          <p>CONTENT BLAHBLAHBLAH</p>
+
+
         </FadingScroll>
       </div>
     )
   }
 }
 
-export default CreateReceipt
+const mapState = state => ({
+  currentUID: state.firebase.auth.uid,
+  currentEmail: state.firebase.auth.email,
+  receipts: state.receipts.receipts,
+  loading: state.receipts.loading,
+  beingCreated: state.receipts.beingCreated,
+  groups: state.groups.groups,
+})
+
+const mapDispatch = dispatch => ({
+  fetchReceipts: uid => dispatch(fetchReceipts(uid)),
+  fetchGroups: uid => dispatch(fetchGroups(uid)),
+})
+
+export default connect(
+  mapState,
+  mapDispatch
+)(CreateReceipt)

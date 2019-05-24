@@ -44,7 +44,6 @@ export const createGroup = (group, currentUID) => async dispatch => {
       groupName: group.groupName,
       members: memberRefs,
       receipts: [],
-      date: new Date().getTime()/1000
     })
 
     // find all members of group and add the created group to their profiles
