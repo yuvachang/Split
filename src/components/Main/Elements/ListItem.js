@@ -24,7 +24,7 @@ const ListItem = ({
         />
       )}
       <div className='innertext'>
-        {content.displayName || content.groupName}
+        {content.displayName || content.groupName || content.receiptName}
       </div>
       {rightIcon && (
         <img
@@ -44,7 +44,7 @@ const ListItem = ({
         />
       )}
       <div className='innertext'>
-        {content.displayName || content.groupName}
+        {content.displayName || content.groupName || content.receiptName}
       </div>
       {rightIcon && (
         <img

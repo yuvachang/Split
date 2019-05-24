@@ -18,14 +18,16 @@ class ListPage extends Component {
   }
 
   render() {
-    const { groups, friends, viewItem } = this.props
+    const { receipts, groups, friends, viewItem } = this.props
     const { listFadeBottom, listFadeTop } = this.state
-    const list = groups ? groups : friends
+    const list = groups ? groups : friends ? friends : receipts
     return (
       <div className='scroll-div-container'>
         {list[0] ? (
           <div>
-            <div>Your {groups ? 'groups:' : 'friends:'}</div>
+            <div>
+              Your {groups ? 'Groups:' : friends ? 'Friends:' : 'Receipts:'}
+            </div>
             <div
               className={
                 listFadeBottom && listFadeTop
@@ -64,7 +66,11 @@ class ListPage extends Component {
             key={'error-list-item'}
             error={true}
             content={{
-              error: groups ? 'You have no groups.' : 'You have no friends.',
+              error: groups
+                ? 'You have no groups.'
+                : friends
+                ? 'You have no friends.'
+                : 'You have no receipts.',
             }}
           />
         )}

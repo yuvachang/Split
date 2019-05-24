@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ListItem from '../Elements/ListItem'
+import FadingScroll from './FadingScroll'
 
 class DropDownList extends Component {
   state = {
@@ -7,19 +8,22 @@ class DropDownList extends Component {
     open: false,
   }
 
-  openMenu = () => {
-    this.setState({ open: true })
-  }
-
-  closeMenu = () => {
-    this.setState({ open: false })
+  toggleDropdown = action => {
+    if (action === 'close') {
+      this.setState({
+        open: false,
+      })
+    } else if (action === 'open') {
+      this.setState({ open: true })
+    } else {
+      this.setState({ open: !this.state.open })
+    }
   }
 
   clickListener = e => {
     if (this.state.open && !this.menu.contains(e.target)) {
-      this.closeMenu()
+      this.toggleDropdown('close')
     }
-    return
   }
 
   componentDidUpdate = prevProps => {
@@ -43,39 +47,38 @@ class DropDownList extends Component {
   }
 
   render() {
-    const { clickAction } = this.props
+    const { clickAction, message, selected } = this.props
     const { list, open } = this.state
 
     return (
-      <div className='drop-down container'>
-        <p onClick={this.openMenu}>Select a group.</p>
-        <div
-          className={open ? 'drop-down open' : 'drop-down closed'}
-          ref={node => (this.menu = node)}>
-          {// open ? (
-          list[0] ? (
-            <div>
-              
-              {list.map(item => {
+      <div className='drop-down container' ref={node => (this.menu = node)}>
+        <div className='drop-down message'>
+          {selected ? selected : message}
+          <img
+            onClick={this.toggleDropdown}
+            src='./images/down-arrow.svg'
+            className={open ? 'icon right upsidedown' : 'icon right'}
+            style={{ marginRight: '12px' }}
+          />
+        </div>
+        <div className={open ? 'drop-down open' : 'drop-down closed'}>
+          {list[0]
+            ? list.map(item => {
                 return (
                   <ListItem
                     key={item.id}
-                    success={true}
                     content={item}
-                    rightAction={clickAction}
+                    clickAction={e => {
+                      clickAction(e)
+                      this.toggleDropdown('close')
+                    }}
                     rightIcon={
                       item.avatarUrl ? item.avatarUrl : './images/person.svg'
                     }
                   />
                 )
-              })}
-            </div>
-          ) : null
-          // )
-          // : (
-          //   <p onClick={this.openMenu}>Select a group.</p>
-          // )
-          }
+              })
+            : null}
         </div>
       </div>
     )

@@ -68,7 +68,9 @@ class FindFriends extends Component {
         />
         <div>Search for friends:</div>
         <br />
-        <div>
+
+        <div className='auth-form-div'>
+          <img src='./images/search.svg' className='icon' />
           <input
             type='text'
             placeholder='name or email'

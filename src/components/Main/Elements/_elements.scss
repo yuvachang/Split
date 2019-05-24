@@ -24,7 +24,7 @@ input {
   color: white;
   text-align: center;
 
-  box-shadow: inset 0px 0px 10px 0px #333333;
+  box-shadow: inset 0px 0px 10px 0px #555555;
 
   &::placeholder {
     color: white;
@@ -183,6 +183,7 @@ button {
   &-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     overflow: hidden;
 
@@ -247,28 +248,61 @@ button {
 }
 
 .drop-down {
-  &.container{
-    // display: flex;
-    // position: absolute;
-    width: 100%;
-    // overflow: hidden;
+  &.container {
+    // width: 100%;
+    border: 1.5px solid darkgray;
+    border-radius: 5px;
+    padding: 0px 8px;
   }
 
   &.open {
     width: 100%;
-    height: 250px;
-    overflow:scroll;
-    transition: height 1s;
+    height: auto;
+    max-height: 235px;
+    overflow: scroll;
+    // transform: scaleY(1);
+    transition: max-height 1s;
+    & > .button {
+      filter: drop-shadow($no-shadow);
+    }
   }
 
-  &.closed{
-    height: 0px;
+  &.closed {
+    max-height: 0px;
     width: 100%;
     overflow: scroll;
-    transition: 1s;
+    // transform: scaleY(0);
+    transition: max-height 1s;
+    & > .button {
+      filter: drop-shadow($no-shadow);
+    }
+  }
+
+  &.message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px;
   }
 }
 
+.comma-list {
+  display: inline;
+  list-style: none;
+  padding: 0px;
+
+  & li {
+    display: inline;
+
+    &:after {
+      content: ', ';
+    }
+
+    &:last-child:after {
+      content: '';
+    }
+  }
+}
 
 ::-webkit-scrollbar {
   width: 15px;

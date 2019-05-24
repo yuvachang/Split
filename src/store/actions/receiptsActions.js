@@ -23,16 +23,22 @@ export const createReceipt = (data) => async dispatch => {
   try {
     dispatch({ type: actions.RECEIPTS_LOADING })
 
-    console.log('inside createReceipt')
+    console.log('inside createReceipt', data)
 
-    const groupRef = firestore.collection('groups').doc(data.groupId)
+    const groupRef = await firestore.collection('groups').doc(data.groupId)
     const groupData = await getDataWithRef(groupRef)
+
+
     const rows = await createEmptyRows(data.rows)
+
+    console.log('rows', rows)
     const userAmounts = await createUserAmounts(groupData)
-    const payer = await firebase.collection('users').doc(data.payer.id)
+    console.log('userAmounts', userAmounts)
+    const payer = await firestore.collection('users').doc(data.payer.id)
 
     const newReceipt = {
       date: new Date().getTime() / 1000,
+      receiptName: data.receiptName,
       rows,
       payer,
       members: groupData.members,
@@ -100,17 +106,27 @@ export const createReceipt = (data) => async dispatch => {
 export const fetchReceipts = currentUID => async dispatch => {
   try {
     dispatch({ type: actions.RECEIPTS_LOADING })
+    console.log("inside fetchReceipts")
 
     // get current user
     const { userData, userRef } = await getCurrentUser(currentUID)
 
-    const querySnapshot =  firebase.collection('receipts')
-      .where('members', 'array_contains', userRef)
+    const queryRef =  await firestore.collection('receipts')
+      .where('members', 'array-contains', userRef)
+
     const userReceipts = []  
+
+    const querySnapshot = await queryRef.get()
+
     await querySnapshot.forEach( async doc => {
+      // const docData = await getDataWithRef(doc)
+      // console.log(doc.id)
       const docData = await doc.data()
+      docData.id = doc.id
       userReceipts.push(docData)
     })
+
+    console.log(userReceipts)
 
     // let results = []
 

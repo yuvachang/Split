@@ -6,7 +6,6 @@ const initialState = {
   searchResults: [],
   selected: {},
   receipts: [],
-  beingCreated: {}
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -25,16 +24,11 @@ export default (state = initialState, { type, payload }) => {
         error: null,
         loading: false,
       }
-    case actions.RECEIPTS_CREATING:
-      return {
-        ...state, 
-        beingCreated: payload
-      }
     case actions.RECEIPTS_CREATE:
       return {
         ...state,
         receipts: [...state.receipts, payload],
-        beingCreated: {},
+        selected: payload,
         error: null,
       }
     case actions.RECEIPTS_DELETE:

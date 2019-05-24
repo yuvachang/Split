@@ -116,7 +116,7 @@ input {
   background-color: #5b677a;
   color: white;
   text-align: center;
-  box-shadow: inset 0px 0px 10px 0px #333333; }
+  box-shadow: inset 0px 0px 10px 0px #555555; }
   input::placeholder {
     color: white; }
   input:valid {
@@ -238,6 +238,7 @@ button {
   .scroll-div-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     overflow: hidden; }
     .scroll-div-container > * {
@@ -275,19 +276,43 @@ button {
     transition: 0.2s; }
 
 .drop-down.container {
-  width: 100%; }
+  border: 1.5px solid darkgray;
+  border-radius: 5px;
+  padding: 0px 8px; }
 
 .drop-down.open {
   width: 100%;
-  height: 250px;
+  height: auto;
+  max-height: 235px;
   overflow: scroll;
-  transition: height 1s; }
+  transition: max-height 1s; }
+  .drop-down.open > .button {
+    filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
 
 .drop-down.closed {
-  height: 0px;
+  max-height: 0px;
   width: 100%;
   overflow: scroll;
-  transition: 1s; }
+  transition: max-height 1s; }
+  .drop-down.closed > .button {
+    filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
+
+.drop-down.message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0px; }
+
+.comma-list {
+  display: inline;
+  list-style: none;
+  padding: 0px; }
+  .comma-list li {
+    display: inline; }
+    .comma-list li:after {
+      content: ', '; }
+    .comma-list li:last-child:after {
+      content: ''; }
 
 ::-webkit-scrollbar {
   width: 15px;

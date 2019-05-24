@@ -3,67 +3,76 @@ import { connect } from 'react-redux'
 import Modal from '../Elements/Modal'
 import ListItem from '../Elements/ListItem'
 import FadingScroll from '../Elements/FadingScroll'
-import { fetchGroups } from '../../../store/actions/groupsActions'
-import { fetchReceipts } from '../../../store/actions/receiptsActions'
-import DropDownList from '../Elements/DropDownList';
+import { fetchGroups, selectGroup } from '../../../store/actions/groupsActions'
+import {
+  fetchReceipts,
+  createReceipt,
+} from '../../../store/actions/receiptsActions'
+import DropDownList from '../Elements/DropDownList'
 
 class CreateReceipt extends Component {
   state = {
     rows: 0,
     groupId: null,
     payer: {},
-
+    receiptName: '',
     error: null,
+    // group: {}/
   }
 
-  // handleSubmit = async e => {
-  //   e.preventDefault()
-  //   //validation
-  //   if (!this.state.createGroup.members.length) {
-  //     this.setState({
-  //       error: 'Please add one or more members.',
-  //     })
-  //     return
-  //   }
+  handleSubmit = async e => {
+    e.preventDefault()
 
-  //   const newReceipt = await this.props.createReceipt(this.state)
+    if (!this.state.payer || !this.state.groupId) return
 
-  //   await this.setState({
-  //     createGroup: {
-  //       groupName: '',
-  //       members: [],
-  //       receipts: [],
-  //     },
-  //   })
+    const newReceipt = await this.props.createReceipt(this.state)
 
-  //   this.props.backToList('singleView', newReceipt)
-  // }
+    // await this.setState({
+    //   rows: 0,
+    //   groupId: null,
+    //   payer: {},
+    //   error: null,
+    // })
 
-  // handleChange = async e => {
-  //   await this.setState({
-  //     createGroup: {
-  //       ...this.state.createGroup,
-  //       [e.target.name]: e.target.value,
-  //     },
-  //   })
-  //   if (this.state.createGroup.groupName || this.state.createGroup.members) {
-  //     await this.props.createGroupInProgress(this.state.createGroup)
-  //   }
-  // }
+    // console.log(newReceipt.id, this.props.history)
+
+    this.props.history.push(`/receipts/${newReceipt.id}`)
+  }
+
+  selectGroup = async group => {
+    await this.props.selectGroup(group.id)
+
+    this.setState({
+      groupId: this.props.selectedGroup.id,
+    })
+  }
+
+  selectPayer = async person => {
+    this.setState({
+      payer: person,
+    })
+  }
+
+  handleChange = async e => {
+    if (e.target.name === 'rows' && e.target.value.length > 2) {
+      let valueSlice = e.target.value.slice(0, 2)
+      await this.setState({
+        [e.target.name]: valueSlice,
+      })
+    } else {
+      await this.setState({
+        [e.target.name]: e.target.value,
+      })
+    }
+  }
 
   componentDidMount = async () => {
     await this.props.fetchGroups(this.props.currentUID)
-    // if (Object.keys(this.props.beingCreated)[0]) {
-    //   this.setState({
-    //     createGroup: this.props.beingCreated,
-    //   })
-    // }
   }
 
   render() {
-    const { friends, groups, fetchGroups, loading } = this.props
-    const { displayModal, createGroup } = this.state
-    // const { members } = this.state.createGroup
+    const { friends, groups, fetchGroups, loading, selectedGroup } = this.props
+    const { payer } = this.state
     return (
       <div id='groups-add'>
         {/* <Modal
@@ -81,40 +90,58 @@ class CreateReceipt extends Component {
             <ListItem content={{ error: this.state.error }} error={true} />
           )}
 
-          <DropDownList listContent={groups} />
+          <DropDownList
+            listContent={groups}
+            message={'Select a group.'}
+            clickAction={this.selectGroup}
+            selected={selectedGroup.id ? selectedGroup.groupName : null}
+          />
 
-          {/* <CreateGroupForm
-            friends={friends}
-            addMember={this.addMember}
-            members={members}
-            handleChange={this.handleChange}
-            handleSubmit={this.handleSubmit}
-            createGroup={createGroup}
-            removeMember={this.removeMember}
-          /> */}
+          {selectedGroup.id ? (
+            <div>
+              {/* <p>
+                <b>Selected Group: </b>
+              </p>
+              {selectedGroup.groupName} */}
+              {/* <p>
+                <b>Members: </b>
+              </p> */}
+              <ul className='comma-list'>
+                {selectedGroup.members.map(member => (
+                  <li key={member.email}>{member.displayName}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          <br />
+          <DropDownList
+            listContent={selectedGroup.id ? selectedGroup.members : []}
+            message={'Who paid the bill?'}
+            clickAction={this.selectPayer}
+            selected={payer ? payer.displayName : null}
+          />
+          <br />
 
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-          <p>CONTENT BLAHBLAHBLAH</p>
-
-
+          <form onSubmit={this.handleSubmit}>
+            <label>Name:</label>
+            <input
+              type='text'
+              required={true}
+              value={this.state.receiptName}
+              name='receiptName'
+              onChange={this.handleChange}
+            />
+            <label>Total number of items:</label>
+            <input
+              type='number'
+              min='1'
+              max='55'
+              value={this.state.rows}
+              name='rows'
+              onChange={this.handleChange}
+            />
+            <button type='submit'>Create Receipt</button>
+          </form>
         </FadingScroll>
       </div>
     )
@@ -128,11 +155,14 @@ const mapState = state => ({
   loading: state.receipts.loading,
   beingCreated: state.receipts.beingCreated,
   groups: state.groups.groups,
+  selectedGroup: state.groups.selected,
 })
 
 const mapDispatch = dispatch => ({
+  createReceipt: data => dispatch(createReceipt(data)),
   fetchReceipts: uid => dispatch(fetchReceipts(uid)),
   fetchGroups: uid => dispatch(fetchGroups(uid)),
+  selectGroup: gid => dispatch(selectGroup(gid)),
 })
 
 export default connect(

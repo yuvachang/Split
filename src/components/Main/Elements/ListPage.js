@@ -3,7 +3,10 @@ import FadingScroll from './FadingScroll'
 import ListItem from '../Elements/ListItem'
 
 class ListPage extends Component {
+
   componentDidMount = async () => {
+    
+    console.log('listpage mounted')
     if (this.props.groups) {
       await this.props.fetchGroups()
     }
@@ -11,17 +14,23 @@ class ListPage extends Component {
     if (this.props.friends) {
       await this.props.fetchFriends()
     }
+
+    if (this.props.receipts) {
+      await this.props.fetchReceipts()
+    }
   }
 
   render() {
-    const { groups, friends, viewItem } = this.props
-    const list = groups ? groups : friends
+    const { receipts, groups, friends, viewItem } = this.props
+    const list = groups ? groups : friends ? friends : receipts
     return (
       <FadingScroll>
         <div>
           {list[0] ? (
             <div>
-              <div>Your {groups ? 'groups:' : 'friends:'}</div>
+              <div>
+                Your {groups ? 'Groups:' : friends ? 'Friends:' : 'Receipts:'}
+              </div>
               <br />
               {list.map(item => {
                 return (
@@ -35,7 +44,9 @@ class ListPage extends Component {
                         ? item.avatarUrl
                         : groups
                         ? './images/people.svg'
-                        : './images/person.svg'
+                        : friends
+                        ? './images/person.svg'
+                        : './images/receipts.svg'
                     }
                   />
                 )
@@ -46,7 +57,11 @@ class ListPage extends Component {
               key={'error-list-item'}
               error={true}
               content={{
-                error: groups ? 'You have no groups.' : 'You have no friends.',
+                error: groups
+                  ? 'You have no groups.'
+                  : friends
+                  ? 'You have no friends.'
+                  : 'You have no receipts.',
               }}
             />
           )}

@@ -96,15 +96,19 @@ class CreateGroupForm extends Component {
         <hr style={{ minWidth: '100%' }} />
         <br />
         <div>Add friends:</div>
-        <div className='add-friends-list'>
-          <input
-            type='text'
-            placeholder='search friends'
-            ref={node => {
-              this.searchInput = node
-            }}
-            onChange={this.search}
-          />
+
+        <div>
+          <div className='auth-form-div'>
+            <img src='./images/search.svg' className='icon' />
+            <input
+              type='text'
+              placeholder='search friends'
+              ref={node => {
+                this.searchInput = node
+              }}
+              onChange={this.search}
+            />
+          </div>
           {friends[0] ? (
             friends.map(friend => {
               if (!memberEmails.includes(friend.email)) {

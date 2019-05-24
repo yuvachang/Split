@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { Route, Switch, Redirect } from 'react-router-dom'
-import { Auth, Home, Friends, Groups, Receipts } from './index'
+import { Auth, Home, Friends, Groups, Receipts, EditReceipt } from './index'
 
 const Routes = ({ isLoggedIn, isLoaded }) => {
   return (
@@ -9,10 +9,11 @@ const Routes = ({ isLoggedIn, isLoaded }) => {
       <Switch>
         {isLoggedIn && (
           <Switch>
-            <Route path='/home' component={Home} />
-            <Route path='/friends' component={Friends} />
-            <Route path='/groups' component={Groups} />
-            <Route path='/receipts' component={Receipts} />
+            <Route exact path='/home' component={Home} />
+            <Route exact path='/friends' component={Friends} />
+            <Route exact path='/groups' component={Groups} />
+            <Route exact path='/receipts' component={Receipts} />
+            <Route exact path='/receipts/:receiptId' component={EditReceipt} />
             <Redirect to='/home' component={Home} />
           </Switch>
         )}
