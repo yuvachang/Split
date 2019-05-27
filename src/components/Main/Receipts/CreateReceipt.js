@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Modal from '../Elements/Modal'
 import ListItem from '../Elements/ListItem'
 import FadingScroll from '../Elements/FadingScroll'
 import { fetchGroups, selectGroup } from '../../../store/actions/groupsActions'
@@ -12,30 +11,42 @@ import DropDownList from '../Elements/DropDownList'
 
 class CreateReceipt extends Component {
   state = {
-    rows: 0,
+    rows: 1,
     groupId: null,
     payer: {},
     receiptName: '',
     error: null,
-    // group: {}/
+    date: {
+      day: 1,
+      month: 1,
+      year: 2019,
+    },
   }
 
   handleSubmit = async e => {
     e.preventDefault()
+    const { year, month, day } = this.state.date
 
+    // make sure payer and group selected
     if (!this.state.payer || !this.state.groupId) return
 
-    const newReceipt = await this.props.createReceipt(this.state)
+    // set and save date as UTC
+    const created = new Date()
 
-    // await this.setState({
-    //   rows: 0,
-    //   groupId: null,
-    //   payer: {},
-    //   error: null,
-    // })
+    const date = Number(
+      `${year}${month.toString().padStart(2, '0')}${day
+        .toString()
+        .padStart(2, '0')}`
+    )
+    console.log(date)
 
-    // console.log(newReceipt.id, this.props.history)
+    // // offset current date by timezone...
+    // created.setTime( created.getTime() + created.getTimezoneOffset()*60*1000 )
 
+    // create the receipt firestore instance
+    const newReceipt = await this.props.createReceipt({...this.state, created})
+
+    // redirect to view/edit receipt
     this.props.history.push(`/receipts/${newReceipt.id}`)
   }
 
@@ -54,35 +65,57 @@ class CreateReceipt extends Component {
   }
 
   handleChange = async e => {
+    // restrict 'rows' input to only 2 char length
     if (e.target.name === 'rows' && e.target.value.length > 2) {
       let valueSlice = e.target.value.slice(0, 2)
       await this.setState({
         [e.target.name]: valueSlice,
       })
     } else {
-      await this.setState({
-        [e.target.name]: e.target.value,
-      })
+      if (e.target.name.includes('date')) {
+        let targetValue = e.target.value
+
+        if (e.target.name !== 'date.year' && targetValue.length > 2) {
+          targetValue = targetValue.slice(0, 2)
+        }
+        if (e.target.name === 'date.year' && targetValue.length > 4) {
+          targetValue = targetValue.slice(0, 4)
+        }
+
+        this.setState({
+          date: {
+            ...this.state.date,
+            [e.target.name.slice(5)]: targetValue,
+          },
+        })
+      } else {
+        await this.setState({
+          [e.target.name]: e.target.value,
+        })
+      }
     }
   }
 
   componentDidMount = async () => {
     await this.props.fetchGroups(this.props.currentUID)
+
+    //set today's date as default
+    const today = new Date()
+    this.setState({
+      date: {
+        day: today.getDate(),
+        month: today.getMonth() + 1,
+        year: today.getFullYear(),
+      },
+    })
   }
 
   render() {
-    const { friends, groups, fetchGroups, loading, selectedGroup } = this.props
+    const { groups, loading, selectedGroup } = this.props
     const { payer } = this.state
     return (
       <div id='groups-add'>
-        {/* <Modal
-          display={displayModal}
-          header='Confirm Add Friend'
-          message={'friend details here'}
-          yes='Yes'
-          yesAction={async () => {}}
-          cancel={this.closeModal}
-        /> */}
+      
         <FadingScroll>
           {loading && <h3>Saving...</h3>}
 
@@ -99,14 +132,8 @@ class CreateReceipt extends Component {
 
           {selectedGroup.id ? (
             <div>
-              {/* <p>
-                <b>Selected Group: </b>
-              </p>
-              {selectedGroup.groupName} */}
-              {/* <p>
-                <b>Members: </b>
-              </p> */}
               <ul className='comma-list'>
+                Members:
                 {selectedGroup.members.map(member => (
                   <li key={member.email}>{member.displayName}</li>
                 ))}
@@ -131,6 +158,40 @@ class CreateReceipt extends Component {
               name='receiptName'
               onChange={this.handleChange}
             />
+            <label>Date (M/D/Y):</label>
+            <div style={{ display: 'inherit' }}>
+              <input
+                title='Month'
+                type='number'
+                min='1'
+                max='12'
+                required={true}
+                value={this.state.date.month}
+                name='date.month'
+                onChange={this.handleChange}
+              />
+              <input
+                title='Day'
+                type='number'
+                min='1'
+                max='31'
+                required={true}
+                value={this.state.date.day}
+                name='date.day'
+                onChange={this.handleChange}
+              />
+              <input
+                title='Year'
+                type='number'
+                min='1950'
+                max='9999'
+                required={true}
+                value={this.state.date.year}
+                name='date.year'
+                onChange={this.handleChange}
+              />
+            </div>
+
             <label>Total number of items:</label>
             <input
               type='number'
@@ -150,10 +211,7 @@ class CreateReceipt extends Component {
 
 const mapState = state => ({
   currentUID: state.firebase.auth.uid,
-  currentEmail: state.firebase.auth.email,
-  receipts: state.receipts.receipts,
   loading: state.receipts.loading,
-  beingCreated: state.receipts.beingCreated,
   groups: state.groups.groups,
   selectedGroup: state.groups.selected,
 })

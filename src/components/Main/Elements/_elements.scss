@@ -34,6 +34,12 @@ input {
     background-color: $app-bg-color;
   }
 
+  &[type=number]::-webkit-inner-spin-button,
+  &[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,
@@ -51,6 +57,7 @@ ul {
 .button,
 button {
   background-color: $button-bg-color;
+  position: relative;
 
   border: 1.5px solid white;
   border-radius: 5px;
@@ -177,6 +184,10 @@ button {
       cursor: pointer;
     }
   }
+
+  @media (prefers-color-scheme: dark) {
+    filter: invert(0);
+  }
 }
 
 .scroll-div {
@@ -261,7 +272,7 @@ button {
     max-height: 235px;
     overflow: scroll;
     // transform: scaleY(1);
-    transition: max-height 1s;
+    transition: max-height 0.3s;
     & > .button {
       filter: drop-shadow($no-shadow);
     }
@@ -272,7 +283,7 @@ button {
     width: 100%;
     overflow: scroll;
     // transform: scaleY(0);
-    transition: max-height 1s;
+    transition: max-height 0.3s;
     & > .button {
       filter: drop-shadow($no-shadow);
     }
@@ -293,6 +304,10 @@ button {
 
   & li {
     display: inline;
+
+    &:first-child:before {
+      content: '  ';
+    }
 
     &:after {
       content: ', ';

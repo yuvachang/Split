@@ -37,7 +37,8 @@ export const createReceipt = (data) => async dispatch => {
     const payer = await firestore.collection('users').doc(data.payer.id)
 
     const newReceipt = {
-      date: new Date().getTime() / 1000,
+      date: data.date,
+      created: data.created,
       receiptName: data.receiptName,
       rows,
       payer,

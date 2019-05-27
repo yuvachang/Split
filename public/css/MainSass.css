@@ -121,6 +121,9 @@ input {
     color: white; }
   input:valid {
     background-color: #5b677a; }
+  input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0; }
   input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
     background-color: #5b677a !important; }
 
@@ -132,6 +135,7 @@ ul {
 .button,
 button {
   background-color: #5b677a;
+  position: relative;
   border: 1.5px solid white;
   border-radius: 5px;
   box-sizing: border-box;
@@ -227,6 +231,9 @@ button {
   @media (hover: hover) {
     .icon:hover {
       cursor: pointer; } }
+  @media (prefers-color-scheme: dark) {
+    .icon {
+      filter: invert(0); } }
 
 .scroll-div {
   height: calc(100vh - 250px);
@@ -285,7 +292,7 @@ button {
   height: auto;
   max-height: 235px;
   overflow: scroll;
-  transition: max-height 1s; }
+  transition: max-height 0.3s; }
   .drop-down.open > .button {
     filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
 
@@ -293,7 +300,7 @@ button {
   max-height: 0px;
   width: 100%;
   overflow: scroll;
-  transition: max-height 1s; }
+  transition: max-height 0.3s; }
   .drop-down.closed > .button {
     filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
 
@@ -309,6 +316,8 @@ button {
   padding: 0px; }
   .comma-list li {
     display: inline; }
+    .comma-list li:first-child:before {
+      content: '  '; }
     .comma-list li:after {
       content: ', '; }
     .comma-list li:last-child:after {

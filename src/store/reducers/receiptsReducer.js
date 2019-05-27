@@ -34,7 +34,7 @@ export default (state = initialState, { type, payload }) => {
     case actions.RECEIPTS_DELETE:
       return {
         ...state,
-        receipts: state.receipts.filter(group=> group.id!==payload)
+        receipts: state.receipts.filter(receipt=> receipt.id!==payload)
       }
     case actions.RECEIPTS_SELECT:
       return { ...state, selected: payload, error: null }
