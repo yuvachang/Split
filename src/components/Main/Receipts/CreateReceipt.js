@@ -97,6 +97,7 @@ class CreateReceipt extends Component {
   }
 
   componentDidMount = async () => {
+    console.log(this.props)
     await this.props.fetchGroups(this.props.currentUID)
 
     //set today's date as default
@@ -150,7 +151,7 @@ class CreateReceipt extends Component {
           <br />
 
           <form onSubmit={this.handleSubmit}>
-            <label>Name:</label>
+            <label>Receipt name:</label>
             <input
               type='text'
               required={true}
@@ -192,7 +193,7 @@ class CreateReceipt extends Component {
               />
             </div>
 
-            <label>Total number of items:</label>
+            <label>Number of items:</label>
             <input
               type='number'
               min='1'

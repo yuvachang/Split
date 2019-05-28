@@ -4,6 +4,7 @@ import CreateReceipt from './CreateReceipt'
 import ReceiptsList from './ReceiptsList'
 import { fetchReceipts } from '../../../store/actions/receiptsActions'
 import ListPage from '../Elements/ListPage';
+import SingleReceipt from './SingleReceipt';
 
 class Receipts extends Component {
   state = {
@@ -61,16 +62,17 @@ class Receipts extends Component {
           />
         )}
 
-        {/* {view === 'singleView' && (
+        {view === 'singleView' && (
           <div id='groups-list'>
-            <SingleGroup
-              backToList={() => this.switchView('list')}
-              group={singleReceipt}
-              deleteGroup={deleteGroup}
-              loading={loading}
+            <SingleReceipt
+              receiptId={this.state.singleReceipt.id}
+              // backToList={() => this.switchView('list')}
+              // group={singleReceipt}
+              // deleteGroup={deleteGroup}
+              // loading={loading}
             />
           </div>
-        )} */}
+        )}
       </div>
     )
 

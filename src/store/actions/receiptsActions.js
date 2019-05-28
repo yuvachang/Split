@@ -1,7 +1,13 @@
 import * as actions from './actionTypes'
 import { getFirebase } from 'react-redux-firebase'
 import { getFirestore } from 'redux-firestore'
-import { getCurrentUser, getDataWithRef, createEmptyRows, createUserAmounts, getUserByEmail } from './utilActions'
+import {
+  getCurrentUser,
+  getDataWithRef,
+  createEmptyRows,
+  createUserAmounts,
+  getUserByEmail,
+} from './utilActions'
 
 const firebase = getFirebase()
 const firestore = getFirestore()
@@ -19,7 +25,7 @@ const firestore = getFirestore()
 //   }
 // }
 
-export const createReceipt = (data) => async dispatch => {
+export const createReceipt = data => async dispatch => {
   try {
     dispatch({ type: actions.RECEIPTS_LOADING })
 
@@ -27,7 +33,6 @@ export const createReceipt = (data) => async dispatch => {
 
     const groupRef = await firestore.collection('groups').doc(data.groupId)
     const groupData = await getDataWithRef(groupRef)
-
 
     const rows = await createEmptyRows(data.rows)
 
@@ -51,15 +56,13 @@ export const createReceipt = (data) => async dispatch => {
     const receiptRef = await firestore.collection('receipts').add(newReceipt)
 
     // add receipt ref to group and group members
-    // or just 
+    // or just
     // const querySnapshot =  firebase.collection('receipts').where('members', 'array_contains', userRef)
-    // const userReceipts = []  
+    // const userReceipts = []
     // await querySnapshot.forEach( async doc => {
     //   const docData = await doc.data()
     //   userReceipts.push(docData)
     // })
-
-
 
     console.log(receiptRef.id)
 
@@ -107,21 +110,19 @@ export const createReceipt = (data) => async dispatch => {
 export const fetchReceipts = currentUID => async dispatch => {
   try {
     dispatch({ type: actions.RECEIPTS_LOADING })
-    console.log("inside fetchReceipts")
+    console.log('inside fetchReceipts')
 
     // get current user
     const { userData, userRef } = await getCurrentUser(currentUID)
 
-    const queryRef =  await firestore.collection('receipts')
+    const queryRef = await firestore
+      .collection('receipts')
       .where('members', 'array-contains', userRef)
-
-    const userReceipts = []  
 
     const querySnapshot = await queryRef.get()
 
-    await querySnapshot.forEach( async doc => {
-      // const docData = await getDataWithRef(doc)
-      // console.log(doc.id)
+    const userReceipts = []
+    await querySnapshot.forEach(async doc => {
       const docData = await doc.data()
       docData.id = doc.id
       userReceipts.push(docData)
@@ -129,23 +130,42 @@ export const fetchReceipts = currentUID => async dispatch => {
 
     console.log(userReceipts)
 
-    // let results = []
-
-    // if (user.receipts) {
-    //   results = await Promise.all(
-    //     user.receipts.map(async receipt => {
-    //       const receiptDoc = await receipt.get()
-    //       const receiptData = await receiptDoc.data()
-    //       receiptData.id = receipt.id
-    //       return receiptData
-    //     })
-    //   )
-    // }
-
     dispatch({ type: actions.RECEIPTS_FETCH, payload: userReceipts })
     dispatch({ type: actions.RECEIPTS_ENDLOADING })
   } catch (error) {
     console.log('ERROR: fetchReceipts => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+let unsubscribe
+
+export const listenReceipt = receiptId => async dispatch => {
+  try {
+    console.log('subscribed to receipt: ', receiptId)
+    unsubscribe = await firestore
+      .collection('receipts')
+      .doc(receiptId)
+      .onSnapshot(function(doc) {
+        var source = doc.metadata.hasPendingWrites ? 'Local' : 'Server'
+        console.log(source, ' data: ', doc.data())
+      })
+  } catch (error) {
+    console.log('ERROR: listenReceipt => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+export const unlistenReceipt = receiptId => async dispatch => {
+  try {
+    //In case of the web and node.js SDK, calling onSnapshot returns a function that you need to save in a variable and call when you want to remove the listener.
+    // apparently needs to be same instance of unsubscribe
+
+    unsubscribe()
+
+    console.log('unsubscribed from receipt: ', receiptId)
+  } catch (error) {
+    console.log('ERROR: listenReceipt => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
   }
 }
