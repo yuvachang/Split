@@ -45,18 +45,34 @@ export const indexFunc = string => {
   return index
 }
 
+// export const createEmptyRows = rowCount => {
+//   let count = 0
+//   const rows = []
+//   while (count < rowCount) {
+//     rows.push({
+//       // saveDate: new Date().getTime() / 1000,
+//       rowIdx: count,
+//       item: '',
+//       cost: '',
+//       users: [],
+//       delete: false,
+//     })
+//     count++
+//   }
+//   return rows
+// }
+
 export const createEmptyRows = rowCount => {
   let count = 0
-  const rows = []
+  const rows = {}
   while (count < rowCount) {
-    rows.push({
-      saveDate: new Date().getTime() / 1000,
-      rowIdx: count,
+    rows[count] = {
       item: '',
       cost: '',
       users: [],
       delete: false,
-    })
+      isEdit: false,
+    }
     count++
   }
   return rows

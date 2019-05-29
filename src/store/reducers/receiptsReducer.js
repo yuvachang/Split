@@ -16,7 +16,7 @@ export default (state = initialState, { type, payload }) => {
       return { ...state, loading: false }
     case actions.RECEIPTS_ERROR:
       return { ...state, error: payload, loading: false }
-      
+
     case actions.RECEIPTS_FETCH:
       return {
         ...state,
@@ -34,10 +34,19 @@ export default (state = initialState, { type, payload }) => {
     case actions.RECEIPTS_DELETE:
       return {
         ...state,
-        receipts: state.receipts.filter(receipt=> receipt.id!==payload)
+        receipts: state.receipts.filter(receipt => receipt.id !== payload),
       }
+
+    // EDITING RECEIPT
     case actions.RECEIPTS_SELECT:
       return { ...state, selected: payload, error: null }
+    case actions.RECEIPTS_UPDATE:
+      return {
+        ...state,
+        selected: payload,
+        error: null,
+      }
+
     default:
       return state
   }

@@ -1,21 +1,21 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import CreateReceipt from './CreateReceipt'
-import ReceiptsList from './ReceiptsList'
-import { fetchReceipts } from '../../../store/actions/receiptsActions'
+import { fetchReceipts, selectReceipt } from '../../../store/actions/receiptsActions'
 import ListPage from '../Elements/ListPage';
 import SingleReceipt from './SingleReceipt';
 
 class Receipts extends Component {
   state = {
     view: 'list',
-    singleReceipt: {},
+    // singleReceipt: {},
   }
 
-  switchView = (view, receipt) => {
+  switchView = async (view, receipt) => {
     if (receipt) {
-      this.setState({
-        singleReceipt: receipt,
+      await this.props.selectReceipt(receipt.id)
+      await this.setState({
+        // singleReceipt: receipt,
         view: 'singleView',
       })
     } else {
@@ -65,7 +65,7 @@ class Receipts extends Component {
         {view === 'singleView' && (
           <div id='groups-list'>
             <SingleReceipt
-              receiptId={this.state.singleReceipt.id}
+              // receiptId={this.state.singleReceipt.id}
               // backToList={() => this.switchView('list')}
               // group={singleReceipt}
               // deleteGroup={deleteGroup}
@@ -88,6 +88,7 @@ const mapState = state => ({
 
 const mapDispatch = dispatch => ({
   fetchReceipts: uid => dispatch(fetchReceipts(uid)),
+  selectReceipt: RID => dispatch(selectReceipt(RID))
   // createGroup: (group, uid) => dispatch(createGroup(group, uid)),
   // fetchFriends: uid => dispatch(fetchFriends(uid)),
   // createGroupInProgress: group => dispatch(createGroupInProgress(group)),

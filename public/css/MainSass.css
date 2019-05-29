@@ -104,6 +104,12 @@ form {
   form > * {
     width: 100%; }
 
+h1,
+h2,
+h3,
+h4 {
+  margin: 3px 0px; }
+
 input {
   width: 100%;
   margin: 5px 0px;
@@ -121,7 +127,7 @@ input {
     color: white; }
   input:valid {
     background-color: #5b677a; }
-  input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+  input[type='number']::-webkit-inner-spin-button, input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0; }
   input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
@@ -247,14 +253,14 @@ button {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow: hidden; }
+    overflow: hidden;
+    width: 100%; }
     .scroll-div-container > * {
       display: flex;
       flex-direction: column;
       width: 100%; }
   .scroll-div > * {
-    width: 90%;
-    max-width: 225px; }
+    width: 90%; }
   .scroll-div:after {
     content: '';
     opacity: 0;
@@ -501,3 +507,54 @@ button {
       display: flex;
       justify-content: center;
       width: 100%; }
+
+.row-item {
+  background-color: #5b677a;
+  position: relative;
+  border: 1.5px solid white;
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 4px 5px;
+  margin: 8px 0px;
+  text-align: center;
+  width: 100%;
+  min-height: min-content;
+  color: white;
+  font-weight: bold;
+  font-size: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .row-item > .innertext {
+    width: 65%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
+
+.receipt-edit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5vh;
+  text-align: center;
+  min-width: 50vw;
+  max-width: 80vw;
+  width: auto; }
+  .receipt-edit > ul {
+    display: flex;
+    justify-content: space-around;
+    margin: 1px; }
+  .receipt-edit > * {
+    max-width: 100%; }
+
+.receipt-rows {
+  width: auto; }
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 25px 100px 50px auto 25px; }
+  .grid-container.isEdit {
+    background-color: grey; }
+  .grid-container > .users {
+    min-width: 250px;
+    white-space: nowrap; }

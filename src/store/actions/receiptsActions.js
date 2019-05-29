@@ -14,16 +14,37 @@ const firestore = getFirestore()
 
 // THUNK CREATORS
 
-// export const createReceiptInProgress = group => async dispatch => {
-//   try {
-//     console.log('inside createGroupInProgress  thunk', group)
+export const selectReceipt = receiptId => async dispatch => {
+  try {
+    console.log('inside selectReceipt')
 
-//     dispatch({ type: actions.RECEIPTS_CREATING, payload: group })
-//   } catch (error) {
-//     console.log('ERROR: createGroupInProgress => ', error)
-//     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
-//   }
-// }
+    const receiptRef = await firestore.collection('receipts').doc(receiptId)
+
+    // CHECK IF RECEIPT EXISTS
+    const receiptGet = await receiptRef.get()
+    if (!receiptGet.exists) {
+      dispatch({ type: actions.RECEIPTS_SELECT, payload: { id: 'DNE' } })
+      return
+    }
+
+    // PROCEED IF RECEIPT EXISTS
+    const receiptData = await getDataWithRef(receiptRef)
+    const groupData = await getDataWithRef(receiptData.group)
+    const members = await Promise.all(
+      receiptData.members.map(async memberRef => {
+        return await getDataWithRef(memberRef)
+      })
+    )
+
+    receiptData.members = members
+    receiptData.group = groupData
+
+    dispatch({ type: actions.RECEIPTS_SELECT, payload: receiptData })
+  } catch (error) {
+    console.log('ERROR: selectReceipt => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
 
 export const createReceipt = data => async dispatch => {
   try {
@@ -50,21 +71,11 @@ export const createReceipt = data => async dispatch => {
       members: groupData.members,
       group: groupRef,
       userAmounts,
+      isEdit: false,
     }
 
     // create receipt doc
     const receiptRef = await firestore.collection('receipts').add(newReceipt)
-
-    // add receipt ref to group and group members
-    // or just
-    // const querySnapshot =  firebase.collection('receipts').where('members', 'array_contains', userRef)
-    // const userReceipts = []
-    // await querySnapshot.forEach( async doc => {
-    //   const docData = await doc.data()
-    //   userReceipts.push(docData)
-    // })
-
-    console.log(receiptRef.id)
 
     // append receipt to redux store
     newReceipt.id = receiptRef.id
@@ -143,15 +154,46 @@ let unsubscribe
 export const listenReceipt = receiptId => async dispatch => {
   try {
     console.log('subscribed to receipt: ', receiptId)
+
     unsubscribe = await firestore
       .collection('receipts')
       .doc(receiptId)
-      .onSnapshot(function(doc) {
-        var source = doc.metadata.hasPendingWrites ? 'Local' : 'Server'
-        console.log(source, ' data: ', doc.data())
+      .onSnapshot(async function(doc) {
+        const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server'
+        if (doc.exists && source === 'Server') {
+          const receiptData = await doc.data()
+          receiptData.id = doc.id
+          dispatch({ type: actions.RECEIPTS_UPDATE, payload: receiptData })
+        }
+        if (!doc.exists) {
+          dispatch({ type: actions.RECEIPTS_SELECT, payload: { id: 'DNE' } })
+          return
+        }
       })
   } catch (error) {
     console.log('ERROR: listenReceipt => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+export const updateRow = (rowIdx, row, receiptId) => async dispatch => {
+  try {
+    console.log(
+      'inside updateRow thunk: ',
+      'idx',
+      rowIdx,
+      'row',
+      row,
+      'rid',
+      receiptId
+    )
+
+    const receiptRef = await firestore.collection('receipts').doc(receiptId)
+    await receiptRef.update({
+      ['rows.' + rowIdx]: row,
+    })
+  } catch (error) {
+    console.log('ERROR: updateRows => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
   }
 }

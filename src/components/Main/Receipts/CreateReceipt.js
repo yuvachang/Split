@@ -38,7 +38,6 @@ class CreateReceipt extends Component {
         .toString()
         .padStart(2, '0')}`
     )
-    console.log(date)
 
     // // offset current date by timezone...
     // created.setTime( created.getTime() + created.getTimezoneOffset()*60*1000 )
@@ -97,7 +96,6 @@ class CreateReceipt extends Component {
   }
 
   componentDidMount = async () => {
-    console.log(this.props)
     await this.props.fetchGroups(this.props.currentUID)
 
     //set today's date as default
