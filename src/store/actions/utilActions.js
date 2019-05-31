@@ -15,6 +15,7 @@ export const getCurrentUser = async uid => {
 
 export const getDataWithRef = async ref => {
   const get = await ref.get()
+  if (!get.exists) return 
   const data = await get.data()
   if (!data.id) {
     data.id = ref.id
@@ -45,23 +46,6 @@ export const indexFunc = string => {
   return index
 }
 
-// export const createEmptyRows = rowCount => {
-//   let count = 0
-//   const rows = []
-//   while (count < rowCount) {
-//     rows.push({
-//       // saveDate: new Date().getTime() / 1000,
-//       rowIdx: count,
-//       item: '',
-//       cost: '',
-//       users: [],
-//       delete: false,
-//     })
-//     count++
-//   }
-//   return rows
-// }
-
 export const createEmptyRows = rowCount => {
   let count = 0
   const rows = {}
@@ -78,7 +62,7 @@ export const createEmptyRows = rowCount => {
   return rows
 }
 
-export const createUserAmounts = async groupData => {
+export const createUserAmounts = async (groupData, payerId) => {
   const userAmounts = {}
 
   await Promise.all(
@@ -86,9 +70,11 @@ export const createUserAmounts = async groupData => {
       const memberData = await getDataWithRef(member)
 
       userAmounts[memberData.id] = {
+        id: member.id,
         name: memberData.displayName,
         amount: 0,
         items: {},
+        isPayer: payerId===member.id,
       }
       return
     })

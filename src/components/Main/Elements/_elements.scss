@@ -1,5 +1,12 @@
 @import './Variables.scss';
 
+@media (hover: hover) {
+  .click-to-delete:hover {
+    cursor: url('/images/remove-cursor.png') 15 6, pointer;
+    font-style: italic;
+  }
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -28,8 +35,10 @@ input {
   border-radius: 4px;
   box-sizing: border-box;
   background-color: $app-bg-color;
+
   color: white;
   text-align: center;
+  font-size: 1em;
 
   box-shadow: inset 0px 0px 10px 0px #555555;
 

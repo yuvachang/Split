@@ -20,7 +20,7 @@ export const selectReceipt = receiptId => async dispatch => {
 
     const receiptRef = await firestore.collection('receipts').doc(receiptId)
 
-    // CHECK IF RECEIPT EXISTS
+    // IF RECEIPT DOES NOT EXIST
     const receiptGet = await receiptRef.get()
     if (!receiptGet.exists) {
       dispatch({ type: actions.RECEIPTS_SELECT, payload: { id: 'DNE' } })
@@ -30,13 +30,19 @@ export const selectReceipt = receiptId => async dispatch => {
     // PROCEED IF RECEIPT EXISTS
     const receiptData = await getDataWithRef(receiptRef)
     const groupData = await getDataWithRef(receiptData.group)
-    const members = await Promise.all(
-      receiptData.members.map(async memberRef => {
-        return await getDataWithRef(memberRef)
-      })
-    )
 
-    receiptData.members = members
+    // const members = await Promise.all(
+    //   receiptData.members.map(async memberRef => {
+    //     if (memberRef.id===receiptData.payer.id) {
+    //       const member = await getDataWithRef(memberRef)
+    //       receiptData.payer = member
+    //       return member
+    //     }
+    //     return await getDataWithRef(memberRef)
+    //   })
+    // )
+
+    // receiptData.members = members
     receiptData.group = groupData
 
     dispatch({ type: actions.RECEIPTS_SELECT, payload: receiptData })
@@ -49,33 +55,42 @@ export const selectReceipt = receiptId => async dispatch => {
 export const createReceipt = data => async dispatch => {
   try {
     dispatch({ type: actions.RECEIPTS_LOADING })
-
     console.log('inside createReceipt', data)
 
+    // get selected group data
     const groupRef = await firestore.collection('groups').doc(data.groupId)
     const groupData = await getDataWithRef(groupRef)
 
+    // create rows of items
     const rows = await createEmptyRows(data.rows)
 
-    console.log('rows', rows)
-    const userAmounts = await createUserAmounts(groupData)
-    console.log('userAmounts', userAmounts)
-    const payer = await firestore.collection('users').doc(data.payer.id)
+    // create userAmounts catalogue
+    const userAmounts = await createUserAmounts(groupData, data.payer.id)
 
+    // create receipt doc
     const newReceipt = {
       date: data.date,
       created: data.created,
       receiptName: data.receiptName,
       rows,
-      payer,
-      members: groupData.members,
       group: groupRef,
       userAmounts,
       isEdit: false,
     }
-
-    // create receipt doc
     const receiptRef = await firestore.collection('receipts').add(newReceipt)
+
+    // add receipt ref to each member of group
+    const batch = firestore.batch()
+    groupData.members.forEach(async memberRef => {
+      batch.set(
+        memberRef,
+        {
+          receipts: firestore.FieldValue.arrayUnion(receiptRef),
+        },
+        { merge: true }
+      )
+    })
+    batch.commit()
 
     // append receipt to redux store
     newReceipt.id = receiptRef.id
@@ -90,33 +105,41 @@ export const createReceipt = data => async dispatch => {
   }
 }
 
-// export const deleteGroup = groupId => async dispatch => {
-//   try {
-//     dispatch({ type: actions.RECEIPTS_LOADING })
+export const deleteReceipt = receiptId => async dispatch => {
+  try {
+    dispatch({ type: actions.RECEIPTS_LOADING })
 
-//     const groupRef = await firestore.collection('groups').doc(groupId)
-//     const groupGet = await groupRef.get()
-//     const groupData = await groupGet.data()
-//     const memberRefs = groupData.members
+    // get receipt ref and data
+    const receiptRef = await firestore.collection('receipts').doc(receiptId)
+    const receiptData = await getDataWithRef(receiptRef)
 
-//     await memberRefs.forEach(async member => {
-//       const { userRef: memberRef, userData: memberData } = await getCurrentUser(
-//         member.id
-//       )
-//       await memberRef.update({
-//         groups: memberData.groups.filter(group => group.id !== groupId),
-//       })
-//     })
+    // remove receipt refs from all users
+    const batch = firestore.batch()
+    const userRefsArr = await Promise.all(
+      Object.keys(receiptData.userAmounts).map(async userId => {
+        return await firestore.collection('users').doc(userId)
+      })
+    )
+    userRefsArr.forEach(userRef => {
+      batch.update(userRef, {
+        receipts: firestore.FieldValue.arrayRemove(receiptRef),
+      })
+    })
+    batch.commit()
 
-//     await groupRef.delete()
+    // delete receipt
+    await receiptRef.delete()
 
-//     dispatch({ type: actions.RECEIPTS_DELETE, payload: groupId })
-//     dispatch({ type: actions.RECEIPTS_ENDLOADING })
-//   } catch (error) {
-//     console.log('ERROR: deleteGroup => ', error)
-//     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
-//   }
-// }
+    dispatch({ type: actions.RECEIPTS_DELETE, payload: receiptId })
+    dispatch({ type: actions.RECEIPTS_ENDLOADING })
+  } catch (error) {
+    console.log('ERROR: deleteReceipt => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+// lazy loading: set 'last index loaded' var
+// increment with each triggered fetch
 
 export const fetchReceipts = currentUID => async dispatch => {
   try {
@@ -126,25 +149,63 @@ export const fetchReceipts = currentUID => async dispatch => {
     // get current user
     const { userData, userRef } = await getCurrentUser(currentUID)
 
-    const queryRef = await firestore
-      .collection('receipts')
-      .where('members', 'array-contains', userRef)
-
-    const querySnapshot = await queryRef.get()
-
-    const userReceipts = []
-    await querySnapshot.forEach(async doc => {
-      const docData = await doc.data()
-      docData.id = doc.id
-      userReceipts.push(docData)
-    })
-
+    // get data of all receipts
+    const userReceipts = await Promise.all(
+      userData.receipts.map(
+        async receiptRef => await getDataWithRef(receiptRef)
+      )
+    )
     console.log(userReceipts)
 
     dispatch({ type: actions.RECEIPTS_FETCH, payload: userReceipts })
     dispatch({ type: actions.RECEIPTS_ENDLOADING })
   } catch (error) {
     console.log('ERROR: fetchReceipts => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+export const updateRow = (
+  rowIdx,
+  row,
+  userAmounts,
+  receiptId
+) => async dispatch => {
+  try {
+    console.log(
+      'inside updateRow thunk: ',
+      'idx=>',
+      rowIdx,
+      'row=>',
+      row,
+      'rid=>',
+      receiptId
+    )
+
+    const batch = firestore.batch()
+
+    const receiptRef = await firestore.collection('receipts').doc(receiptId)
+    batch.update(receiptRef, {
+      ['rows.' + rowIdx]: row,
+    })
+    batch.set(receiptRef, {
+      updated: new Date()
+    }, {merge: true} )
+
+    if (userAmounts) {
+      console.log('updateRow: userAmounts updating')
+      batch.update(receiptRef, {
+        userAmounts,
+      })
+    }
+
+    await batch.commit()
+    const newReceipt = await getDataWithRef(receiptRef)
+
+    
+    // dispatch({ type: actions.RECEIPTS_SELECT, payload: newReceipt })
+  } catch (error) {
+    console.log('ERROR: updateRows => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
   }
 }
@@ -160,7 +221,8 @@ export const listenReceipt = receiptId => async dispatch => {
       .doc(receiptId)
       .onSnapshot(async function(doc) {
         const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server'
-        if (doc.exists && source === 'Server') {
+        // && source === 'Server'
+        if (doc.exists ) {
           const receiptData = await doc.data()
           receiptData.id = doc.id
           dispatch({ type: actions.RECEIPTS_UPDATE, payload: receiptData })
@@ -172,28 +234,6 @@ export const listenReceipt = receiptId => async dispatch => {
       })
   } catch (error) {
     console.log('ERROR: listenReceipt => ', error)
-    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
-  }
-}
-
-export const updateRow = (rowIdx, row, receiptId) => async dispatch => {
-  try {
-    console.log(
-      'inside updateRow thunk: ',
-      'idx',
-      rowIdx,
-      'row',
-      row,
-      'rid',
-      receiptId
-    )
-
-    const receiptRef = await firestore.collection('receipts').doc(receiptId)
-    await receiptRef.update({
-      ['rows.' + rowIdx]: row,
-    })
-  } catch (error) {
-    console.log('ERROR: updateRows => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
   }
 }

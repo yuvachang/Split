@@ -6,7 +6,7 @@ import {
   unlistenReceipt,
 } from '../../../store/actions/receiptsActions'
 import FadingScroll from '../Elements/FadingScroll'
-import RowItem from './RowItem'
+import Row from './Row'
 
 class SingleReceipt extends Component {
   componentDidMount = async () => {}
@@ -28,21 +28,21 @@ class SingleReceipt extends Component {
             <br />
             <ul className='comma-list'>
               Members:
-              {receipt.members.map(member => (
-                <li key={member.email}>{member.displayName}</li>
+              {Object.keys(receipt.userAmounts).map(userId => (
+                <li key={userId}>{receipt.userAmounts[userId].name}</li>
               ))}
             </ul>
           </div>
           Items:
           <ul style={{ listStyleType: 'none', width: '100%', margin: '0' }}>
-            {receipt.rows.map(row => {
+            {Object.keys(receipt.rows).map(rowIdx => {
               return (
-                <li key={row.rowIdx} style={{ margin: '3px 0px' }}>
-                  Item: {row.item ? row.item : 'n/a'}, Cost:{' '}
-                  {row.cost ? row.cost : 'n/a'}, Users:{' '}
-                  {!row.users[0]
+                <li key={rowIdx} style={{ margin: '3px 0px' }}>
+                  Item: {receipt.rows[rowIdx].item ? receipt.rows[rowIdx].item : 'n/a'}, Cost: ${' '}
+                  {receipt.rows[rowIdx].cost ? receipt.rows[rowIdx].cost : 'n/a'}, Users:{' '}
+                  {!receipt.rows[rowIdx].users[0]
                     ? 'n/a'
-                    : row.users.map(user => user.displayName)}
+                    : receipt.rows[rowIdx].users.map(user => user.displayName)}
                 </li>
               )
             })}

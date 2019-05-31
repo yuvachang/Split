@@ -1,10 +1,12 @@
 import React from 'react'
 
 const RowItem = ({ row, startEdit, rowIdx }) => (
-  <div className={row.isEdit ? 'grid-container isEdit' : 'grid-container'}>
+  <div className='grid-container'>
     <div className='editbutton'>
       {row.edit ? (
         row.edit
+      ) : row.isEdit ? (
+        <img src='/images/pulse.svg' className='icon' />
       ) : (
         <img
           src='/images/edit.svg'
@@ -18,20 +20,20 @@ const RowItem = ({ row, startEdit, rowIdx }) => (
     <div className='users'>
       {!Array.isArray(row.users) ? (
         row.users
-      ) : (
+      ) : row.users[0] ? (
         <ul className='comma-list'>
           {row.users.map(user => (
-            <li>{user.displayName}</li>
+            <li>{user.name}</li>
           ))}
         </ul>
-      )}
+      ): ('No one yet.')}
     </div>
     <div className='deletebutton'>
-      {row.delete ? (
+      {/* {row.delete ? (
         row.delete
       ) : (
         <img src='/images/trash.svg' className='icon' />
-      )}
+      )} */}
     </div>
   </div>
 )

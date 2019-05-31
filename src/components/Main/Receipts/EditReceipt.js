@@ -3,19 +3,28 @@ import { connect } from 'react-redux'
 import {
   listenReceipt,
   unlistenReceipt,
-  selectReceipt,
-  updateRow
+  // selectReceipt,
+  updateRow,
 } from '../../../store/actions/receiptsActions'
 import FadingScroll from '../Elements/FadingScroll'
-import Rows from './Rows'
+import Table from './Table'
+
+const findPayer = usrAmt => {
+  const payer = Object.keys(usrAmt).filter(userId => usrAmt[userId].isPayer)
+  return usrAmt[payer[0]]
+}
 
 class SingleReceipt extends Component {
   componentDidMount = async () => {
+    console.log('EDITRECEIPT: mounted')
     const receiptId = this.props.location.pathname.slice(10)
-    if (!this.props.receipt.id) {
-      await this.props.selectReceipt(receiptId)
-    }
-    //set listener on receipt
+
+    // if (!this.props.receipt.id) {
+    //   // await this.props.selectReceipt(receiptId)
+    // }
+
+    // set listener on receipt, will fetch receipt to store
+    // no need to use 'selectReceipt'
     this.props.listenReceipt(receiptId)
   }
 
@@ -25,6 +34,10 @@ class SingleReceipt extends Component {
   }
 
   render() {
+    console.log(
+      'EDITRECEIPT: rendered, selected receipt=>',
+      this.props.receipt
+    )
     const { receipt, updateRow } = this.props
     if (!receipt.id) {
       return null
@@ -33,9 +46,7 @@ class SingleReceipt extends Component {
     } else
       return (
         <div className='receipt-edit'>
-          Receipt:
-          <br />
-          {receipt.receiptName}
+          Receipt: {receipt.receiptName}
           <br /> Members:
           <ul>
             {Object.keys(receipt.userAmounts).map(user => (
@@ -45,10 +56,16 @@ class SingleReceipt extends Component {
               </li>
             ))}
           </ul>
+          Payer: {findPayer(receipt.userAmounts).name}
           <br />
           <FadingScroll>
-            <div>//editable rows here//</div>
-            <Rows rows={receipt.rows} updateRow={(idx, row) => updateRow(idx, row, receipt.id)}/>
+            <Table
+              rows={receipt.rows}
+              updateRow={(rowIdx, row, userAmounts) =>
+                updateRow(rowIdx, row, userAmounts, receipt.id)
+              }
+              receipt={receipt}
+            />
           </FadingScroll>
         </div>
       )
@@ -66,8 +83,9 @@ const mapState = state => ({
 const mapDispatch = dispatch => ({
   listenReceipt: RID => dispatch(listenReceipt(RID)),
   unlistenReceipt: RID => dispatch(unlistenReceipt(RID)),
-  selectReceipt: RID => dispatch(selectReceipt(RID)),
-  updateRow: (rowIdx, row, RID) => dispatch(updateRow(rowIdx, row, RID))
+  // selectReceipt: RID => dispatch(selectReceipt(RID)),
+  updateRow: (rowIdx, row, ua, RID) =>
+    dispatch(updateRow(rowIdx, row, ua, RID)),
 })
 
 export default connect(

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import ListItem from '../Elements/ListItem'
-import FadingScroll from './FadingScroll'
 
 class DropDownList extends Component {
   state = {

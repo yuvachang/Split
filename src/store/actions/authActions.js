@@ -31,9 +31,9 @@ export const checkUserIndex = currentUID => async dispatch => {
   try {
     // get current user reference
     const { userRef, userData } = await getCurrentUser(currentUID)
-    console.log('inside checkuserindex')
+    // console.log('inside checkuserindex')
     if (!userData.index) {
-      console.log('creating user index')
+      console.log('AuthActions/checkUserIndex: creating user index')
       const emailIndex = indexFunc(userData.email)
       const nameIndex = indexFunc(userData.displayName)
       const index = emailIndex.concat(nameIndex)
@@ -47,7 +47,7 @@ export const checkUserIndex = currentUID => async dispatch => {
       !userData.pending.friends.madeRequest ||
       !userData.pending.friends.receivedRequest
     ) {
-      console.log('setting profile pending')
+      console.log('AuthActions/checkUserIndex: setting profile pending')
       await userRef.update({
         pending: {
           friends: {

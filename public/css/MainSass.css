@@ -96,6 +96,11 @@
   width: 100%;
   margin: 8px 5px; }
 
+@media (hover: hover) {
+  .click-to-delete:hover {
+    cursor: url("/images/remove-cursor.png") 15 6, pointer;
+    font-style: italic; } }
+
 form {
   display: flex;
   flex-direction: column;
@@ -122,6 +127,7 @@ input {
   background-color: #5b677a;
   color: white;
   text-align: center;
+  font-size: 1em;
   box-shadow: inset 0px 0px 10px 0px #555555; }
   input::placeholder {
     color: white; }
@@ -531,30 +537,80 @@ button {
     overflow: hidden;
     text-overflow: ellipsis; }
 
+#receipt-table {
+  width: 65vw;
+  max-width: 1000px;
+  min-width: 550px; }
+  #receipt-table > tr > td {
+    padding: 0px; }
+    #receipt-table > tr > td > input {
+      padding: 0;
+      padding-left: 0;
+      margin: 0; }
+  #receipt-table > tr > .editbutton {
+    max-width: 25px; }
+  #receipt-table > tr > .item {
+    max-width: 70px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; }
+  #receipt-table > tr > .cost {
+    max-width: 40px;
+    white-space: nowrap; }
+  #receipt-table > tr > .users {
+    max-width: 95px; }
+
 .receipt-edit {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 5vh;
   text-align: center;
-  min-width: 50vw;
-  max-width: 80vw;
-  width: auto; }
+  width: 90%; }
   .receipt-edit > ul {
     display: flex;
     justify-content: space-around;
-    margin: 1px; }
+    margin: 1px;
+    max-width: 60vw; }
   .receipt-edit > * {
     max-width: 100%; }
 
-.receipt-rows {
-  width: auto; }
+.select-user.container {
+  position: relative;
+  width: 100%;
+  border: 1.5px solid #ccc;
+  border-radius: 5px;
+  margin-top: 1.5px; }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: 25px 100px 50px auto 25px; }
-  .grid-container.isEdit {
-    background-color: grey; }
-  .grid-container > .users {
-    min-width: 250px;
-    white-space: nowrap; }
+.select-user.open {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-height: 235px;
+  overflow: scroll;
+  transition: max-height 0.3s; }
+  .select-user.open > .button {
+    padding: 0;
+    filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
+
+.select-user.closed {
+  position: relative;
+  max-height: 0px;
+  width: 100%;
+  overflow: scroll;
+  border: none;
+  transition: max-height 0.3s; }
+  .select-user.closed > .button {
+    filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
+
+.select-user.message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 1em;
+  margin-right: 35px; }
+  .select-user.message > .comma-list {
+    margin: 0; }
+    .select-user.message > .comma-list > li {
+      align-content: center; }
