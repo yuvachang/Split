@@ -1,12 +1,16 @@
 import React from 'react'
 
-const Row = ({ row, startEdit, rowIdx }) => (
-  <tr>
+const Row = ({ row, startEdit, rowIdx, deleted, undelete, deleteRow }) => (
+  <tr className={deleted ? 'deleted-row' : ''}>
     <td className='editbutton'>
       {row.edit ? (
         row.edit
-      ) : row.isEdit ? (
-        <img src='/images/pulse.svg' className='icon' />
+      ) : deleted ? (
+        <img
+          src='/images/trash.svg'
+          className='icon'
+          onClick={() => deleteRow(rowIdx)}
+        />
       ) : (
         <img
           src='/images/edit.svg'
@@ -31,11 +35,13 @@ const Row = ({ row, startEdit, rowIdx }) => (
       )}
     </td>
     <td className='deletebutton'>
-      {/* {row.delete ? (
-        row.delete
-      ) : (
-        <img src='/images/trash.svg' className='icon' />
-      )} */}
+      {deleted ? (
+        <img
+          src='/images/restore.svg'
+          className='icon'
+          onClick={undelete ? undelete : null}
+        />
+      ) : null}
     </td>
   </tr>
 )

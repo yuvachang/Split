@@ -320,7 +320,8 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 0px; }
+  padding: 10px 0px;
+  position: relative; }
 
 .comma-list {
   display: inline;
@@ -541,7 +542,10 @@ button {
   width: 65vw;
   max-width: 1000px;
   min-width: 550px; }
+  #receipt-table > tr.deleted-row {
+    color: grey !important; }
   #receipt-table > tr > td {
+    position: relative;
     padding: 0px; }
     #receipt-table > tr > td > input {
       padding: 0;

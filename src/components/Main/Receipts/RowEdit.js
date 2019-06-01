@@ -14,8 +14,6 @@ class RowEdit extends Component {
     await this.setState({
       users: [...this.state.users, { id: user.id, name: user.name }],
     })
-
-    // await this.updateUserAmountsAndRow()
   }
 
   removeUser = async userId => {
@@ -23,16 +21,12 @@ class RowEdit extends Component {
     await this.setState({
       users: this.state.users.filter(user => user.id !== userId),
     })
-
-    // update userAmounts
-    //// delete rowIdx key from userAmounts.items
-    // await this.updateUserAmountsAndRow(userId)
   }
 
   sumCosts = obj => {
     const vals = Object.values(obj)
     if (vals.length) {
-      return vals.reduce((a, b) => a + b).toFixed(2)
+      return Number(vals.reduce((a, b) => a + b).toFixed(2))
     } else return 0
   }
 
@@ -40,7 +34,6 @@ class RowEdit extends Component {
     const state = this.state.users
     const row = this.props.row.users
 
-    console.log('USERSCHANGED', state, row)
     if (state.length !== row.length) return true
     const hash = {}
     state.forEach(user => {
@@ -50,21 +43,19 @@ class RowEdit extends Component {
       if (!hash[row[i].id]) return true
     }
 
-    console.log('USERSCHANGED: FALSE')
     return false
   }
 
-  updateUserAmountsAndRow = async (removedUserId, deleteRow) => {
-    //only called when add/remove users & delete row that has users
+  updateUserAmountsAndRow = async () => {
     const { userAmounts, rowIdx, row } = this.props
     const { users, cost } = this.state
-    console.log(row.cost, cost)
 
     // dont update if nothing changed
     if (!this.usersChanged() && row.cost === cost) return
 
     const usersIds = users.map(user => user.id)
-    const amount = cost / users.length
+    const amount = Number((cost / users.length).toFixed(2))
+
     Object.keys(userAmounts).forEach(userId => {
       if (usersIds.includes(userId)) {
         userAmounts[userId].items[rowIdx] = amount
@@ -74,7 +65,7 @@ class RowEdit extends Component {
       userAmounts[userId].amount = this.sumCosts(userAmounts[userId].items)
     })
 
-    console.log('usrAmts', userAmounts, 'users', users)
+    // console.log('usrAmts', userAmounts, 'users', users)
 
     this.updateRow(userAmounts)
   }
@@ -125,6 +116,19 @@ class RowEdit extends Component {
     }
   }
 
+  deleteRow = () => {
+    const { userAmounts, rowIdx, row } = this.props
+
+    row.users.forEach(user => {
+      // userAmounts[user.id].amount -= userAmounts[user.id].items[rowIdx]
+      delete userAmounts[user.id].items[rowIdx]
+      // run sumCosts on all userAmounts to ensure no data falls out of sync
+      userAmounts[user.id].amount = this.sumCosts(userAmounts[user.id].items)
+    })
+
+    this.props.deleteRow(rowIdx, userAmounts)
+  }
+
   componentDidUpdate = async prevProps => {
     if (prevProps.row !== this.props.row) {
       await this.setState({
@@ -140,7 +144,7 @@ class RowEdit extends Component {
   }
 
   render() {
-    const { row, stopEdit, userAmounts } = this.props
+    const { stopEdit, userAmounts } = this.props
     const { users } = this.state
 
     return (
@@ -183,7 +187,11 @@ class RowEdit extends Component {
           />
         </td>
         <td className='deletebutton'>
-          <img src='/images/trash.svg' className='icon' />
+          <img
+            src='/images/trash.svg'
+            className='icon'
+            onClick={this.deleteRow}
+          />
         </td>
       </tr>
     )

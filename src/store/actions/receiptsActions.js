@@ -188,9 +188,13 @@ export const updateRow = (
     batch.update(receiptRef, {
       ['rows.' + rowIdx]: row,
     })
-    batch.set(receiptRef, {
-      updated: new Date()
-    }, {merge: true} )
+    batch.set(
+      receiptRef,
+      {
+        updated: new Date(),
+      },
+      { merge: true }
+    )
 
     if (userAmounts) {
       console.log('updateRow: userAmounts updating')
@@ -202,10 +206,70 @@ export const updateRow = (
     await batch.commit()
     const newReceipt = await getDataWithRef(receiptRef)
 
-    
     // dispatch({ type: actions.RECEIPTS_SELECT, payload: newReceipt })
   } catch (error) {
     console.log('ERROR: updateRows => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+export const toggleDeleteRow = (
+  rowIdx,
+  userAmounts,
+  receiptId
+) => async dispatch => {
+  try {
+    console.log('inside toggleDeleteRow')
+    const batch = firestore.batch()
+
+    const receiptRef = await firestore.collection('receipts').doc(receiptId)
+    const receiptData = await getDataWithRef(receiptRef)
+
+    const del = !receiptData.rows[rowIdx].deletePending
+    batch.update(receiptRef, {
+      ['rows.' + rowIdx + '.deletePending']: del,
+    })
+
+    batch.update(receiptRef, {
+      userAmounts,
+    })
+
+    batch.commit()
+  } catch (error) {
+    console.log('ERROR: toggleDeleteRow => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+export const deleteRow = (rowIdx, receiptId) => async dispatch => {
+  try {
+    console.log('inside deleteRow')
+    const receiptRef = await firestore.collection('receipts').doc(receiptId)
+
+    await receiptRef.update({
+      ['rows.' + rowIdx]: firestore.FieldValue.delete(),
+    })
+  } catch (error) {
+    console.log('ERROR: deleteRow => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+export const addRow = (startIdx, receiptId) => async dispatch => {
+  try {
+    console.log('inside addRow')
+    const receiptRef = await firestore.collection('receipts').doc(receiptId)
+    await receiptRef.update({
+      ['rows.' + startIdx]: {
+        item: '',
+        cost: '',
+        users: [],
+        deletePending: false,
+        isEdit: false,
+      },
+    })
+  } catch (error) {
+    console.log('ERROR: addRow => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
   }
 }
@@ -222,7 +286,7 @@ export const listenReceipt = receiptId => async dispatch => {
       .onSnapshot(async function(doc) {
         const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server'
         // && source === 'Server'
-        if (doc.exists ) {
+        if (doc.exists) {
           const receiptData = await doc.data()
           receiptData.id = doc.id
           dispatch({ type: actions.RECEIPTS_UPDATE, payload: receiptData })

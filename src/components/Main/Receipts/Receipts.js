@@ -66,7 +66,7 @@ class Receipts extends Component {
           <div id='groups-list'>
             <SingleReceipt
               // receiptId={this.state.singleReceipt.id}
-              // backToList={() => this.switchView('list')}
+              backToList={() => this.switchView('list')}
               // group={singleReceipt}
               // deleteGroup={deleteGroup}
               // loading={loading}

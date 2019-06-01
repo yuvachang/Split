@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import {
   listenReceipt,
   unlistenReceipt,
+  deleteReceipt,
 } from '../../../store/actions/receiptsActions'
 import FadingScroll from '../Elements/FadingScroll'
 import Row from './Row'
@@ -15,7 +16,7 @@ class SingleReceipt extends Component {
     if (!this.props.receipt.id) {
       return <h3>Error: No receipt selected.</h3>
     } else {
-      const { receipt } = this.props
+      const { receipt, deleteReceipt, backToList } = this.props
       return (
         <FadingScroll>
           <div style={{ margin: '3px 0px' }}>
@@ -23,6 +24,14 @@ class SingleReceipt extends Component {
             <Link to={`/receipts/${receipt.id}`}>
               <img src='./images/edit.svg' className='icon' />
             </Link>
+            <img
+              src='./images/trash.svg'
+              className='icon'
+              onClick={() => {
+                deleteReceipt(receipt.id)
+                backToList()
+              }}
+            />
             <br />
             Group: {receipt.group.groupName}
             <br />
@@ -38,8 +47,15 @@ class SingleReceipt extends Component {
             {Object.keys(receipt.rows).map(rowIdx => {
               return (
                 <li key={rowIdx} style={{ margin: '3px 0px' }}>
-                  Item: {receipt.rows[rowIdx].item ? receipt.rows[rowIdx].item : 'n/a'}, Cost: ${' '}
-                  {receipt.rows[rowIdx].cost ? receipt.rows[rowIdx].cost : 'n/a'}, Users:{' '}
+                  Item:{' '}
+                  {receipt.rows[rowIdx].item
+                    ? receipt.rows[rowIdx].item
+                    : 'n/a'}
+                  , Cost: ${' '}
+                  {receipt.rows[rowIdx].cost
+                    ? receipt.rows[rowIdx].cost
+                    : 'n/a'}
+                  , Users:{' '}
                   {!receipt.rows[rowIdx].users[0]
                     ? 'n/a'
                     : receipt.rows[rowIdx].users.map(user => user.displayName)}
@@ -69,6 +85,7 @@ const mapDispatch = dispatch => ({
   // selectGroup: gid => dispatch(selectGroup(gid)),
   // listenReceipt: RID => dispatch(listenReceipt(RID)),
   // unlistenReceipt: RID => dispatch(unlistenReceipt(RID)),
+  deleteReceipt: RID => dispatch(deleteReceipt(RID)),
 })
 
 export default connect(

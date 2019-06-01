@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import RowEdit from './RowEdit'
 import Row from './Row'
-import RowDeleted from './RowDeleted'
 
 class Table extends Component {
   state = {
@@ -20,6 +19,39 @@ class Table extends Component {
     })
   }
 
+  undeleteRow = async rowIdx => {
+    const sumCosts = obj => {
+      const vals = Object.values(obj)
+      if (vals.length) {
+        return Number(vals.reduce((a, b) => a + b).toFixed(2))
+      } else return 0
+    }
+
+    const { users, cost, deletePending } = this.props.receipt.rows[rowIdx]
+    if (deletePending) {
+      const { userAmounts } = this.props.receipt
+      const usersIds = users.map(user => user.id)
+      const amount = Number((cost / users.length).toFixed(2))
+
+      Object.keys(userAmounts).forEach(userId => {
+        if (usersIds.includes(userId)) {
+          userAmounts[userId].items[rowIdx] = amount
+          // userAmounts[userId].amount += amount
+          // run sumCosts to ensure data in sync
+          userAmounts[userId].amount = sumCosts(userAmounts[userId].items)
+        }
+      })
+
+      await this.props.toggleDeleteRow(rowIdx, userAmounts)
+    }
+  }
+
+  addRow = async () => {
+    const keys = Object.keys(this.props.rows)
+    const newIdx = Number(keys[keys.length - 1]) + 1
+    await this.props.addRow(newIdx)
+  }
+
   render() {
     const header = {
       edit: 'Edit',
@@ -28,7 +60,7 @@ class Table extends Component {
       users: 'Users',
       delete: '  ',
     }
-    const { rows, updateRow, receipt } = this.props
+    const { rows, updateRow, receipt, deleteRow, addRow } = this.props
     const { editing } = this.state
     return (
       <table>
@@ -37,10 +69,20 @@ class Table extends Component {
 
           {Object.keys(rows).map(rowIdx => {
             // if row deleted, render RowDeleted
-            if (rowIdx.delete)
-              return <RowDeleted key={rowIdx} row={rows[rowIdx]} />
+            if (rows[rowIdx].deletePending)
+              return (
+                <Row
+                  key={rowIdx}
+                  startEdit={this.startEdit}
+                  row={rows[rowIdx]}
+                  rowIdx={rowIdx}
+                  deleted={true}
+                  deleteRow={deleteRow}
+                  undelete={() => this.undeleteRow(rowIdx)}
+                />
+              )
             else if (rowIdx === editing)
-            // if editing row, render RowEdit
+              // if editing row, render RowEdit
               return (
                 <RowEdit
                   key={rowIdx}
@@ -49,9 +91,10 @@ class Table extends Component {
                   rowIdx={rowIdx}
                   updateRow={updateRow}
                   userAmounts={receipt.userAmounts}
+                  deleteRow={this.props.toggleDeleteRow}
                 />
               )
-              // else show normal row
+            // else show normal row
             else
               return (
                 <Row
@@ -62,6 +105,15 @@ class Table extends Component {
                 />
               )
           })}
+          <tr>
+            <td>
+              <img
+                src='/images/add.svg'
+                className='icon'
+                onClick={this.addRow}
+              />
+            </td>
+          </tr>
         </tbody>
       </table>
     )

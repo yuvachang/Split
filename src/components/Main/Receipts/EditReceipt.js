@@ -4,7 +4,10 @@ import {
   listenReceipt,
   unlistenReceipt,
   // selectReceipt,
+  toggleDeleteRow,
   updateRow,
+  deleteRow,
+  addRow,
 } from '../../../store/actions/receiptsActions'
 import FadingScroll from '../Elements/FadingScroll'
 import Table from './Table'
@@ -16,7 +19,6 @@ const findPayer = usrAmt => {
 
 class SingleReceipt extends Component {
   componentDidMount = async () => {
-    console.log('EDITRECEIPT: mounted')
     const receiptId = this.props.location.pathname.slice(10)
 
     // if (!this.props.receipt.id) {
@@ -34,11 +36,14 @@ class SingleReceipt extends Component {
   }
 
   render() {
-    console.log(
-      'EDITRECEIPT: rendered, selected receipt=>',
-      this.props.receipt
-    )
-    const { receipt, updateRow } = this.props
+    // console.log('EDITRECEIPT: rendered, selected receipt=>', this.props.receipt)
+    const {
+      receipt,
+      updateRow,
+      toggleDeleteRow,
+      deleteRow,
+      addRow,
+    } = this.props
     if (!receipt.id) {
       return null
     } else if (receipt.id === 'DNE') {
@@ -64,6 +69,11 @@ class SingleReceipt extends Component {
               updateRow={(rowIdx, row, userAmounts) =>
                 updateRow(rowIdx, row, userAmounts, receipt.id)
               }
+              deleteRow={(rowIdx) => deleteRow(rowIdx, receipt.id)}
+              addRow={(idx)=> addRow(idx, receipt.id)}
+              toggleDeleteRow={(rowIdx, ua) =>
+                toggleDeleteRow(rowIdx, ua, receipt.id)
+              }
               receipt={receipt}
             />
           </FadingScroll>
@@ -74,18 +84,17 @@ class SingleReceipt extends Component {
 
 const mapState = state => ({
   receipt: state.receipts.selected,
-  // currentUID: state.firebase.auth.uid,
-  // loading: state.receipts.loading,
-  // groups: state.groups.groups,
-  // selectedGroup: state.groups.selected,
 })
 
 const mapDispatch = dispatch => ({
   listenReceipt: RID => dispatch(listenReceipt(RID)),
   unlistenReceipt: RID => dispatch(unlistenReceipt(RID)),
-  // selectReceipt: RID => dispatch(selectReceipt(RID)),
+  toggleDeleteRow: (rowIdx, ua, RID) =>
+    dispatch(toggleDeleteRow(rowIdx, ua, RID)),
   updateRow: (rowIdx, row, ua, RID) =>
     dispatch(updateRow(rowIdx, row, ua, RID)),
+  deleteRow: (rowIdx, RID) => dispatch(deleteRow(rowIdx, RID)),
+  addRow: (idx, RID) => dispatch(addRow(idx, RID)),
 })
 
 export default connect(
