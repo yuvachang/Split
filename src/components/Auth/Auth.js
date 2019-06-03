@@ -127,7 +127,7 @@ class Auth extends Component {
             {((authType === 'login' && window.height > 550) ||
               authType === 'none') && (
               <p>
-                Tired of paying for someone else's extra drink? <i>Split</i> your bill so you only pay for what you ordered! 
+                Tired of paying for someone else's food or groceries? <i>Split</i> your bill so you only pay for what you ordered! 
               </p>
             )}
           </div>

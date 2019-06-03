@@ -30,9 +30,14 @@ class Signup extends Component {
   handleSubmit = async e => {
     e.preventDefault()
 
-    // validation
+    const {password, passwordCheck, firstName, lastName, email} = this.state
 
-    if (this.state.password !== this.state.passwordCheck) {
+    // validation
+    if (!firstName || !lastName || !email || !password || !passwordCheck) {
+      await this.setState({ error: 'Please make sure you filled out all fields.'})
+      return
+    }
+    if (password !== passwordCheck) {
       this.setState({ error: 'Passwords need to be the same.' })
       return
     }
