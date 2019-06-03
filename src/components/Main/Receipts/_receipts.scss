@@ -81,20 +81,21 @@
   }
 }
 
+table {
+  border-collapse: collapse;
+}
+
 #receipt-table {
   width: 65vw;
   max-width: 1000px;
   min-width: 550px;
 
   & > tr {
-    // &.deleted-row td:before {
-    //   content: " ";
-    // position: absolute;
-    // top: 50%;
-    // left: 0;
-    // border-bottom: 3px solid #ccc;
-    // width: 101%;
-    // }
+    border-bottom: 1px solid #ccc;
+
+    &:last-child {
+      border-bottom: none;
+    }
 
     &.deleted-row {
       color: grey !important;
@@ -103,6 +104,7 @@
     & > td {
       position: relative;
       padding: 0px;
+      // border: 1.5px solid #ccc;
 
       & > input {
         padding: 0;
@@ -123,6 +125,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      text-align: left;
     }
 
     & > .cost {
@@ -135,6 +138,7 @@
       // padding: 0px;
       // min-width: 250px;
       max-width: 95px;
+      text-align: left;
       // white-space: nowrap;
       // display: inline;
     }
@@ -189,6 +193,8 @@
     border: 1.5px solid #ccc;
     border-radius: 5px;
     margin-top: 1.5px;
+
+    text-align: center;
     // padding: 0px 8px;
   }
 

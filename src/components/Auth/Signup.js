@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import AuthForm from './AuthForm'
 import { connect } from 'react-redux'
-import { signupThunk } from '../../store/actions/authActions'
+import { signupThunk, googleLoginThunk } from '../../store/actions/authActions'
+import SignupForm from './SignupForm';
 
 class Signup extends Component {
   state = {
@@ -12,6 +12,13 @@ class Signup extends Component {
     password: '',
     passwordCheck: '',
     error: '',
+    page: '1',
+  }
+
+  togglePage = page => {
+    this.setState({
+      page
+    })
   }
 
   handleChange = async e => {
@@ -43,12 +50,13 @@ class Signup extends Component {
         password: '',
         passwordCheck: '',
         error: '',
+        page: '1',
       })
     }
   }
 
   render() {
-    const { showForm, toggleForm } = this.props
+    const { googleOauth } = this.props
     const {
       email,
       password,
@@ -57,11 +65,15 @@ class Signup extends Component {
       lastName,
       tel,
       error,
+      page
     } = this.state
 
     return (
-      <AuthForm
-        type='signup'
+      <SignupForm
+        authType='signup'
+        page={page}
+        togglePage={this.togglePage}
+        googleOauth={googleOauth}
         firstName={firstName}
         lastName={lastName}
         tel={tel}
@@ -83,6 +95,7 @@ const mapState = state => ({
 
 const mapDispatch = dispatch => ({
   signup: user => dispatch(signupThunk(user)),
+  googleOauth: () => dispatch(googleLoginThunk()),
 })
 
 export default connect(

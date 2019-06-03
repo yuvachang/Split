@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import {connect} from 'react-redux'
-import {loginThunk} from '../../store/actions/authActions'
-import AuthForm from './AuthForm'
+import { connect } from 'react-redux'
+import { loginThunk, googleLoginThunk } from '../../store/actions/authActions'
+import LoginForm from './LoginForm'
 
-// TODO: sign in with telephone? 
+// TODO: sign in with telephone?
 // throttle number of sign in attempts with one email
 
 class Login extends Component {
@@ -25,14 +25,14 @@ class Login extends Component {
   }
 
   render() {
-    const { showForm, toggleForm, authType } = this.props
+    const { showForm, toggleForm, authType, googleOauth } = this.props
     const { email, password } = this.state
 
     return (
-      <AuthForm
-        type={authType}
+      <LoginForm
         email={email}
         password={password}
+        googleOauth={googleOauth}
         handleChange={this.handleChange}
         handleSubmit={this.handleSubmit}
       />
@@ -42,11 +42,15 @@ class Login extends Component {
 
 const mapState = state => ({
   userProfile: state.firebase.profile,
-  error: state.auth.error
+  error: state.auth.error,
 })
 
 const mapDispatch = dispatch => ({
   login: user => dispatch(loginThunk(user)),
+  googleOauth: () => dispatch(googleLoginThunk()),
 })
 
-export default connect(mapState, mapDispatch)(Login)
+export default connect(
+  mapState,
+  mapDispatch
+)(Login)

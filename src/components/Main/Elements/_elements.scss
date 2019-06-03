@@ -18,6 +18,32 @@ form {
   }
 }
 
+a{
+  
+  text-decoration: underline;
+  text-align: center;
+
+  
+  &:visited {
+    color: #ccc;
+  }
+  &:hover{
+    color: orange;
+    cursor: pointer;
+    font-size: 1.05em;
+  }
+  &:active{
+    color: white;
+  }
+
+  &.small {
+    font-size:0.7em;
+    &:hover{
+      font-size: 0.8em;
+    }
+  }
+}
+
 h1,
 h2,
 h3,
@@ -28,22 +54,26 @@ h4 {
 input {
   width: 100%;
   margin: 5px 0px;
-  padding: 10px;
-  padding-left: 15px;
+  padding: 10px 10px 4px;
+  // padding-left: 15px;
   display: inline-block;
-  border: 1.5px solid #ccc;
-  border-radius: 4px;
+  // border: 1.5px solid #ccc;
+  border:none;
+  border-bottom: 1.25px solid white;
+  // border-radius: 4px;
   box-sizing: border-box;
   background-color: $app-bg-color;
 
   color: white;
-  text-align: center;
+  // text-align: center;
   font-size: 1em;
+  font-family: 'Karla' sans-serif;
 
-  box-shadow: inset 0px 0px 10px 0px #555555;
+
+  // box-shadow: inset 0px 0px 10px 0px #555555;
 
   &::placeholder {
-    color: white;
+    color: #ccc;
   }
 
   &:valid {
@@ -61,7 +91,20 @@ input {
   &:-webkit-autofill:focus,
   &:-webkit-autofill:active {
     background-color: $app-bg-color !important;
+    background-image: none !important;
+    margin: 5px 0px;
+    padding: 5px 0px 4px;
+    // -webkit-text-fill-color: white !important;
+    -webkit-appearance: inherit;
   }
+
+  // &:focus, textarea:focus {
+  //   outline: none;
+  // }
+}
+
+*:focus {
+  outline: none;
 }
 
 ul {
@@ -70,28 +113,46 @@ ul {
   padding: 0;
 }
 
+.button-text {
+  font-size: 1em;
+  transition: 0.2s;
+
+  @media (hover: hover) {
+    &:hover {
+      cursor: pointer;
+      font-size: 1.2em;
+      transition: 0.2s;
+    }
+  }
+}
+
 .button,
 button {
-  background-color: $button-bg-color;
+  background-color: white;
   position: relative;
 
-  border: 1.5px solid white;
-  border-radius: 5px;
+  // border: 1.5px solid white;
+  border: none;
+  border-radius: 15px;
 
   box-sizing: border-box;
-  padding: 10px 5px;
-  margin: 8px 0px;
+  padding: 5px 20px;
+  margin: 6px 0px;
   text-align: center;
 
-  width: 100%;
+  // width: max-content;
+  width: 75%;
+  min-width: 150px;
   min-height: min-content;
-  color: white;
+  color: black;
   font-weight: bold;
   font-size: 1em;
 
   display: flex;
   justify-content: center;
   align-items: center;
+   
+  z-index: 11;
 
   filter: drop-shadow($shadow);
 
@@ -143,6 +204,7 @@ button {
     &:hover {
       cursor: pointer;
       background-color: $button-hover-bg-color;
+      background-color: orange;
     }
 
     &.success:hover {

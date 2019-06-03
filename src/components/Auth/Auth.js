@@ -8,6 +8,11 @@ class Auth extends Component {
   state = {
     authType: 'none',
     loading: true,
+
+    window: {
+      width: 0,
+      height: 0,
+    },
   }
 
   toggleForm = type => {
@@ -15,55 +20,115 @@ class Auth extends Component {
   }
 
   closeForm = () => {
-    this.setState({ authType: 'none' })
+    this.setState({ authType: 'login' })
+  }
+
+  setWindowSize = () => {
+    this.setState({
+      window: {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      },
+    })
+  }
+
+  componentDidMount = () => {
+    this.setWindowSize()
+    window.addEventListener('resize', this.setWindowSize)
+  }
+
+  componentWillUnmount = () => {
+    window.removeEventListener('resize', this.setWindowSize)
   }
 
   render() {
-    const { authType } = this.state
+    const { authType, window } = this.state
     return (
       <div className='auth-page'>
-        <div className='auth-left'>
-          <h1>Split.</h1>
+        <div
+          className='auth-top-half'
+          style={
+            authType === 'none'
+              ? { height: '40vh', transition: '0.5s' }
+              : authType === 'signup'
+              ? { height: '100vh', transition: '0.5s' }
+              : {}
+          }>
+          <div id='auth-nav'>
+            <div
+              className={
+                authType === 'signup' ? 'selected left' : 'button-text left'
+              }
+              onClick={() => this.toggleForm('signup')}>
+              Sign Up
+            </div>
+
+            <div
+              className={
+                authType === 'login' ? 'selected right' : 'button-text right'
+              }
+              onClick={() => this.toggleForm('login')}>
+              Log In
+            </div>
+          </div>
+
+          <div className='form-space'>
+            {/* SIGNUP */}
+
+            <div
+              className={
+                authType === 'signup' ? 'auth-form' : 'auth-form transparent'
+              }>
+              <Signup />
+              <br />
+              <a onClick={() => this.toggleForm('none')} className='small'>
+                Cancel
+              </a>
+            </div>
+
+            {/* LOGIN */}
+            <div
+              className={
+                authType === 'login' ? 'auth-form' : 'auth-form transparent'
+              }>
+              <Login />
+              <br />
+              <a onClick={() => this.toggleForm('none')} className='small'>
+                Cancel
+              </a>
+            </div>
+          </div>
+
+          <img
+            src='/images/orange-wedge.png'
+            draggable='false'
+            className={
+              authType === 'signup'
+                ? window.height >= 430
+                  ? 'orange-wedge'
+                  : 'orange-wedge collapsed'
+                : 'orange-wedge'
+            }
+          />
         </div>
 
-        <div className='auth-right'>
-          <div className='auth-right-container'>
-            <div className='auth-back'>
-              {/* BACK BUTTON */}
-              {authType !== 'none' && (
-                <button onClick={this.closeForm} className='button'>
-                  Back
-                </button>
-              )}
-            </div>
-            {/* SIGN UP */}
-            {authType === 'login' ? (
-              <Login showForm={authType === 'login' ? true : false} />
-            ) : (
-              authType === 'none' && (
-                <div className='button' onClick={() => this.toggleForm('login')}>Log In</div>
-              )
-            )}
+        <div
+          className='auth-bottom-half'
+          style={
+            authType === 'none'
+              ? { height: '60vh', transition: '0.5s' }
+              : authType === 'signup'
+              ? { height: '0vh', transition: '0.5s' }
+              : {}
+          }>
+          <div id='split-blurb'>
+            {authType !== 'signup' && <p className='split-title'>Split.</p>}
 
-            {/* EMAIL LOGIN */}
-            {authType === 'signup' ? (
-              <Signup showForm={authType === 'signup' ? true : false} />
-            ) : (
-              authType === 'none' && (
-                <div className='button' onClick={() => this.toggleForm('signup')}>
-                  Sign Up
-                </div>
-              )
-            )}
-
-            {/* GOOGLE LOGIN */}
-            {authType === 'none' ? (
-              <div className='button' onClick={() => this.props.googleOauth()}>
-                <img src='./images/google.svg' className='icon left' />
-                Google Login
-              </div>
-            ) : (
-              <div />
+            {((authType === 'login' && window.height > 550) ||
+              authType === 'none') && (
+              <p>
+                Tired of paying for someone else's extra drink? <i>Split</i> your bill so you only pay for what you ordered! 
+              </p>
             )}
           </div>
         </div>
@@ -78,7 +143,6 @@ const mapState = state => ({
 
 const mapDispatch = dispatch => ({
   logout: () => dispatch(logoutThunk()),
-  googleOauth: () => dispatch(googleLoginThunk()),
 })
 
 export default connect(

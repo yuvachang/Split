@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
-const AuthForm = ({
-  type,
+const LoginForm = ({
+  authType,
   email,
   password,
   passwordCheck,
@@ -11,11 +11,12 @@ const AuthForm = ({
   handleChange,
   error,
   handleSubmit,
+  googleOauth
 }) => {
   return (
     <div className='auth-form'>
       <form onSubmit={handleSubmit}>
-        <div className={type === 'signup' ? 'auth-form-div' : 'hidden'}>
+        <div className={authType === 'signup' ? 'auth-form-div' : 'hidden'}>
           {/* <label>First Name:</label> */}
           <img src='./images/person.svg' className='icon' />
           <input
@@ -24,10 +25,10 @@ const AuthForm = ({
             name='firstName'
             value={firstName}
             onChange={handleChange}
-            required={type === 'signup' ? true : false}
+            required={authType === 'signup' ? true : false}
           />
         </div>
-        <div className={type === 'signup' ? 'auth-form-div' : 'hidden'}>
+        <div className={authType === 'signup' ? 'auth-form-div' : 'hidden'}>
           {/* <label>Last Name:</label> */}
           <img src='./images/person.svg' className='icon' />
           <input
@@ -36,20 +37,10 @@ const AuthForm = ({
             name='lastName'
             value={lastName}
             onChange={handleChange}
-            required={type === 'signup' ? true : false}
+            required={authType === 'signup' ? true : false}
           />
         </div>
-        <div className={type === 'signup' ? 'auth-form-div' : 'hidden'}>
-          {/* <label>Phone:</label> */}
-          <img src='./images/phone.svg' className='icon' />
-          <input
-            placeholder='Phone'
-            type='tel'
-            name='tel'
-            value={tel}
-            onChange={handleChange}
-          />
-        </div>
+  
         <div className='auth-form-div'>
           {/* <label>Email:</label> */}
           <img src='./images/mail.svg' className='icon' />
@@ -74,7 +65,7 @@ const AuthForm = ({
             required={true}
           />
         </div>
-        <div className={type === 'signup' ? 'auth-form-div' : 'hidden'}>
+        <div className={authType === 'signup' ? 'auth-form-div' : 'hidden'}>
           {/* <label>Enter password again:</label> */}
           <img src='./images/lock.svg' className='icon' />
           <input
@@ -83,16 +74,36 @@ const AuthForm = ({
             name='passwordCheck'
             value={passwordCheck}
             onChange={handleChange}
-            required={type === 'signup' ? true : false}
+            required={authType === 'signup' ? true : false}
           />
         </div>
         {error && <div>{error}</div>}
-        <button type='submit'>
-          Submit
-        </button>
+        <br/>
+        <button type='submit'>Submit</button>
+        {/* Or log in with 
+        <button
+          // style={{ zIndex: '33' }}
+          onClick={() => googleOauth()}>
+          Google
+        </button> */}
+        <br/>
+        <a onClick={() => googleOauth()}> Or log in with Google.</a>
       </form>
     </div>
   )
 }
 
-export default AuthForm
+export default LoginForm
+
+
+{/* <div className={authType === 'signup' ? 'auth-form-div' : 'hidden'}> */}
+{/* <label>Phone:</label> */}
+{/* <img src='./images/phone.svg' className='icon' />
+<input
+  placeholder='Phone'
+  type='tel'
+  name='tel'
+  value={tel}
+  onChange={handleChange}
+/>
+</div> */}
