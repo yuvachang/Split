@@ -43,9 +43,10 @@ export const checkUserIndex = currentUID => async dispatch => {
     }
 
     if (
-      !userData.pending.friends.confirmed ||
-      !userData.pending.friends.madeRequest ||
-      !userData.pending.friends.receivedRequest
+      // !userData.pending.friends.confirmed ||
+      // !userData.pending.friends.madeRequest ||
+      // !userData.pending.friends.receivedRequest
+      !userData.pending
     ) {
       console.log('AuthActions/checkUserIndex: setting profile pending')
       await userRef.update({
@@ -107,6 +108,7 @@ export const googleLoginThunk = () => async dispatch => {
     dispatch({ type: actions.AUTH_START, payload: { test: 'auth start' } })
 
     await firebase.auth().signInWithRedirect(googleAuthProvider)
+
 
     // dispatch({ type: actions.AUTH_SUCCESS })
     // dispatch({ type: actions.AUTH_END })

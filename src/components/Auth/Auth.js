@@ -124,8 +124,12 @@ class Auth extends Component {
           <div id='split-blurb'>
             {authType !== 'signup' && <p className='split-title'>Split.</p>}
 
-            {((authType === 'login' && window.height > 550) ||
-              authType === 'none') && (
+            {(authType === 'login' && window.height > 600) && (
+              <p>
+                Welcome back! Sign in to start splitting bills!
+              </p>
+            )}
+              {authType === 'none' && (
               <p>
                 Tired of paying for someone else's food or groceries? <i>Split</i> your bill so you only pay for what you ordered! 
               </p>

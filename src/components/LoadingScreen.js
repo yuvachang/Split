@@ -3,7 +3,7 @@ import React from 'react'
 const LoadingScreen = props => {
   return (
     <div>
-      <img src='/images/orange-wedge.png' className='orange-wedge' />
+      <img src='/images/orange-wedge.png' className='loading-icon' />
     </div>
   )
 }

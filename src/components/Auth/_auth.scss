@@ -19,7 +19,7 @@
 
     transition: 0.5s;
 
-    @media only screen and (max-height: 550px) {
+    @media only screen and (max-height: 600px) {
       height: 80vh;
     }
 
@@ -28,7 +28,7 @@
       margin-bottom: 1em;
       display: flex;
       justify-content: center;
-      width: 13%;
+      width: 20%;
       height: max-content;
       min-height: 24px;
       position: relative;
@@ -54,7 +54,7 @@
       }
 
       @media only screen and (max-width: 560px) {
-        width: 50%;
+        width: 45%;
         margin-top: 2.2em;
       }
     }
@@ -141,7 +141,7 @@
         letter-spacing: 3px;
       }
     }
-    @media only screen and (max-height: 550px) {
+    @media only screen and (max-height: 600px) {
       height: 20vh;
     }
   }

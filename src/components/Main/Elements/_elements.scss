@@ -18,27 +18,26 @@ form {
   }
 }
 
-a{
-  
+a {
   text-decoration: underline;
   text-align: center;
 
-  
   &:visited {
     color: #ccc;
   }
-  &:hover{
-    color: orange;
+  &:hover {
     cursor: pointer;
+    color: orange;
     font-size: 1.05em;
   }
-  &:active{
+  &:active {
     color: white;
   }
 
   &.small {
-    font-size:0.7em;
-    &:hover{
+    z-index: 22;
+    font-size: 0.7em;
+    &:hover {
       font-size: 0.8em;
     }
   }
@@ -58,7 +57,7 @@ input {
   // padding-left: 15px;
   display: inline-block;
   // border: 1.5px solid #ccc;
-  border:none;
+  border: none;
   border-bottom: 1.25px solid white;
   // border-radius: 4px;
   box-sizing: border-box;
@@ -68,7 +67,6 @@ input {
   // text-align: center;
   font-size: 1em;
   font-family: 'Karla' sans-serif;
-
 
   // box-shadow: inset 0px 0px 10px 0px #555555;
 
@@ -151,7 +149,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-   
+
   z-index: 11;
 
   filter: drop-shadow($shadow);
