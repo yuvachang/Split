@@ -1,40 +1,150 @@
 @import '../Elements/Variables.scss';
 
+.bullet {
+  display: block;
+  margin-top: 1px;
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  border: 1.5px solid white;
+  &.filled {
+    border: 1.5px solid white;
+    background-color: orange;
+  }
+
+  &.mobile {
+    position: absolute;
+
+
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-color: orange;
+
+    transition: 0.3s;
+    transition-timing-function: ease-out;
+  }
+}
+
 #nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-  position: absolute;
+  font-family: 'Kara', sans-serif;
+  position: fixed;
+
+  left: 0px;
   top: 0;
-  height: 75px;
+  width: 20vw;
+  max-width: 325px;
+  height: 100vh;
+
+  background-color: $app-bg-color;
+  transition: 0.2s;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media only screen and (max-width: 390px) {
+    bottom: 0;
+    top: inherit;
+    
+    width: 100vw;
+    max-width: 100vw;
+
+    height: 10vh;
+    min-height: 50px;
+  }
+}
+
+.nav-header {
   width: 100%;
-  padding: 10px;
+  // padding-top: 10%;
+  padding: 10% 10px 0;
   box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  // border-bottom: 1px solid white;
+
+  @media only screen and (max-width: 390px) {
+    display: none;
+  }
+
 }
 
 .nav-links {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
+
+
+
+  .link-item {
+    position: relative;
+    width: 100%;
+    height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+    // transition: 0.1s;
+
+
+    .bullet {
+      position: absolute;
+      right: 10px;
+    }
+
+    .icon {
+      position: absolute;
+      left: 10px;
+
+      &.center {
+        position: relative;
+        left: 0;
+      }
+    }
+  }
+
+  @media only screen and (min-width: 700px) {
+    .link-item.current {
+      background-color: $app-bg-lighter;
+        }
+    @media (hover: hover) {
+      .link-item:hover {
+        cursor: pointer;
+        background-color: $app-bg-lighter;
+      }
+    }
+  }
+  @media only screen and (max-width: 390px) {
+    flex-direction:row;
+    justify-content: space-evenly;
+
+    height: 100%;
+  }
 }
 
-.nav-links > a {
-  margin: 0px 10px;
-  text-decoration: none;
-  color: inherit;
-}
+.nav-footer {
+  position: absolute;
+  bottom: 15px;
+  left: 0px;
+  width: 100%;
 
-.nav-links > .current {
-  text-decoration: underline;
-  font-weight: bold;
-  font-size: 1.2em;
-}
+  display: flex;
+  justify-content: center;
 
-@media only screen and (max-width: 720px) {
-  .nav-links > a {
-    margin: 0px;
+  font-size: 0.75em;
+
+  @media only screen and (max-width: 390px) {
+   display: none;
   }
 }

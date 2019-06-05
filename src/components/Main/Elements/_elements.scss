@@ -7,6 +7,13 @@
   }
 }
 
+.large-avatar{
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  background-color: #ccc;
+}
+
 form {
   display: flex;
   flex-direction: column;

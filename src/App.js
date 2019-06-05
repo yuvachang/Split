@@ -24,7 +24,9 @@ class App extends React.Component {
       <div className='App'>
         {isLoggedIn && <Nav />}
         {isLoaded ? (
-          <Routes isLoggedIn={isLoggedIn} isLoaded={isLoaded} />
+          <div id={isLoggedIn ? 'routes' : ''}>
+            <Routes isLoggedIn={isLoggedIn} isLoaded={isLoaded} />
+          </div>
         ) : (
           <LoadingScreen />
         )}
@@ -40,7 +42,7 @@ const mapState = state => ({
 })
 
 const mapDispatch = dispatch => ({
-  checkUserIndex: (uid) => dispatch(checkUserIndex(uid)),
+  checkUserIndex: uid => dispatch(checkUserIndex(uid)),
 })
 
 export default connect(

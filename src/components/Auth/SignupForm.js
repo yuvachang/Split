@@ -19,9 +19,10 @@ class SignupForm extends Component {
     return (
       <div className='auth-form'>
         <p>Already have a Google Account?</p>
-        
-          <a onClick={() => googleOauth()}> Log in with Google.</a>
-        
+
+        <a onClick={() => googleOauth()}> Log in with Google.</a>
+        <br />
+
         <form onSubmit={handleSubmit}>
           {page === '1' && (
             <div className='auth-form-div'>
