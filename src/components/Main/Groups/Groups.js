@@ -11,10 +11,12 @@ import { fetchFriends } from '../../../store/actions/friendsActions'
 import CreateGroup from './CreateGroup'
 import ListPage from '../Elements/ListPage'
 import SingleGroup from './SingleGroup'
+import CardList from '../Elements/CardList'
 
 class Groups extends Component {
   state = {
     view: 'list',
+    groups: [],
     singleGroup: {},
   }
 
@@ -29,6 +31,27 @@ class Groups extends Component {
     } else {
       this.setState({ view })
     }
+  }
+
+  filterGroups = (input, groupsDataArr) =>
+    groupsDataArr.filter(group =>
+      group.groupName.toLowerCase().includes(input.toLowerCase())
+    )
+
+  search = async e => {
+    if (e.target.value.length > 0) {
+      const results = this.filterGroups(e.target.value, this.props.groups)
+      await this.setState({ groups: results })
+    } else {
+      await this.setState({ groups: this.props.groups })
+    }
+  }
+
+  componentDidMount = async () => {
+    await this.props.fetchGroups(this.props.currentUID)
+    await this.setState({
+      groups: this.props.groups,
+    })
   }
 
   render() {
@@ -56,9 +79,7 @@ class Groups extends Component {
               placeholder='Search your groups...'
               type='text'
               name='lastName'
-              // value={lastName}
-              // onChange={handleChange}
-              // required={authType === 'signup' ? true : false}
+              onChange={this.search}
             />
           </div>
           <div className='menu-views'>
@@ -110,13 +131,18 @@ class Groups extends Component {
             beingCreated={beingCreated}
           />
         )}
+        {view === 'list' && 'Your groups:'}
         {view === 'list' && (
+          <CardList list={this.state.groups} viewItem={this.switchView} />
+        )}
+
+        {/* {view === 'list' && (
           <ListPage
             groups={groups}
             fetchGroups={() => fetchGroups(currentUID)}
             viewItem={this.switchView}
           />
-        )}
+        )} */}
 
         {view === 'singleView' && (
           <div id='groups-list'>

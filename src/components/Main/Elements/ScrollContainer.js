@@ -30,12 +30,47 @@ class ScrollContainer extends Component {
     }
   }
 
+  scroll = ( dir) => {
+    // event.preventDefault()
+    this.scrollTimeout = setInterval(() => {
+      this.list.scrollBy({
+        top: dir === 'up' ? -55 : 55,
+        left: 0,
+        behavior: 'smooth',
+      })
+    }, 100)
+    // this.list.scrollTo({
+    //   top: dir === 'up' ? 0 : this.list.scrollHeight,
+    //   left: 0,
+    //   behavior: 'smooth',
+    // })
+  }
+  scrollt = dir => {
+    this.list.scrollBy({
+      top: dir === 'up' ? -55 : 55,
+      left: 0,
+      behavior: 'smooth',
+    })
+  }
+
+  endScroll = () => {
+    console.log('end scroll')
+    clearInterval(this.scrollTimeout)
+    // window.stop(true, false)
+  }
+
   componentDidUpdate = prevProps => {
     if (prevProps !== this.props) {
+      console.log(this.list.scrollHeight, this.list.clientHeight)
       const isLongList = this.list.scrollHeight > this.list.clientHeight
       if (isLongList) {
         this.setState({
           scrollDown: true,
+        })
+      } else {
+        this.setState({
+          scrollUp: false,
+          scrollDown: false,
         })
       }
     }
@@ -57,39 +92,57 @@ class ScrollContainer extends Component {
     const { scrollDown, scrollUp } = this.state
     return (
       <div className='scroll-div-container'>
-        {scrollUp && (
-          <div
-            className='scroll-arrow top'
-            style={{ top: `${this.list.clientTop}` }}>
-            <img
-              className='icon'
-              src='/images/down-arrow.png'
-              style={{ transform: 'rotate(180deg)', width: '30px' }}
-            />
-          </div>
-        )}
+        <div
+          className={`scroll-arrow button card ${scrollUp ? '' : 'hidden'}`}
+          style={{ top: `${this.list ? this.list.clientTop : 0}` }}
+          // onClick={this.scrollUp}
+          // onMouseDown={(e) => this.scroll(e,'up')}
+          onMouseDown={() =>  this.scroll('up')}
+          onMouseUp={this.endScroll}
+          onMouseLeave={this.endScroll}
+          onTouchStart={() =>  this.scroll('up')}
+          onTouchEnd ={this.endScroll}
+          onTouchCancel={this.endScroll}>
+          <img
+            className='icon'
+            src='/images/down-arrow.png'
+            style={{
+              transform: 'rotate(180deg)',
+              width: '30px',
+              filter: 'invert(0.4)',
+            }}
+          />
+        </div>
 
         <div
           className='scroll-div'
-          style={this.props.styles ? this.props.styles : null}
+          style={{ scrollBehavior: 'smooth' }}
           ref={node => {
             this.list = node
           }}>
           {this.props.children}
         </div>
 
-        
-        {scrollDown && (
-          <div
-            className='scroll-arrow bottom'
-            style={{ top: `${this.list.clientTop + this.list.clientHeight}` }}>
-            <img
-              className='icon'
-              src='/images/down-arrow.png'
-              style={{ width: '30px' }}
-            />
-          </div>
-        )}
+        <div
+          className={`scroll-arrow button card ${scrollDown ? '' : 'hidden'}`}
+          style={{
+            top: `${
+              this.list ? this.list.clientTop + this.list.clientHeight : 0
+            }`,
+          }}
+          // onMouseDown={e => this.scroll(e)}
+          onMouseDown={this.scroll}
+          onMouseUp={this.endScroll}
+          onMouseLeave={this.endScroll}
+          onTouchStart={this.scroll}
+          onTouchEnd={this.endScroll}
+          onTouchCancel={this.endScroll}>
+          <img
+            className='icon'
+            src='/images/down-arrow.png'
+            style={{ width: '30px', filter: 'invert(0.4)' }}
+          />
+        </div>
       </div>
     )
   }

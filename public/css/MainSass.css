@@ -304,6 +304,13 @@ button {
   align-items: center;
   z-index: 11;
   filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0.2)); }
+  .button.card,
+  button.card {
+    border: 1px solid #d6dbe0;
+    border-radius: 5px;
+    filter: none;
+    padding: 12px 0px;
+    margin: 4px 0px; }
   .button.cancel,
   button.cancel {
     background-color: #775e5e; }
@@ -407,7 +414,7 @@ button {
       filter: invert(0); } }
 
 .scroll-div {
-  height: calc(100vh - 250px);
+  height: 100%;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
@@ -420,20 +427,21 @@ button {
     align-items: center;
     overflow: hidden;
     width: 100%;
+    max-width: 300px;
     position: relative; }
     .scroll-div-container .scroll-arrow {
-      z-index: 33;
-      position: absolute;
-      width: 100%;
       background-color: white;
-      display: flex;
-      justify-content: center; }
-      .scroll-div-container .scroll-arrow.top {
-        top: 0; }
-      .scroll-div-container .scroll-arrow.bottom {
-        bottom: 0; }
-  .scroll-div > * {
-    width: 90%; }
+      opacity: 1;
+      visibility: visible;
+      justify-content: center;
+      height: 30px;
+      padding: 4px;
+      margin: 10px 0px;
+      transition: visibility 0s, opacity 0.3s; }
+      .scroll-div-container .scroll-arrow.hidden {
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s 0.3s, opacity 0.3s; }
   .scroll-div:after {
     content: '';
     opacity: 0;
