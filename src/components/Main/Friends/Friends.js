@@ -45,49 +45,25 @@ class Friends extends Component {
 
     return (
       <div id='friends'>
-        <div className='views'>
-          <div
-            className={
-              view === 'list' ? 'button-icon selected' : 'button-icon'
-            }>
-            <img
-              src='./images/people.svg'
-              className='icon large'
-              onClick={() => {
-                this.switchView('list')
-              }}
-            />
-          </div>
-          <div
-            className={
-              view === 'notifs'
-                ? receivedRequest[0]
-                  ? 'button-icon notify selected'
-                  : 'button-icon selected'
-                : receivedRequest[0]
-                ? 'button-icon notify'
-                : 'button-icon'
-            }>
-            <img
-              src='./images/bell.svg'
-              className='icon large'
-              onClick={() => this.switchView('notifs')}
+        <div className='menu'>
+
+
+          <div className='search-div'>
+            {/* <label>Last Name:</label> */}
+            <img src='./images/search.svg' className='icon' />
+            <input
+              placeholder='Search your friends...'
+              type='text'
+              name='lastName'
+              // value={lastName}
+              // onChange={handleChange}
+              // required={authType === 'signup' ? true : false}
             />
           </div>
 
-          <div
-            className={
-              view === 'search' ? 'button-icon selected' : 'button-icon'
-            }>
-            <img
-              src='./images/search.svg'
-              className='icon large'
-              onClick={() => this.switchView('search')}
-            />
-          </div>
+          
         </div>
-        <hr />
-        <br />
+
         {view === 'search' && (
           <FindFriends
             friends={friends}
@@ -148,3 +124,42 @@ export default connect(
   mapState,
   mapDispatch
 )(Friends)
+
+
+{/* <div className={view === 'list' ? 'icon selected' : 'icon'}>
+            <img
+              src='./images/people.svg'
+              className='icon large'
+              onClick={() => {
+                this.switchView('list')
+              }}
+            />
+          </div>
+
+          <div
+            className={
+              view === 'notifs'
+                ? receivedRequest[0]
+                  ? 'button-icon notify selected'
+                  : 'button-icon selected'
+                : receivedRequest[0]
+                ? 'button-icon notify'
+                : 'button-icon'
+            }>
+            <img
+              src='./images/bell.svg'
+              className='icon large'
+              onClick={() => this.switchView('notifs')}
+            />
+          </div>
+
+          <div
+            className={
+              view === 'search' ? 'button-icon selected' : 'button-icon'
+            }>
+            <img
+              src='./images/search.svg'
+              className='icon large'
+              onClick={() => this.switchView('search')}
+            />
+          </div> */}

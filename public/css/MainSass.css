@@ -14,13 +14,16 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: #6b7a8f;
+  background-color: #3c434d;
   width: 100vw;
   height: 100vh; }
   #loading-screen .loading-icon {
     max-width: 50px; }
 
 #routes {
+  font-family: 'Karla', sans-serif;
+  font-size: 1em;
+  color: black;
   position: absolute;
   right: 0;
   width: calc(100vw - 325px);
@@ -29,13 +32,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
-  color: black; }
+  background-color: white; }
+  #routes .icon {
+    filter: invert(0); }
   @media only screen and (max-width: 390px) {
     #routes {
       top: 0;
       width: 100vw;
       max-width: 100vw;
+      max-height: 90vh;
       height: calc(100vh - 50px); } }
 
 .auth-page {
@@ -45,7 +50,7 @@
   flex-direction: column; }
   .auth-page .auth-top-half {
     font-family: 'Kara', sans-serif;
-    background-color: #6b7a8f;
+    background-color: #3c434d;
     height: 60vh;
     width: 100vw;
     display: flex;
@@ -174,7 +179,7 @@
   background-color: rgba(0, 0, 0, 0.7); }
 
 .modal-container {
-  background-color: #6b7a8f;
+  background-color: #3c434d;
   border-radius: 5px;
   padding: 18px 15px 15px; }
 
@@ -243,19 +248,19 @@ input {
   border: none;
   border-bottom: 1.25px solid white;
   box-sizing: border-box;
-  background-color: #6b7a8f;
+  background-color: #3c434d;
   color: white;
   font-size: 1em;
   font-family: 'Karla' sans-serif; }
   input::placeholder {
-    color: #ccc; }
+    opacity: 0.6; }
   input:valid {
-    background-color: #6b7a8f; }
+    background-color: #3c434d; }
   input[type='number']::-webkit-inner-spin-button, input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0; }
   input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
-    background-color: #6b7a8f !important;
+    background-color: #3c434d !important;
     background-image: none !important;
     margin: 5px 0px;
     padding: 5px 0px 4px;
@@ -317,7 +322,8 @@ button {
     border: 1.5px solid white;
     border-radius: 5px;
     box-sizing: border-box;
-    height: 50px;
+    height: 40px;
+    width: 40px;
     margin-top: 10px;
     display: flex;
     justify-content: center;
@@ -361,7 +367,23 @@ button {
   width: 20px;
   height: 20px;
   filter: invert(100);
-  transition: 0.5s; }
+  transition: 0.2s; }
+  .icon.round {
+    border-radius: 50%;
+    width: 26px;
+    min-width: 26px;
+    height: 26px;
+    margin: 0px 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ccc; }
+    .icon.round.selected {
+      background-color: #79879a; }
+    @media (hover: hover) {
+      .icon.round:hover {
+        background-color: #79879a;
+        transition: 0.2s; } }
   .icon.upsidedown {
     transform: rotate(180deg);
     transition: 0.5s; }
@@ -397,11 +419,19 @@ button {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    width: 100%; }
-    .scroll-div-container > * {
+    width: 100%;
+    position: relative; }
+    .scroll-div-container .scroll-arrow {
+      z-index: 33;
+      position: absolute;
+      width: 100%;
+      background-color: white;
       display: flex;
-      flex-direction: column;
-      width: 100%; }
+      justify-content: center; }
+      .scroll-div-container .scroll-arrow.top {
+        top: 0; }
+      .scroll-div-container .scroll-arrow.bottom {
+        bottom: 0; }
   .scroll-div > * {
     width: 90%; }
   .scroll-div:after {
@@ -416,7 +446,7 @@ button {
     top: 93%;
     left: 0;
     width: 100%;
-    background-image: linear-gradient(to bottom, rgba(1, 1, 1, 0), #6b7a8f 90%);
+    background-image: linear-gradient(to bottom, rgba(1, 1, 1, 0), white 45%);
     height: 18%;
     opacity: 1;
     transition: 0.2s; }
@@ -426,10 +456,44 @@ button {
     z-index: 22;
     left: 0;
     width: 100%;
-    background-image: linear-gradient(to top, rgba(1, 1, 1, 0), #6b7a8f 90%);
+    background-image: linear-gradient(to top, rgba(1, 1, 1, 0), white 45%);
     height: 9%;
     opacity: 1;
     transition: 0.2s; }
+
+.menu {
+  min-height: 65px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
+  position: relative; }
+  .menu .search-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 175px;
+    max-height: 30px;
+    padding: 0px 4px 0px 10px;
+    margin-right: 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc; }
+    .menu .search-div .icon {
+      opacity: 0.3; }
+    .menu .search-div input {
+      font-size: 0.8em;
+      color: #7f7f7f;
+      background-color: white;
+      padding: 5px 10px;
+      margin: 0;
+      border: none; }
+  .menu-views {
+    display: flex;
+    justify-content: space-evenly;
+    width: 15%;
+    right: 30px; }
 
 .drop-down.container {
   border: 1.5px solid darkgray;
@@ -488,22 +552,25 @@ button {
       cursor: pointer; }
 
 #friends {
-  position: absolute;
+  position: relative;
+  background-color: #fafafa;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  top: 75px;
   text-align: center; }
-  #friends > * {
-    display: flex;
-    max-width: 250px;
-    min-width: 245px; }
   #friends > .views {
+    position: absolute;
+    left: 0;
+    height: 100vh;
+    width: 10vw;
+    max-width: 100px;
+    background-color: #30363d;
     display: flex;
-    justify-content: space-around;
-    width: 60vw;
-    max-width: 150px;
-    min-height: 90px; }
+    flex-direction: column;
+    align-items: center;
+    transition: width 1s, display 0s 1s; }
   #friends-list {
     display: flex;
     flex-direction: column;
@@ -544,16 +611,14 @@ button {
       transition: 0.5s; }
 
 #groups {
-  position: absolute;
+  position: relative;
+  background-color: #fafafa;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  top: 75px;
   text-align: center; }
-  #groups > * {
-    display: flex;
-    max-width: 250px;
-    min-width: 245px; }
   #groups > .views {
     display: flex;
     justify-content: space-around;
@@ -589,11 +654,7 @@ button {
   margin-top: 1px;
   height: 8px;
   width: 8px;
-  border-radius: 50%;
-  border: 1.5px solid white; }
-  .bullet.filled {
-    border: 1.5px solid white;
-    background-color: orange; }
+  border-radius: 50%; }
   .bullet.mobile {
     position: absolute;
     width: 30px;
@@ -611,7 +672,7 @@ button {
   width: 20vw;
   max-width: 325px;
   height: 100vh;
-  background-color: #6b7a8f;
+  background-color: #3c434d;
   transition: 0.2s;
   display: flex;
   flex-direction: column;
@@ -627,7 +688,7 @@ button {
 
 .nav-header {
   width: 100%;
-  padding: 10% 10px 0;
+  padding: 10% 10px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -643,7 +704,9 @@ button {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 100%; }
+  width: 100%;
+  font-size: 0.85em;
+  text-align: left; }
   .nav-links .link-item {
     position: relative;
     width: 100%;
@@ -652,9 +715,12 @@ button {
     align-items: center;
     justify-content: center;
     text-decoration: none; }
+    .nav-links .link-item .navlink-text {
+      position: absolute;
+      left: 50px; }
     .nav-links .link-item .bullet {
       position: absolute;
-      right: 10px; }
+      right: 15px; }
     .nav-links .link-item .icon {
       position: absolute;
       left: 10px; }
@@ -663,12 +729,12 @@ button {
         left: 0; }
   @media only screen and (min-width: 700px) {
     .nav-links .link-item.current {
-      background-color: #79879A; } }
+      background-color: #30363d; } }
 
 @media only screen and (min-width: 700px) and (hover: hover) {
   .nav-links .link-item:hover {
     cursor: pointer;
-    background-color: #79879A; } }
+    background-color: #30363d; } }
   @media only screen and (max-width: 390px) {
     .nav-links {
       flex-direction: row;

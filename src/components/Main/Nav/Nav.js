@@ -27,8 +27,6 @@ class Nav extends Component {
   }
 
   setMarker = async () => {
-    console.log(this.homeLink.ref.getBoundingClientRect())
-
     if (window.innerWidth < 700) {
       let node = ''
       if (this.props.location.pathname === '/home') {
@@ -43,19 +41,20 @@ class Nav extends Component {
       if (this.props.location.pathname === '/groups') {
         node = 'groupsLink'
       }
-
-      if (window.innerWidth < 390) {
-        await this.setState({
-          // bulletTop: this[node].ref.getBoundingClientRect().top - 5,
-          bulletLeft: Math.round(this[node].ref.getBoundingClientRect().left - 5),
-        })
-        return
+      if (node) {
+        if (window.innerWidth < 390) {
+          await this.setState({
+            bulletLeft: Math.round(
+              this[node].ref.getBoundingClientRect().left - 5
+            ),
+          })
+        } else {
+          await this.setState({
+            bulletTop: this[node].ref.getBoundingClientRect().top - 5,
+            bulletLeft: null,
+          })
+        }
       }
-
-      await this.setState({
-        bulletTop: this[node].ref.getBoundingClientRect().top - 5,
-        bulletLeft: null,
-      })
     }
   }
 
@@ -76,10 +75,12 @@ class Nav extends Component {
     await this.setMarker()
     await this.setWindowSize()
     window.addEventListener('resize', this.setWindowSize)
+    window.addEventListener('orientationchange', () => {window.setTimeout(this.setWindowSize, 350)})
   }
 
   componentWillUnmount = () => {
     window.removeEventListener('resize', this.setWindowSize)
+    window.removeEventListener('orientationchange', this.setWindowSize, 800)
   }
 
   render() {
@@ -172,97 +173,6 @@ class Nav extends Component {
               this.groupsLink = node
             }}
           />
-
-          {/* <div
-            className={
-              location.pathname === '/home' ? 'link-item current' : 'link-item'
-            }
-            onClick={async () => {
-              await this.pushHistory('/home')
-              await this.setMarker()
-            }}>
-            <img
-              src='/images/home.svg'
-              className={window.width < 700 ? 'icon center' : 'icon'}
-              ref={node => {
-                this.homeLink = node
-              }}
-            />
-            {window.width > 700 && 'Home'}
-            {window.width > 700 && (
-              <div
-                className={
-                  location.pathname === '/home' ? 'bullet filled' : 'bullet'
-                }
-              />
-            )}
-          </div> */}
-          {/* 
-
-          <div
-            className={
-              location.pathname === '/friends'
-                ? 'link-item current'
-                : 'link-item'
-            }
-            onClick={async () => {
-              await this.pushHistory('/friends')
-              await this.setMarker()
-            }}>
-            <img
-              src='/images/people.svg'
-              className={window.width < 700 ? 'icon center' : 'icon'}
-              ref={node => {
-                this.friendsLink = node
-              }}
-            />
-            {window.width > 700 && 'Friends'}
-            {window.width > 700 && (
-              <div
-                className={
-                  location.pathname === '/friends' ? 'bullet filled' : 'bullet'
-                }
-              />
-            )}
-          </div>
-
-          <div
-            className={
-              location.pathname === '/receipts'
-                ? 'link-item current'
-                : 'link-item'
-            }
-            onClick={() => this.pushHistory('/receipts')}>
-            <img src='/images/receipts.svg' className='icon' />
-            Receipts
-            <div
-              className={
-                location.pathname === '/receipts' ? 'bullet filled' : 'bullet'
-              }
-              ref={node => {
-                this.receiptsLink = node
-              }}
-            />
-          </div>
-
-          <div
-            className={
-              location.pathname === '/groups'
-                ? 'link-item current'
-                : 'link-item'
-            }
-            onClick={() => this.pushHistory('/groups')}>
-            <img src='/images/group.png' className='icon' />
-            Groups
-            <div
-              className={
-                location.pathname === '/groups' ? 'bullet filled' : 'bullet'
-              }
-              ref={node => {
-                this.groupsLink = node
-              }}
-            />
-          </div> */}
         </div>
         <div className='nav-footer'>
           {/* {profile.pending && <div>PENDING HERE</div>} */}

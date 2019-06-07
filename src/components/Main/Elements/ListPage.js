@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import FadingScroll from './FadingScroll'
 import ListItem from '../Elements/ListItem'
+import ScrollContainer from './ScrollContainer';
 
 class ListPage extends Component {
 
@@ -24,7 +25,7 @@ class ListPage extends Component {
     const { receipts, groups, friends, viewItem } = this.props
     const list = groups ? groups : friends ? friends : receipts
     return (
-      <FadingScroll>
+      <ScrollContainer>
         <div>
           {list[0] ? (
             <div>
@@ -66,7 +67,7 @@ class ListPage extends Component {
             />
           )}
         </div>
-      </FadingScroll>
+      </ScrollContainer>
     )
   }
 }

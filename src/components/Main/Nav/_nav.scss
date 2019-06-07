@@ -6,10 +6,10 @@
   height: 8px;
   width: 8px;
   border-radius: 50%;
-  border: 1.5px solid white;
+  // border: 0.75px solid white;
   &.filled {
-    border: 1.5px solid white;
-    background-color: orange;
+    // border: 1px solid white;
+    // background-color: orange;
   }
 
   &.mobile {
@@ -58,7 +58,7 @@
 .nav-header {
   width: 100%;
   // padding-top: 10%;
-  padding: 10% 10px 0;
+  padding: 10% 10px;
   box-sizing: border-box;
 
   display: flex;
@@ -83,7 +83,8 @@
   flex-direction: column;
   width: 100%;
 
-
+  font-size: 0.85em;
+  text-align: left;
 
   .link-item {
     position: relative;
@@ -97,10 +98,13 @@
     text-decoration: none;
     // transition: 0.1s;
 
-
+    .navlink-text{
+      position: absolute;
+      left: 50px;
+    }
     .bullet {
       position: absolute;
-      right: 10px;
+      right: 15px;
     }
 
     .icon {
@@ -116,12 +120,12 @@
 
   @media only screen and (min-width: 700px) {
     .link-item.current {
-      background-color: $app-bg-lighter;
+      background-color: $app-bg-darker;
         }
     @media (hover: hover) {
       .link-item:hover {
         cursor: pointer;
-        background-color: $app-bg-lighter;
+        background-color: $app-bg-darker;
       }
     }
   }

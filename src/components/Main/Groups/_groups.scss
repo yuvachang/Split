@@ -1,21 +1,24 @@
 @import '../Elements/Variables.scss';
 
 #groups {
-  position: absolute;
+  position: relative;
+
+  background-color: $bg-ig;
+
+  height: 100%;
+  width: 100%;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  top: 75px;
-  // height: $height-with-header;
-  // bottom: 0;
 
   text-align: center;
 
-  & > * {
-    display: flex;
-    max-width: 250px;
-    min-width: 245px;
-  }
+  // & > * {
+  //   display: flex;
+  //   max-width: 250px;
+  //   min-width: 245px;
+  // }
 
   & > .views {
     display: flex;

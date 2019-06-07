@@ -7,7 +7,7 @@
   }
 }
 
-.large-avatar{
+.large-avatar {
   border-radius: 50%;
   width: 55px;
   height: 55px;
@@ -78,7 +78,8 @@ input {
   // box-shadow: inset 0px 0px 10px 0px #555555;
 
   &::placeholder {
-    color: #ccc;
+    // color: #ccc;
+    opacity: 0.6;
   }
 
   &:valid {
@@ -181,7 +182,8 @@ button {
     border: 1.5px solid white;
     border-radius: 5px;
     box-sizing: border-box;
-    height: 50px;
+    height: 40px;
+    width: 40px;
     margin-top: 10px;
 
     display: flex;
@@ -237,7 +239,33 @@ button {
   width: 20px;
   height: 20px;
   filter: invert(100);
-  transition: 0.5s;
+  transition: 0.2s;
+
+  &.round {
+    border-radius: 50%;
+    width: 26px;
+    min-width: 26px;
+    height: 26px;
+
+    margin: 0px 4px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #ccc;
+
+    &.selected {
+      background-color: $app-bg-lighter;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background-color: $app-bg-lighter;
+        transition: 0.2s;
+      }
+    }
+  }
 
   &.upsidedown {
     transform: rotate(180deg);
@@ -290,11 +318,30 @@ button {
     overflow: hidden;
     width: 100%;
 
-    & > * {
-      display: flex;
-      flex-direction: column;
+    position: relative;
+
+    .scroll-arrow {
+      z-index: 33;
+      position: absolute;
       width: 100%;
+
+      background-color: white;
+
+      display: flex;
+      justify-content: center;
+      &.top {
+        top: 0;
+      }
+      &.bottom {
+        bottom: 0;
+      }
     }
+
+    // & > * {
+    //   display: flex;
+    //   flex-direction: column;
+    //   width: 100%;
+    // }
   }
 
   & > * {
@@ -316,11 +363,12 @@ button {
     top: 93%;
     left: 0;
     width: 100%;
-    background-image: linear-gradient(
-      to bottom,
-      rgba(1, 1, 1, 0),
-      $app-bg-color 90%
-    );
+    // background-image: linear-gradient(
+    //   to bottom,
+    //   rgba(1, 1, 1, 0),
+    //   $app-bg-color 90%
+    // );
+    background-image: linear-gradient(to bottom, rgba(1, 1, 1, 0), white 45%);
     height: 18%;
     opacity: 1;
     transition: 0.2s;
@@ -332,14 +380,67 @@ button {
     z-index: 22;
     left: 0;
     width: 100%;
-    background-image: linear-gradient(
-      to top,
-      rgba(1, 1, 1, 0),
-      $app-bg-color 90%
-    );
+    background-image: linear-gradient(to top, rgba(1, 1, 1, 0), white 45%);
     height: 9%;
     opacity: 1;
     transition: 0.2s;
+  }
+}
+
+.menu {
+  min-height: 65px;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
+
+  position: relative;
+
+  .search-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    max-width: 175px;
+    max-height: 30px;
+    
+    padding: 0px 4px 0px 10px;
+    margin-right: 12px;
+
+
+    border-radius: 5px;
+    border: 1px solid #ccc;
+
+    .icon {
+      opacity: 0.3;
+    }
+
+    input {
+      font-size: 0.8em;
+      color: #7f7f7f;
+      background-color: white;
+
+      padding: 5px 10px;
+      margin: 0;
+
+      border: none;
+
+      // max-width: 150px;
+    }
+  }
+
+  &-views {
+    // position: absolute;
+
+    display: flex;
+    justify-content: space-evenly;
+
+    width: 15%;
+    right: 30px;
   }
 }
 

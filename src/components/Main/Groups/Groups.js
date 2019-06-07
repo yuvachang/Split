@@ -48,30 +48,55 @@ class Groups extends Component {
 
     return (
       <div id='groups'>
-        <div className='views'>
-          <div
-            className={
-              view === 'list' ? 'button-icon selected' : 'button-icon'
-            }>
-            <img
-              src='./images/group.png'
-              className='icon large'
-              onClick={() => {
-                this.switchView('list')
-              }}
+        <div className='menu'>
+          <div className='search-div'>
+            {/* <label>Last Name:</label> */}
+            <img src='./images/search.svg' className='icon' />
+            <input
+              placeholder='Search your groups...'
+              type='text'
+              name='lastName'
+              // value={lastName}
+              // onChange={handleChange}
+              // required={authType === 'signup' ? true : false}
             />
           </div>
-          <div
-            className={view === 'add' ? 'button-icon selected' : 'button-icon'}>
-            <img
-              src='./images/add.svg'
-              className='icon large'
-              onClick={() => this.switchView('add')}
-            />
+          <div className='menu-views'>
+            <div
+              className={view === 'list' ? 'icon round selected' : 'icon round'}
+              onClick={() => this.switchView('list')}>
+              <img
+                src='/images/list.svg'
+                className='icon'
+                style={
+                  view === 'list'
+                    ? { filter: 'invert(1)' }
+                    : { filter: 'invert(0.4)' }
+                }
+              />
+              <img
+                src='/images/list-orange.svg'
+                className='icon round orange'
+                style={{ opacity: '0', position: 'absolute' }}
+              />
+            </div>
+
+            <div
+              className={view === 'add' ? 'icon round selected' : 'icon round'}
+              onClick={() => this.switchView('add')}>
+              <img
+                src='/images/add.svg'
+                className='icon'
+                style={
+                  view === 'add'
+                    ? { filter: 'invert(1)' }
+                    : { filter: 'invert(0.4)' }
+                }
+              />
+            </div>
           </div>
         </div>
-        <hr />
-        <br />
+
         {view === 'add' && (
           <CreateGroup
             backToList={() => this.switchView('list')}

@@ -4,20 +4,6 @@ import { Routes, LoadingScreen, Nav } from './components'
 import { checkUserIndex } from './store/actions/authActions'
 
 class App extends React.Component {
-  componentDidUpdate = async prevProps => {
-    if (prevProps.isLoggedIn !== this.props.isLoggedIn) {
-      console.log('app didupdate')
-      if (this.props.isLoggedIn) {
-        await this.props.checkUserIndex(this.props.currentUser.uid)
-      }
-    }
-  }
-  componentDidMount = async () => {
-    if (this.props.isLoggedIn) {
-      await this.props.checkUserIndex(this.props.currentUser.uid)
-    }
-  }
-
   render() {
     const { isLoggedIn, isLoaded } = this.props
     return (
