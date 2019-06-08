@@ -321,7 +321,8 @@ button {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  // text-align:center
+
+  margin: 15px 0px;
 
   &-container {
     display: flex;
@@ -334,8 +335,16 @@ button {
 
     position: relative;
 
+    .title {
+      position: absolute;
+      top: 0;
+
+    }
     .scroll-arrow {
       background-color: white;
+
+      position: absolute;
+      z-index: 33;
 
       opacity: 1;
       visibility: visible;
@@ -346,14 +355,28 @@ button {
       padding: 4px;
       margin: 10px 0px;
 
-      transition: visibility 0s, opacity 0.3s;
+      transition: visibility 0s, opacity 0.2s;
+      
+      &.top {
+        top: 0;
+        margin-bottom: 0;
+      }
+      &.bottom {
+        bottom: 0;
+        margin-top: 5px;
+      }
 
       &.hidden{
         visibility: hidden;
         opacity: 0;
 
-        transition: visibility 0s 0.3s, opacity 0.3s;
+        transition: visibility 0s 0.2s, opacity 0.2s;
       }
+
+      &:active {
+        background-color: #ccc;
+      }
+
     }
 
     // & > * {
@@ -433,6 +456,25 @@ button {
 
     border-radius: 5px;
     border: 1px solid #ccc;
+
+    transition: 0.6s;
+
+&.hidden {
+  max-width: 0px;
+  padding: 0;
+  margin: 0;
+
+  border: 1px solid white;
+
+  transition: 0.6s;
+  img {
+    width: 0;
+    transition: 0.6s;
+  }
+  input{
+    visibility: hidden;
+  }
+}
 
     .icon {
       opacity: 0.3;

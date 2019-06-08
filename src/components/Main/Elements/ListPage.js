@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import FadingScroll from './FadingScroll'
 import ListItem from '../Elements/ListItem'
-import ScrollContainer from './ScrollContainer';
+import ScrollContainer from './ScrollContainer'
 
 class ListPage extends Component {
-
   componentDidMount = async () => {
-    
     console.log('listpage mounted')
     if (this.props.groups) {
       await this.props.fetchGroups()
@@ -25,7 +23,7 @@ class ListPage extends Component {
     const { receipts, groups, friends, viewItem } = this.props
     const list = groups ? groups : friends ? friends : receipts
     return (
-      <ScrollContainer>
+      <ScrollContainer showButtons={true}>
         <div>
           {list[0] ? (
             <div>

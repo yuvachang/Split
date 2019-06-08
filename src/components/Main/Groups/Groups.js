@@ -72,8 +72,22 @@ class Groups extends Component {
     return (
       <div id='groups'>
         <div className='menu'>
-          <div className='search-div'>
-            {/* <label>Last Name:</label> */}
+          {/* <div className='menu-views'>
+            <div
+              className={view === 'list' ? 'icon round selected' : 'icon round'}
+              onClick={() => this.switchView('list')}>
+              <img
+                src='/images/list.svg'
+                className='icon'
+                style={
+                  view === 'list'
+                    ? { filter: 'invert(1)' }
+                    : { filter: 'invert(0.4)' }
+                }
+              />
+            </div>
+          </div> */}
+          <div className={view === 'list' ? 'search-div' : 'search-div hidden'}>
             <img src='./images/search.svg' className='icon' />
             <input
               placeholder='Search your groups...'
@@ -94,11 +108,6 @@ class Groups extends Component {
                     ? { filter: 'invert(1)' }
                     : { filter: 'invert(0.4)' }
                 }
-              />
-              <img
-                src='/images/list-orange.svg'
-                className='icon round orange'
-                style={{ opacity: '0', position: 'absolute' }}
               />
             </div>
 
@@ -131,7 +140,12 @@ class Groups extends Component {
             beingCreated={beingCreated}
           />
         )}
-        {view === 'list' && 'Your groups:'}
+        {view === 'list' && (
+          <div>
+            {' '}
+            <br /> Your groups:
+          </div>
+        )}
         {view === 'list' && (
           <CardList list={this.state.groups} viewItem={this.switchView} />
         )}

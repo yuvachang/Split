@@ -419,7 +419,8 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%; }
+  width: 100%;
+  margin: 15px 0px; }
   .scroll-div-container {
     display: flex;
     flex-direction: column;
@@ -429,19 +430,32 @@ button {
     width: 100%;
     max-width: 300px;
     position: relative; }
+    .scroll-div-container .title {
+      position: absolute;
+      top: 0; }
     .scroll-div-container .scroll-arrow {
       background-color: white;
+      position: absolute;
+      z-index: 33;
       opacity: 1;
       visibility: visible;
       justify-content: center;
       height: 30px;
       padding: 4px;
       margin: 10px 0px;
-      transition: visibility 0s, opacity 0.3s; }
+      transition: visibility 0s, opacity 0.2s; }
+      .scroll-div-container .scroll-arrow.top {
+        top: 0;
+        margin-bottom: 0; }
+      .scroll-div-container .scroll-arrow.bottom {
+        bottom: 0;
+        margin-top: 5px; }
       .scroll-div-container .scroll-arrow.hidden {
         visibility: hidden;
         opacity: 0;
-        transition: visibility 0s 0.3s, opacity 0.3s; }
+        transition: visibility 0s 0.2s, opacity 0.2s; }
+      .scroll-div-container .scroll-arrow:active {
+        background-color: #ccc; }
   .scroll-div:after {
     content: '';
     opacity: 0;
@@ -487,7 +501,19 @@ button {
     padding: 0px 4px 0px 10px;
     margin-right: 12px;
     border-radius: 5px;
-    border: 1px solid #ccc; }
+    border: 1px solid #ccc;
+    transition: 0.6s; }
+    .menu .search-div.hidden {
+      max-width: 0px;
+      padding: 0;
+      margin: 0;
+      border: 1px solid white;
+      transition: 0.6s; }
+      .menu .search-div.hidden img {
+        width: 0;
+        transition: 0.6s; }
+      .menu .search-div.hidden input {
+        visibility: hidden; }
     .menu .search-div .icon {
       opacity: 0.3; }
     .menu .search-div input {

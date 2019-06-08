@@ -6,7 +6,6 @@ import FadingScroll from '../Elements/FadingScroll'
 
 class GroupsList extends Component {
   state = {
-    displayModal: false,
     createGroup: {
       groupName: '',
       members: [],
@@ -87,14 +86,6 @@ class GroupsList extends Component {
     const { members } = this.state.createGroup
     return (
       <div id='groups-add'>
-        <Modal
-          display={displayModal}
-          header='Confirm Add Friend'
-          message={'friend details here'}
-          yes='Yes'
-          yesAction={async () => {}}
-          cancel={this.closeModal}
-        />
         <FadingScroll>
           {loading && <h3>Saving...</h3>}
 
