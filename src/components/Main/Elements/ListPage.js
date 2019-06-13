@@ -23,7 +23,8 @@ class ListPage extends Component {
     const { receipts, groups, friends, viewItem } = this.props
     const list = groups ? groups : friends ? friends : receipts
     return (
-      <ScrollContainer showButtons={true}>
+      
+      <ScrollContainer showButtons='hello'>
         <div>
           {list[0] ? (
             <div>

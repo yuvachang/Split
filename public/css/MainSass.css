@@ -33,8 +33,6 @@
   justify-content: center;
   align-items: center;
   background-color: white; }
-  #routes .icon {
-    filter: invert(0); }
   @media only screen and (max-width: 390px) {
     #routes {
       top: 0;
@@ -370,27 +368,31 @@ button {
   button-icon:active {
     background-color: lightgray; }
 
+.round-icon-button {
+  border-radius: 50%;
+  width: 26px;
+  min-width: 26px;
+  height: 26px;
+  margin: 0px 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ccc; }
+  .round-icon-button.selected {
+    background-color: #79879a; }
+  @media (hover: hover) {
+    .round-icon-button:hover {
+      background-color: #79879a;
+      transition: 0.2s;
+      cursor: pointer; } }
+
 .icon {
   width: 20px;
   height: 20px;
-  filter: invert(100);
+  filter: invert(1);
   transition: 0.2s; }
-  .icon.round {
-    border-radius: 50%;
-    width: 26px;
-    min-width: 26px;
-    height: 26px;
-    margin: 0px 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #ccc; }
-    .icon.round.selected {
-      background-color: #79879a; }
-    @media (hover: hover) {
-      .icon.round:hover {
-        background-color: #79879a;
-        transition: 0.2s; } }
+  .icon.gray, .icon.grey {
+    filter: invert(0.4); }
   .icon.upsidedown {
     transform: rotate(180deg);
     transition: 0.5s; }
@@ -420,13 +422,14 @@ button {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin: 15px 0px; }
+  margin-top: 15px;
+  margin-bottom: 50px;
+  scroll-behavior: smooth; }
   .scroll-div-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
     width: 100%;
     max-width: 300px;
     position: relative; }
@@ -446,6 +449,7 @@ button {
       transition: visibility 0s, opacity 0.2s; }
       .scroll-div-container .scroll-arrow.top {
         top: 0;
+        top: -34px;
         margin-bottom: 0; }
       .scroll-div-container .scroll-arrow.bottom {
         bottom: 0;
@@ -456,32 +460,6 @@ button {
         transition: visibility 0s 0.2s, opacity 0.2s; }
       .scroll-div-container .scroll-arrow:active {
         background-color: #ccc; }
-  .scroll-div:after {
-    content: '';
-    opacity: 0;
-    z-index: -11;
-    transition: 0.2s; }
-  .scroll-div.fade-bottom:after {
-    content: '';
-    position: absolute;
-    z-index: 22;
-    top: 93%;
-    left: 0;
-    width: 100%;
-    background-image: linear-gradient(to bottom, rgba(1, 1, 1, 0), white 45%);
-    height: 18%;
-    opacity: 1;
-    transition: 0.2s; }
-  .scroll-div.fade-top:before {
-    content: '';
-    position: absolute;
-    z-index: 22;
-    left: 0;
-    width: 100%;
-    background-image: linear-gradient(to top, rgba(1, 1, 1, 0), white 45%);
-    height: 9%;
-    opacity: 1;
-    transition: 0.2s; }
 
 .menu {
   min-height: 65px;
@@ -572,7 +550,7 @@ button {
       content: ''; }
 
 ::-webkit-scrollbar {
-  width: 15px;
+  width: 10px;
   margin-right: -15px;
   display: none;
   /* Handle */ }
@@ -582,7 +560,7 @@ button {
     background: grey;
     border-radius: 7px; }
     ::-webkit-scrollbar-thumb:hover {
-      background: #white;
+      background: white;
       cursor: pointer; }
 
 #friends {

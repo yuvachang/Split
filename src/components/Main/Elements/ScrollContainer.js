@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ListItem from '../Elements/ListItem'
+// import ListItem from '../Elements/ListItem'
 
 class ScrollContainer extends Component {
   state = {
@@ -85,61 +85,59 @@ class ScrollContainer extends Component {
   }
 
   render() {
-    console.log(this.props)
+    console.log('scrollContainer props: ', this.props)
     const { showButtons } = this.props
     const { scrollDown, scrollUp } = this.state
     return (
       <div className='scroll-div-container'>
-        {!!showButtons && <div
-          className={`scroll-arrow button card ${scrollUp ? '' : 'hidden'} top`}
-          // style={{ top: `${this.list ? this.list.clientTop : 0}` }}
-          onMouseDown={() => this.scroll('up')}
-          onMouseUp={this.endScroll}
-          onMouseLeave={this.endScroll}
-          onTouchStart={() => this.scroll('up')}
-          onTouchEnd={this.endScroll}
-          onTouchCancel={this.endScroll}>
-          <img
-            className='icon'
-            src='/images/down-arrow.png'
-            style={{
-              transform: 'rotate(180deg)',
-              width: '30px',
-              filter: 'invert(0.4)',
-            }}
-          />
-        </div>}
+        {showButtons && (
+          <div
+            className={`scroll-arrow button card ${
+              scrollUp ? '' : 'hidden'
+            } top`}
+            onMouseDown={() => this.scroll('up')}
+            onMouseUp={this.endScroll}
+            onMouseLeave={this.endScroll}
+            onTouchStart={() => this.scroll('up')}
+            onTouchEnd={this.endScroll}
+            onTouchCancel={this.endScroll}>
+            <img
+              className='icon upsidedown'
+              src='/images/down-arrow.png'
+              style={{
+                width: '30px',
+                filter: 'invert(0.4)',
+              }}
+            />
+          </div>
+        )}
 
         <div
           className='scroll-div'
-          style={{ scrollBehavior: 'smooth' }}
           ref={node => {
             this.list = node
           }}>
           {this.props.children}
         </div>
 
-        {!!showButtons && <div
-          className={`scroll-arrow button card ${
-            scrollDown ? '' : 'hidden'
-          } bottom`}
-          // style={{
-          //   top: `${
-          //     this.list ? this.list.clientTop + this.list.clientHeight : 0
-          //   }`,
-          // }}
-          onMouseDown={this.scroll}
-          onMouseUp={this.endScroll}
-          onMouseLeave={this.endScroll}
-          onTouchStart={this.scroll}
-          onTouchEnd={this.endScroll}
-          onTouchCancel={this.endScroll}>
-          <img
-            className='icon'
-            src='/images/down-arrow.png'
-            style={{ width: '30px', filter: 'invert(0.4)' }}
-          />
-        </div>}
+        {showButtons && (
+          <div
+            className={`scroll-arrow button card ${
+              scrollDown ? '' : 'hidden'
+            } bottom`}
+            onMouseDown={this.scroll}
+            onMouseUp={this.endScroll}
+            onMouseLeave={this.endScroll}
+            onTouchStart={this.scroll}
+            onTouchEnd={this.endScroll}
+            onTouchCancel={this.endScroll}>
+            <img
+              className='icon'
+              src='/images/down-arrow.png'
+              style={{ width: '30px', filter: 'invert(0.4)' }}
+            />
+          </div>
+        )}
       </div>
     )
   }

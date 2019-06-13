@@ -12,7 +12,7 @@ class CardList extends Component {
   render() {
     const { list, viewItem } = this.props
     return (
-      <ScrollContainer>
+      <ScrollContainer showButtons={true}>
         {list[0]
           ? list.map(item => (
               <CardListItem
