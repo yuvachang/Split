@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
 import ListItem from '../Elements/ListItem'
+import CardListItem from '../Elements/CardListItem'
+import SelectUser from '../Elements/SelectUser'
 
 class CreateGroupForm extends Component {
   state = {
     friends: [],
     // enableSearch: true,
   }
+
+  addUser = user => {}
 
   filterFriends = (input, friendsDataArr) =>
     friendsDataArr.filter(friend => friend.index.includes(input))
@@ -44,97 +48,60 @@ class CreateGroupForm extends Component {
       handleChange,
       handleSubmit,
       createGroup,
-      // friends,
       addMember,
       members,
       removeMember,
       error,
     } = this.props
     const { friends } = this.state
-    const memberEmails = createGroup.members.map(member => member.email)
+
+    const addedMemberEmails = createGroup.members.map(member => member.email)
+
+    const unaddedFriends = friends.filter(
+      friend => !addedMemberEmails.includes(friend.email)
+    )
+
     return (
       <div className='form'>
         <form onSubmit={handleSubmit}>
-          <label>Group Name</label>
           <input
+            className='outline-only'
             type='text'
             required={true}
             name='groupName'
-            placeholder='Enter a group name'
+            placeholder='Group name...'
             value={createGroup.groupName}
             onChange={handleChange}
+            autoComplete='off'
+            autoCapitalize='off'
           />
+          <br />
 
-          <div>Group members:</div>
-          <div>
-            {members[0] ? (
-              members.map(member => (
-                <ListItem
-                  key={member.email}
-                  success={true}
-                  content={member}
-                  leftIcon={
-                    member.avatarURL ? member.avatarURL : './images/person.svg'
-                  }
-                  rightAction={() => removeMember(member)}
-                  rightIcon='./images/remove.svg'
-                />
-              ))
-            ) : (
-              <ListItem
-                key={'errormessage'}
-                error={true}
-                content={
-                  error ? { error: error } : { error: 'Add your friends.' }
-                }
-              />
-            )}
+          <SelectUser
+            // removeUser={this.removeUser}
+            addUser={addMember}
+            users={unaddedFriends}
+          />
+          <br />
+          
+
+
+          <div className='added-friends'>
+            {members[0]
+              ? members.map(member => (
+                  <div className='added-list-item'>
+                    <CardListItem
+                      key={member.email}
+                      item={member}
+                      leftIcon='/images/person.svg'
+                    />
+                  </div>
+                ))
+              : null}
           </div>
 
           <button type='submit'>Create Group</button>
         </form>
-        <hr style={{ minWidth: '100%' }} />
-        <br />
-        <div>Add friends:</div>
-
-        <div>
-          <div className='auth-form-div'>
-            <img src='./images/search.svg' className='icon' />
-            <input
-              type='text'
-              placeholder='search friends'
-              ref={node => {
-                this.searchInput = node
-              }}
-              onChange={this.search}
-            />
-          </div>
-          {friends[0] ? (
-            friends.map(friend => {
-              if (!memberEmails.includes(friend.email)) {
-                return (
-                  <ListItem
-                    key={friend.email}
-                    content={friend}
-                    clickAction={() => addMember(friend)}
-                    leftIcon={
-                      friend.avatarURL
-                        ? friend.avatarURL
-                        : './images/person.svg'
-                    }
-                    rightIcon='./images/add.svg'
-                  />
-                )
-              }
-            })
-          ) : (
-            <ListItem
-              key={'errormessage'}
-              error={true}
-              content={{ error: 'You have no friends.' }}
-            />
-          )}
-        </div>
       </div>
     )
   }

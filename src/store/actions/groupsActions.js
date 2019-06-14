@@ -12,6 +12,7 @@ const firestore = getFirestore()
 export const createGroupInProgress = group => async dispatch => {
   try {
     console.log('inside createGroupInProgress  thunk', group)
+    // saves form data to session state; gone on refresh
     dispatch({ type: actions.GROUPS_CREATING, payload: group })
   } catch (error) {
     console.log('ERROR: createGroupInProgress => ', error)

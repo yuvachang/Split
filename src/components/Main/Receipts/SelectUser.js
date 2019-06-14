@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ListItem from '../Elements/ListItem'
 
 class SelectUser extends Component {
   state = {

@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import FadingScroll from './FadingScroll'
-import ListItem from './ListItem'
 import ScrollContainer from './ScrollContainer'
 import CardListItem from './CardListItem'
 
@@ -10,7 +8,7 @@ class CardList extends Component {
   }
 
   render() {
-    const { list, viewItem } = this.props
+    const { list, switchView } = this.props
     return (
       <ScrollContainer showButtons={true}>
         {list[0]
@@ -18,7 +16,7 @@ class CardList extends Component {
               <CardListItem
                 key={item.id}
                 item={item}
-                onClick={() => viewItem('single', item)}
+                onClick={() => switchView('single', item)}
               />
             ))
           : 'Nothing here...'}

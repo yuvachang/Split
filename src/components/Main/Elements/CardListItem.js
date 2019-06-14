@@ -8,7 +8,7 @@ const CardListItem = ({
   rightIcon,
   rightAction,
 }) => (
-  <div className='button card' onClick={onClick}>
+  <div className='button card' onClick={onClick ? onClick : null}>
     {leftIcon && (
       <img
         src={leftIcon}

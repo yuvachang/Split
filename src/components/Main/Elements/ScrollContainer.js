@@ -73,19 +73,20 @@ class ScrollContainer extends Component {
 
   componentDidMount = async () => {
     if (this.list) {
-      this.list.addEventListener('scroll', e => this.scrollListener(e))
+      this.list.addEventListener('scroll', this.scrollListener)
+      window.addEventListener('resize', this.checkListLength)
       this.checkListLength()
     }
   }
 
   componentWillUnmount() {
     if (this.list) {
-      this.list.removeEventListener('scroll', e => this.scrollListener(e))
+      this.list.removeEventListener('scroll', this.scrollListener)
+      window.removeEventListener('resize', this.checkListLength)
     }
   }
 
   render() {
-    console.log('scrollContainer props: ', this.props)
     const { showButtons } = this.props
     const { scrollDown, scrollUp } = this.state
     return (

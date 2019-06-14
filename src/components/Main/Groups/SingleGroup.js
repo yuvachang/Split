@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Modal from '../Elements/Modal'
-import ListItem from '../Elements/ListItem'
+import ScrollContainer from '../Elements/ScrollContainer'
 
 class SingleGroup extends Component {
   state = {
@@ -24,7 +24,7 @@ class SingleGroup extends Component {
     const { group, deleteGroup, backToList, loading } = this.props
     const { displayModal, showDropdown } = this.state
     return (
-      <div className='scroll-div'>
+      <ScrollContainer>
         <Modal
           display={displayModal}
           header='Delete Group'
@@ -39,64 +39,52 @@ class SingleGroup extends Component {
           noAction={this.closeModal}
         />
 
-        {loading && <h3>Deleting...</h3>}
-        <div className='profile'>
-          <img
-            src={group.avatarURL ? group.avatarURL : './images/people.svg'}
-            className='icon large'
-          />
-          <img
-            src='./images/down-arrow.svg'
-            className={showDropdown ? 'icon upsidedown' : 'icon'}
-            onClick={this.toggleDropdown}
-          />
-        </div>
+        {/* <img
+          src='./images/down-arrow.svg'
+          className={`icon grey ${showDropdown && 'upsidedown'}`}
+          onClick={this.toggleDropdown}
+        />
         <div className={showDropdown ? 'profile-menu' : 'profile-menu hidden'}>
           <img
-            src='./images/poke.png'
-            className='icon'
-            style={{ transform: 'rotate(90deg)' }}
-          />
-          <img
-            src='./images/dislike.svg'
-            className='icon'
+            src='./images/trash.svg'
+            className='icon grey'
             onClick={this.openModal}
           />
-        </div>
+        </div> */}
+
         <div>
           <h3>{group.groupName}:</h3>
 
-          <div>group receipts, group spendings</div>
+          <div>
+            group receipts
+            <br />
+            group spendings
+          </div>
           <br />
           <div>Group members:</div>
-          <div>
-            {/* {group.members[0]
-              ? group.members.map(member => (
-                  <ListItem
-                    key={member.email}
-                    success={true}
-                    content={member}
-                    clickAction={() => null}
-                    leftIcon={
-                      member.avatarURL
-                        ? member.avatarURL
-                        : './images/person.svg'
-                    }
-                    rightIcon='./images/remove.svg'
-                  />
-                ))
-              : null} */}
-
+          <ul className='comma-list'>
             {group.members[0]
-              ? group.members.map(member => <p>{member.displayName}</p>)
+              ? group.members.map(member => <li>{member.displayName}</li>)
               : null}
-          </div>
+          </ul>
         </div>
-        <br />
-        <div className='button' onClick={backToList}>
+
+        <div className='button card' onClick={backToList}>
           Back to list
         </div>
-      </div>
+        <div className='button card' onClick={this.toggleDropdown}>
+          {showDropdown ? 'Cancel' : 'Delete group'}
+        </div>
+        <button
+          className={`card red ${!showDropdown && 'collapsed'}`}
+          onClick={async () => {
+            await deleteGroup(group.id)
+            this.closeModal()
+            backToList()
+          }}>
+          Delete group forever
+        </button>
+      </ScrollContainer>
     )
   }
 }

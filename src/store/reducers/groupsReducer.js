@@ -6,7 +6,7 @@ const initialState = {
   searchResults: [],
   selected: {},
   groups: [],
-  beingCreated: {}
+  createGroupInProgress: {}
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -27,13 +27,13 @@ export default (state = initialState, { type, payload }) => {
     case actions.GROUPS_CREATING:
       return {
         ...state, 
-        beingCreated: payload
+        createGroupInProgress: payload
       }
     case actions.GROUPS_CREATE:
       return {
         ...state,
         groups: [...state.groups, payload],
-        beingCreated: {},
+        createGroupInProgress: {},
         error: null,
       }
     case actions.GROUPS_DELETE:

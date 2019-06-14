@@ -185,75 +185,80 @@ table {
 //   }
 // }
 
-.select-user {
-  &.container {
-    position: relative;
+// .select-user {
+//   &.container {
+//     position: relative;
+    
+//     box-sizing: border-box;
+//     width: 100%;
+//     min-height: 30px;
+    
+//     border: 1.5px solid #ccc;
+//     border-radius: 5px;
 
-    width: 100%;
-    border: 1.5px solid #ccc;
-    border-radius: 5px;
-    margin-top: 1.5px;
+//     margin-top: 1.5px;
+//     padding: 10px;
+    
+//     text-align: center;
+//     // padding: 0px 8px;
+//   }
 
-    text-align: center;
-    // padding: 0px 8px;
-  }
+//   &.menu {
+//     // display: flex;
+//   }
 
-  &.menu {
-    // display: flex;
-  }
+//   &.open {
+//     position: relative;
 
-  &.open {
-    position: relative;
+//     width: 100%;
+//     height: auto;
+//     max-height: 235px;
+//     overflow: scroll;
+//     // transform: scaleY(1);
+//     transition: max-height 0.3s;
+//     & > .button {
+//       padding: 0;
+//       filter: drop-shadow($no-shadow);
+//     }
+//   }
 
-    width: 100%;
-    height: auto;
-    max-height: 235px;
-    overflow: scroll;
-    // transform: scaleY(1);
-    transition: max-height 0.3s;
-    & > .button {
-      padding: 0;
-      filter: drop-shadow($no-shadow);
-    }
-  }
+//   &.closed {
+//     position: relative;
 
-  &.closed {
-    position: relative;
+//     max-height: 0px;
+//     width: 100%;
+//     overflow: scroll;
+//     border: none;
+//     // transform: scaleY(0);
+//     transition: max-height 0.3s;
+//     & > .button {
+//       filter: drop-shadow($no-shadow);
+//     }
+//   }
 
-    max-height: 0px;
-    width: 100%;
-    overflow: scroll;
-    border: none;
-    // transform: scaleY(0);
-    transition: max-height 0.3s;
-    & > .button {
-      filter: drop-shadow($no-shadow);
-    }
-  }
+//   &.message {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
 
-  &.message {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+//     text-align: center;
+//     font-size: 1em;
 
-    text-align: center;
-    font-size: 1em;
+//     // overflow: hidden;
+//     // white-space: nowrap;
+//     // text-overflow: ellipsis;
+//     margin-right: 35px;
 
-    // overflow: hidden;
-    // white-space: nowrap;
-    // text-overflow: ellipsis;
-    margin-right: 35px;
-
-    & > .comma-list {
-      margin: 0;
-      & > li {
-        align-content: center;
-      }
-      // @media (hover: hover) {
-      //   & > li:hover {
-      //     cursor: pointer;
-      //   }
-      // }
-    }
-  }
-}
+//     & > .comma-list {
+//       margin: 0;
+//       & > li {
+//         align-content: center;
+//       }
+//       // @media (hover: hover) {
+//       //   & > li:hover {
+//       //     cursor: pointer;
+//       //   }
+//       // }
+//     }
+//   }
+// }
