@@ -5,87 +5,102 @@ import {
   makeFriendRequest,
   findPerson,
   removeFriend,
+  fetchPending,
 } from '../../../store/actions/friendsActions'
 import FindFriends from './FindFriends'
-import ListPage from '../Elements/ListPage'
 import SingleFriend from './SingleFriend'
-import FriendsPending from './FriendsPending'
+import TopMenu from '../Elements/TopMenu'
+import CardList from '../Elements/CardList'
 
 class Friends extends Component {
   state = {
     view: 'list',
+    searchInput: '',
+    friends: [],
     singleFriend: {},
   }
 
-  switchView = (view, friend) => {
+  switchView = async (view, friend) => {
     if (friend) {
-      this.setState({
+      await this.setState({
         singleFriend: friend,
         view: 'singleView',
       })
     } else {
-      this.setState({ view })
+      await this.setState({ view })
     }
   }
 
+  filterFriends = (input, friendsDataArr) =>
+    friendsDataArr.filter(friend =>
+      friend.displayName.toLowerCase().includes(input.toLowerCase())
+    )
+
+  search = async e => {
+    if (e.target.value.length > 0) {
+      const results = this.filterFriends(e.target.value, this.props.friends)
+      await this.setState({ friends: results, searchInput: e.target.value })
+    } else {
+      await this.setState({ friends: this.props.friends, searchInput: '' })
+    }
+  }
+
+  componentDidUpdate = async prevProps => {
+    if (prevProps.fbfriends !== this.props.fbfriends) {
+      // console.log('friends componentdidupdate: fetch friends')
+      await this.props.fetchFriends(this.props.currentUID)
+      await this.setState({
+        friends: this.props.friends,
+      })
+    }
+    // Object.entries(this.props).forEach(
+    //   ([key, val]) =>
+    //     prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    // )
+  }
+
+  componentDidMount = async () => {
+    await this.props.fetchFriends(this.props.currentUID)
+    await this.props.fetchPending(this.props.currentUID)
+
+    await this.setState({
+      friends: this.props.friends,
+    })
+  }
+
   render() {
-    const {
-      friends,
-      makeFriendRequest,
-      findPerson,
-      currentEmail,
-      currentUID,
-      fetchFriends,
-      loading,
-      searchResults,
-      removeFriend,
-      receivedRequest,
-    } = this.props
-    const { view, singleFriend } = this.state
+    const { currentUID, removeFriend } = this.props
+    const { view, singleFriend, friends, searchInput } = this.state
 
     return (
       <div id='friends'>
-        <div className='menu'>
-
-
-          <div className='search-div'>
-            {/* <label>Last Name:</label> */}
-            <img src='./images/search.svg' className='icon' />
-            <input
-              placeholder='Search your friends...'
-              type='text'
-              name='lastName'
-              // value={lastName}
-              // onChange={handleChange}
-              // required={authType === 'signup' ? true : false}
-            />
-          </div>
-
-          
-        </div>
-
-        {view === 'search' && (
-          <FindFriends
-            friends={friends}
-            makeFriendRequest={makeFriendRequest}
-            findPerson={findPerson}
-            fetchFriends={fetchFriends}
-            currentUID={currentUID}
-            currentEmail={currentEmail}
-            loading={loading}
-            searchResults={searchResults}
-          />
-        )}
-
-        {view === 'notifs' && <FriendsPending />}
+        <TopMenu
+          view={view}
+          searchPlaceholder='Find existing friend...'
+          search={this.search}
+          b1Src='/images/list.svg'
+          b1Click={() => this.switchView('list')}
+          b2Src='/images/add.svg'
+          b2Click={() => this.switchView('add')}
+        />
 
         {view === 'list' && (
-          <ListPage
-            friends={friends}
-            fetchFriends={() => fetchFriends(currentUID)}
-            viewItem={this.switchView}
-          />
+          <div>
+            <br />
+            {searchInput ? `Searching for '${searchInput}':` : 'Your friends:'}
+          </div>
         )}
+
+        {view === 'list' &&
+          (friends[0] ? (
+            <CardList list={friends} onClick={this.switchView} />
+          ) : (
+            'Nobody here...'
+          ))}
+
+        {view === 'add' && <FindFriends />}
+
+        {/* {view === 'notif' && <FriendsPending />} */}
 
         {view === 'singleView' && (
           <div id='groups-list'>
@@ -93,7 +108,6 @@ class Friends extends Component {
               backToList={() => this.switchView('list')}
               friend={singleFriend}
               removeFriend={() => removeFriend(singleFriend.email, currentUID)}
-              loading={loading}
             />
           </div>
         )}
@@ -104,12 +118,11 @@ class Friends extends Component {
 
 const mapState = state => ({
   currentUID: state.firebase.auth.uid,
-  currentEmail: state.firebase.auth.email,
-  searchResults: state.friends.searchResults,
-  selected: state.friends.selected,
   friends: state.friends.friends,
-  loading: state.friends.loading,
   receivedRequest: state.firebase.profile.pending.friends.receivedRequest,
+
+  pending: state.firebase.profile.pending.friends,
+  fbfriends: state.firebase.profile.friends,
 })
 
 const mapDispatch = dispatch => ({
@@ -118,48 +131,10 @@ const mapDispatch = dispatch => ({
   findPerson: (input, email, friends) =>
     dispatch(findPerson(input, email, friends)),
   removeFriend: (email, uid) => dispatch(removeFriend(email, uid)),
+  fetchPending: currentUID => dispatch(fetchPending(currentUID)),
 })
 
 export default connect(
   mapState,
   mapDispatch
 )(Friends)
-
-
-{/* <div className={view === 'list' ? 'icon selected' : 'icon'}>
-            <img
-              src='./images/people.svg'
-              className='icon large'
-              onClick={() => {
-                this.switchView('list')
-              }}
-            />
-          </div>
-
-          <div
-            className={
-              view === 'notifs'
-                ? receivedRequest[0]
-                  ? 'button-icon notify selected'
-                  : 'button-icon selected'
-                : receivedRequest[0]
-                ? 'button-icon notify'
-                : 'button-icon'
-            }>
-            <img
-              src='./images/bell.svg'
-              className='icon large'
-              onClick={() => this.switchView('notifs')}
-            />
-          </div>
-
-          <div
-            className={
-              view === 'search' ? 'button-icon selected' : 'button-icon'
-            }>
-            <img
-              src='./images/search.svg'
-              className='icon large'
-              onClick={() => this.switchView('search')}
-            />
-          </div> */}

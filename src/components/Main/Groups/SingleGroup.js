@@ -64,7 +64,7 @@ class SingleGroup extends Component {
           <div>Group members:</div>
           <ul className='comma-list'>
             {group.members[0]
-              ? group.members.map(member => <li>{member.displayName}</li>)
+              ? group.members.map(member => <li key={member.id}>{member.displayName}</li>)
               : null}
           </ul>
         </div>

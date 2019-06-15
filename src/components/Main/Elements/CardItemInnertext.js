@@ -1,7 +1,7 @@
 import React from 'react'
 
-const CardListItem = ({
-  item,
+const CardItemInnertext = ({
+  message,
   onClick,
   leftIcon,
   leftAction,
@@ -9,8 +9,8 @@ const CardListItem = ({
   rightAction,
 }) => (
   <div
-    className='button card'
-    onClick={onClick ? (item.error ? null : onClick) : null}>
+    className='button card blue'
+    onClick={onClick ? onClick : null}>
     {leftIcon && (
       <img
         src={leftIcon}
@@ -18,10 +18,8 @@ const CardListItem = ({
         onClick={leftAction ? leftAction : () => null}
       />
     )}
-    <div className='innertext bold'>
-      {item.error
-        ? item.error
-        : item.displayName || item.groupName || item.receiptName}
+    <div className='innertext small'>
+      {message}
     </div>
     {rightIcon && (
       <img
@@ -33,4 +31,4 @@ const CardListItem = ({
   </div>
 )
 
-export default CardListItem
+export default CardItemInnertext

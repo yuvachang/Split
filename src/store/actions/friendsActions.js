@@ -14,9 +14,9 @@ export const findPerson = (
   currFriendsArr
 ) => async dispatch => {
   try {
-    dispatch({ type: actions.FRIENDS_LOADING })
+    // dispatch({ type: actions.FRIENDS_LOADING })
 
-    console.log('inside findPerson', nameOrEmail, currentEmail)
+    console.log('inside findPerson', nameOrEmail, currentEmail, currFriendsArr)
 
     //get own friends list
     const friendEmails = currFriendsArr.map(friend =>
@@ -32,20 +32,21 @@ export const findPerson = (
 
     usersRef.forEach(result => {
       let doc = result.data()
-      // if search returns self or already a friend
+      // filter out current friends and self
       if (doc.email !== currentEmail && !friendEmails.includes(doc.email)) {
         // check if request pending HERE
+        doc.id = result.id
         results.push(doc)
       }
     })
 
     // directly returning search results, not saving to store
     if (results[0]) {
-      dispatch({ type: actions.FRIENDS_ENDLOADING })
+      // dispatch({ type: actions.FRIENDS_ENDLOADING })
       return results
     } else {
-      dispatch({ type: actions.FRIENDS_ENDLOADING })
-      return [{ error: 'No new people found with that name or email.' }]
+      // dispatch({ type: actions.FRIENDS_ENDLOADING })
+      return [{ id: '123', error: 'Nothing found' }]
     }
   } catch (error) {
     console.error('ERROR: findPerson => ', error)
@@ -53,21 +54,20 @@ export const findPerson = (
   }
 }
 
-export const makeFriendRequest = (
-  friendEmail,
-  currentUID
-) => async dispatch => {
+export const makeFriendRequest = (friendId, currentUID) => async dispatch => {
   try {
-    dispatch({ type: actions.FRIENDS_LOADING })
+    // dispatch({ type: actions.FRIENDS_LOADING })
 
     // get friend reference and data
-    const { userId: friendId, userData: friendData } = await getUserByEmail(
-      friendEmail
-    )
+    // const { userId: friendId, userData: friendData } = await getUserByEmail(
+    //   friendEmail
+    // )
     const friendRef = await firestore.collection('users').doc(friendId)
+    const friendData = await getDataWithRef(friendRef)
 
     // get current user reference
-    const { userRef, userData } = await getCurrentUser(currentUID)
+    const userRef = await firestore.collection('users').doc(currentUID)
+    // const { userRef, userData } = await getCurrentUser(currentUID)
 
     const batch = firestore.batch()
 
@@ -83,7 +83,7 @@ export const makeFriendRequest = (
 
     batch.commit()
 
-    dispatch({ type: actions.FRIENDS_ENDLOADING })
+    dispatch({ type: actions.FRIENDS_MADE_REQUEST, payload: friendData })
   } catch (error) {
     console.error('ERROR: makeFriendRequest => ', error)
     dispatch({ type: actions.FRIENDS_ERROR, payload: error.message })
@@ -95,8 +95,9 @@ export const cancelOutgoingRequest = (
   currentUID
 ) => async dispatch => {
   try {
-    dispatch({ type: actions.FRIENDS_LOADING })
+    // dispatch({ type: actions.FRIENDS_LOADING })
 
+    console.log('inside cancelOutgoingRequest', friendId)
     // get friend reference and data
     const friendRef = await firestore.collection('users').doc(friendId)
 
@@ -117,9 +118,9 @@ export const cancelOutgoingRequest = (
       ),
     })
 
-    batch.commit()
+    await batch.commit()
 
-    dispatch({ type: actions.FRIENDS_ENDLOADING })
+    dispatch({ type: actions.FRIENDS_CANCEL_REQUEST, payload: friendId })
   } catch (error) {
     console.error('ERROR: cancelOutgoingRequest => ', error)
     dispatch({ type: actions.FRIENDS_ERROR, payload: error.message })
@@ -131,7 +132,7 @@ export const confirmFriendRequest = (
   currentUID
 ) => async dispatch => {
   try {
-    dispatch({ type: actions.FRIENDS_LOADING })
+    // dispatch({ type: actions.FRIENDS_LOADING })
 
     console.log('inside confirmfriendrequest')
     // get friend reference and data
@@ -167,7 +168,6 @@ export const confirmFriendRequest = (
 
     // add friend to redux store's friends list
     dispatch({ type: actions.FRIENDS_ADD, payload: friendData })
-    dispatch({ type: actions.FRIENDS_ENDLOADING })
   } catch (error) {
     console.error('ERROR: confirmFriendRequest => ', error)
     dispatch({ type: actions.FRIENDS_ERROR, payload: error.message })
@@ -195,7 +195,9 @@ export const dismissConfirm = (friendId, currentUID) => async dispatch => {
 
 export const rejectFriendRequest = (friendId, currentUID) => async dispatch => {
   try {
-    dispatch({ type: actions.FRIENDS_LOADING })
+    // dispatch({ type: actions.FRIENDS_LOADING })
+
+    console.log('inside rejectfriendreuqest', friendId, currentUID)
 
     // get friend reference and data
     const friendRef = await firestore.collection('users').doc(friendId)
@@ -218,7 +220,7 @@ export const rejectFriendRequest = (friendId, currentUID) => async dispatch => {
 
     batch.commit()
 
-    dispatch({ type: actions.FRIENDS_ENDLOADING })
+    // dispatch({ type: actions.FRIENDS_ENDLOADING })
   } catch (error) {
     console.error('ERROR: rejectFriendRequest => ', error)
     dispatch({ type: actions.FRIENDS_ERROR, payload: error.message })
@@ -227,8 +229,6 @@ export const rejectFriendRequest = (friendId, currentUID) => async dispatch => {
 
 export const fetchPending = currentUID => async dispatch => {
   try {
-    dispatch({ type: actions.FRIENDS_LOADING })
-
     // get current user reference
     const { userRef, userData } = await getCurrentUser(currentUID)
 
@@ -264,7 +264,6 @@ export const fetchPending = currentUID => async dispatch => {
       type: actions.FRIENDS_PENDING,
       payload: { confirmed, madeRequest, receivedRequest },
     })
-    dispatch({ type: actions.FRIENDS_ENDLOADING })
   } catch (error) {
     console.error('ERROR: rejectFriendRequest => ', error)
     dispatch({ type: actions.FRIENDS_ERROR, payload: error.message })
@@ -288,7 +287,6 @@ export const fetchFriends = currentUID => async dispatch => {
         return getDataWithRef(friend)
       })
     )
-
     dispatch({ type: actions.FRIENDS_LIST, payload: friends })
   } catch (error) {
     console.error('ERROR: fetchFriends => ', error)
@@ -298,7 +296,7 @@ export const fetchFriends = currentUID => async dispatch => {
 
 export const removeFriend = (email, currentUID) => async dispatch => {
   try {
-    dispatch({ type: actions.FRIENDS_LOADING })
+    // dispatch({ type: actions.FRIENDS_LOADING })
 
     console.log('inside removeFriend')
 
@@ -326,7 +324,6 @@ export const removeFriend = (email, currentUID) => async dispatch => {
     batch.commit()
 
     dispatch({ type: actions.FRIENDS_REMOVE, payload: friendData.email })
-    dispatch({ type: actions.FRIENDS_ENDLOADING })
   } catch (error) {
     console.error('ERROR: removeFriend => ', error)
     dispatch({ type: actions.FRIENDS_ERROR, payload: error.message })

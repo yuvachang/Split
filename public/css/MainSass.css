@@ -317,9 +317,8 @@ button {
   text-align: center;
   width: 75%;
   min-width: 200px;
-  min-height: min-content;
+  min-height: 45px;
   color: black;
-  font-weight: bold;
   font-size: 1em;
   display: flex;
   justify-content: center;
@@ -336,6 +335,10 @@ button {
     visibility: visible;
     opacity: 1;
     transition: visibility 0s, opacity 1s; }
+  @media (hover: hover) {
+    .button.grey-hover:hover,
+    button.grey-hover:hover {
+      background-color: #79879a; } }
   .button.red,
   button.red {
     background-color: red; }
@@ -343,6 +346,19 @@ button {
       .button.red:hover,
       button.red:hover {
         background-color: darkred; } }
+  @media (hover: hover) {
+    .button.noclick:hover,
+    button.noclick:hover {
+      cursor: default; } }
+  .button.blue,
+  button.blue {
+    background-color: #79879a;
+    color: white; }
+    @media (hover: hover) {
+      .button.blue:hover,
+      button.blue:hover {
+        cursor: default;
+        background-color: #3c434d; } }
   .button.collapsed,
   button.collapsed {
     visibility: hidden;
@@ -354,11 +370,16 @@ button {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis; }
+    .button > .innertext.small,
+    button > .innertext.small {
+      font-size: 0.8em; }
+    .button > .innertext.bold,
+    button > .innertext.bold {
+      font-weight: bold; }
   @media (hover: hover) {
     .button:hover,
     button:hover {
       cursor: pointer;
-      background-color: rgba(150, 150, 150, 0.7);
       background-color: orange;
       color: white;
       transition: 0s; } }

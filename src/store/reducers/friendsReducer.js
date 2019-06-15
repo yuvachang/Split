@@ -3,7 +3,6 @@ import * as actions from '../actions/actionTypes'
 const initialState = {
   loading: false,
   error: null,
-  // searchResults: [],
   selected: {},
   friends: [],
   pending: {
@@ -24,44 +23,66 @@ export default (state = initialState, { type, payload }) => {
     case actions.FRIENDS_LIST:
       return {
         ...state,
-        friends: [...payload],
+        friends: payload,
         error: null,
-        loading: false,
+        // loading: false,
       }
     case actions.FRIENDS_ADD:
       return {
         ...state,
         friends: [...state.friends, payload],
-        // searchResults: state.searchResults.filter(
-        //   result => result.email !== payload.email
-        // ),
         error: null,
+        loading: false,
       }
     case actions.FRIENDS_REMOVE:
       return {
         ...state,
+        loading: false,
         friends: state.friends.filter(friend => friend.email !== payload),
       }
-    case actions.FRIENDS_PENDING: 
-      return {
-        ...state,
-        pending: payload
-      }
-    // case actions.FRIENDS_CANCEL_REQUEST:
-    //   return {
-    //     ...state,
-    //     pending: payload
-    //   }
-    case actions.FRIENDS_CLEARCONFIRM: 
-      return {
-        ...state, 
-        pending: {
-          ...state.pending,
-          confirmed: state.pending.confirmed.filter( user => user.id!==payload)
-        }
-      }
+
     case actions.FRIENDS_SELECT:
       return { ...state, selected: payload, error: null }
+
+    case actions.FRIENDS_PENDING:
+      return {
+        ...state,
+        pending: payload,
+      }
+
+    case actions.FRIENDS_MADE_REQUEST:
+      return {
+        ...state,
+        loading: false,
+        pending: {
+          ...state.pending,
+          madeRequest: [...state.pending.madeRequest, payload]
+        }
+      }
+
+    case actions.FRIENDS_CANCEL_REQUEST:
+      return {
+        ...state,
+        loading: false,
+        pending: {
+          ...state.pending,
+          madeRequest: state.pending.madeRequest.filter(
+            user => user.id !== payload
+          ),
+        },
+      }
+
+    case actions.FRIENDS_CLEARCONFIRM:
+      return {
+        ...state,
+        pending: {
+          ...state.pending,
+          confirmed: state.pending.confirmed.filter(
+            user => user.id !== payload
+          ),
+        },
+      }
+
     default:
       return state
   }

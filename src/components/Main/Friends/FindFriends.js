@@ -1,109 +1,239 @@
 import React, { Component } from 'react'
-import ListItem from '../Elements/ListItem'
-import Modal from '../Elements/Modal'
-import FadingScroll from '../Elements/FadingScroll'
+import { connect } from 'react-redux'
+import {
+  makeFriendRequest,
+  findPerson,
+  confirmFriendRequest,
+  rejectFriendRequest,
+  cancelOutgoingRequest,
+} from '../../../store/actions/friendsActions'
+import ScrollContainer from '../Elements/ScrollContainer'
+import CardListItemConfirm from '../Elements/CardListItemConfirm'
+import CardItemInnertext from '../Elements/CardItemInnertext'
+
+let searchTimeout
 
 // needs to be class component to have ref on input node
 class FindFriends extends Component {
   state = {
+    showConfirmPerson: {},
     enableSearch: true,
     searchResults: [],
-    displayModal: false,
-    person: {},
-    added: '',
+    madeRequestEmails: [],
+    receivedRequestEmails: [],
+
+    madeRequestIds: [],
+    receivedRequestIds: [],
   }
 
   search = async () => {
-    const { currentEmail, friends, findPerson } = this.props
-    console.log(currentEmail)
-    if (this.searchInput.value.length > 2 && !!this.state.enableSearch) {
+    const { currentEmail, findPerson } = this.props
+
+    if (this.searchInput.value.length > 1 && !!this.state.enableSearch) {
       await this.setState({ enableSearch: false })
-      window.setTimeout(async () => {
+      searchTimeout = setTimeout(async () => {
         const results = await findPerson(
           this.searchInput.value,
           currentEmail,
-          friends
+          this.props.friends
         )
-        await this.setState({ searchResults: results, enableSearch: true })
+        await this.setState({
+          showConfirmPerson: {},
+          searchResults: results,
+          enableSearch: true,
+        })
       }, 800)
+    }
+    if (!this.searchInput.value.length) {
+      clearTimeout(searchTimeout)
+      await this.setState({
+        showConfirmPerson: {},
+        searchResults: [],
+        enableSearch: true,
+      })
+      return
     }
   }
 
-  openModal = async person => {
-    await this.setState({ displayModal: true, person })
-  }
-
   handleAdd = async person => {
-    const newResults = this.state.searchResults.filter(
-      result => result.email !== person.email
-    )
+    const { makeFriendRequest, currentUID } = this.props
+    await makeFriendRequest(person.id, currentUID)
+
     await this.setState({
-      searchResults: newResults,
-      added: `Request sent to ${person.displayName}!`,
+      showConfirmPerson: {},
+      madeRequestIds: [...this.state.madeRequestIds, person.id],
     })
   }
 
-  closeModal = async () => {
-    await this.setState({ displayModal: false, person: {} })
+  showConfirmAddPerson = async person => {
+    await this.setState({
+      showConfirmPerson: person,
+    })
+  }
+
+  clearConfirmPerson = async () => {
+    await this.setState({
+      showConfirmPerson: {},
+    })
+  }
+
+  cancelRequest = async person => {
+    const { cancelOutgoingRequest, currentUID } = this.props
+    await cancelOutgoingRequest(person.id, currentUID)
+
+    await this.setState({
+      madeRequestIds: this.state.madeRequestIds.filter(id => id !== person.id),
+    })
+  }
+
+  handleIncomingRequest = async (person, accept) => {
+    if (accept) {
+      const { confirmFriendRequest, currentUID } = this.props
+      await confirmFriendRequest(person.id, currentUID)
+      this.search()
+    } else {
+      const { rejectFriendRequest, currentUID } = this.props
+      await rejectFriendRequest(person.id, currentUID)
+    }
+
+    await this.setState({
+      receivedRequestEmails: this.state.receivedRequestEmails.filter(
+        id => id !== person.id
+      ),
+    })
+  }
+
+  mapPendingIds = async () => {
+    await this.setState({
+      madeRequestIds: this.props.pending.madeRequest.map(ref => ref.id),
+      receivedRequestIds: this.props.pending.receivedRequest.map(ref => ref.id),
+    })
+  }
+
+  componentDidUpdate = async prevProps => {
+    if (prevProps.pending !== this.props.pending) {
+      // console.log('findfriends componentdidupdate')
+
+      // Object.entries(this.props).forEach(
+      //   ([key, val]) =>
+      //     prevProps[key] !== val &&
+      //     console.log(`findfriends Prop '${key}' changed`)
+      // )
+      await this.mapPendingIds()
+    }
+    if (prevProps.friends.length !== this.props.friends.length) {
+      this.search()
+    }
+  }
+
+  componentDidMount = async () => {
+    await this.mapPendingIds()
+  }
+
+  componentWillUnmount = () => {
+    clearTimeout(searchTimeout)
   }
 
   render() {
-    const { displayModal, person, searchResults, added } = this.state
+    const {
+      searchResults,
+      showConfirmPerson,
+      madeRequestIds,
+      receivedRequestIds,
+    } = this.state
 
-    const { makeFriendRequest, currentUID, loading } = this.props
+    // const {
+    //   loading,
+    // } = this.props
 
     return (
       <div id='friends-add'>
-        <Modal
-          display={displayModal}
-          header='Confirm Add Friend'
-          message={`Add ${this.state.person.displayName} as a friend?`}
-          yesMsg='Yes'
-          yesAction={async () => {
-            await makeFriendRequest(person.email, currentUID)
-            await this.handleAdd(person)
-          }}
-          noMsg='Cancel'
-          noAction={this.closeModal}
-        />
+        <br />
+        {/* <div>{loading ? 'Loading...' : 'Search for friends:'}</div> */}
         <div>Search for friends:</div>
         <br />
-
-        <div className='auth-form-div'>
-          <img src='./images/search.svg' className='icon' />
+        <div className='search-div'>
+          <img src='./images/search.svg' className='icon grey' />
           <input
+            className='textarea-only'
+            placeholder='Name or email...'
             type='text'
-            placeholder='name or email'
+            onChange={this.search}
+            autoCapitalize='off'
+            autoComplete='off'
             ref={node => {
               this.searchInput = node
             }}
-            onChange={this.search}
           />
         </div>
-        <br />
-        {loading && <div>Loading.</div>}
-        {added && <div>{added}</div>}
-        <br />
-        <FadingScroll styles={{ height: 'calc(100vh - 350px)' }}>
-          {searchResults.map(person =>
-            person.error ? (
-              <ListItem key={person.error} error={true} content={person} />
-            ) : (
-              <ListItem
-                key={person.email}
-                error={false}
-                content={person}
-                clickAction={this.openModal}
-                leftIcon={'./images/person.svg'}
-                rightIcon={'./images/add.svg'}
-                success={!!person.added}
-              />
-            )
-          )}
-        </FadingScroll>
+        <ScrollContainer showButtons={true}>
+          {searchResults[0]
+            ? searchResults.map(person => {
+                if (madeRequestIds.includes(person.id)) {
+                  return (
+                    <CardItemInnertext
+                      key={person.id}
+                      message='Request sent'
+                      leftIcon='/images/restore.svg'
+                      leftAction={() => this.cancelRequest(person)}
+                    />
+                  )
+                }
+                if (receivedRequestIds.includes(person.id)) {
+                  return (
+                    <CardItemInnertext
+                      key={person.id}
+                      message='Accept request?'
+                      leftIcon='/images/remove.svg'
+                      leftAction={() => this.handleIncomingRequest(person)}
+                      rightIcon='/images/check.svg'
+                      rightAction={() => this.handleIncomingRequest(person, 1)}
+                    />
+                  )
+                } else {
+                  return (
+                    <CardListItemConfirm
+                      key={person.id}
+                      item={person}
+                      showConfirm={
+                        showConfirmPerson.id === person.id ? true : false
+                      }
+                      onClick={() => this.showConfirmAddPerson(person)}
+                      leftAction={this.clearConfirmPerson}
+                      rightAction={() => this.handleAdd(person)}
+                    />
+                  )
+                }
+              })
+            : null}
+        </ScrollContainer>
       </div>
     )
   }
 }
 
-export default FindFriends
+const mapState = state => ({
+  currentUID: state.firebase.auth.uid,
+  currentEmail: state.firebase.auth.email,
+  friends: state.friends.friends,
+  loading: state.friends.loading,
+  pending: state.firebase.profile.pending.friends,
+})
+
+const mapDispatch = dispatch => ({
+  confirmFriendRequest: (friendId, currentUID) =>
+    dispatch(confirmFriendRequest(friendId, currentUID)),
+  rejectFriendRequest: (friendId, currentUID) =>
+    dispatch(rejectFriendRequest(friendId, currentUID)),
+  makeFriendRequest: (friendId, uid) =>
+    dispatch(makeFriendRequest(friendId, uid)),
+  findPerson: (input, email, friends) =>
+    dispatch(findPerson(input, email, friends)),
+  cancelOutgoingRequest: (friendId, currentUID) =>
+    dispatch(cancelOutgoingRequest(friendId, currentUID)),
+})
+
+export default connect(
+  mapState,
+  mapDispatch
+)(FindFriends)

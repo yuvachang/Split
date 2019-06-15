@@ -55,7 +55,7 @@ class CreateGroupForm extends Component {
     } = this.props
     const { friends } = this.state
 
-    const addedMemberEmails = createGroup.members.map(member => member.email)
+    
 
     const unaddedFriends = friends.filter(
       friend => !addedMemberEmails.includes(friend.email)

@@ -8,7 +8,7 @@ class CardList extends Component {
   }
 
   render() {
-    const { list, switchView } = this.props
+    const { list, onClick } = this.props
     return (
       <ScrollContainer showButtons={true}>
         {list[0]
@@ -16,10 +16,10 @@ class CardList extends Component {
               <CardListItem
                 key={item.id}
                 item={item}
-                onClick={() => switchView('single', item)}
+                onClick={() => onClick('single', item)}
               />
             ))
-          : 'Nothing here...'}
+          : null}
       </ScrollContainer>
     )
   }

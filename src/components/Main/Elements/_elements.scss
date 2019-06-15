@@ -161,9 +161,10 @@ button {
 
   width: 75%;
   min-width: 200px;
-  min-height: min-content;
+  // min-height: min-content;
+  min-height: 45px;
   color: black;
-  font-weight: bold;
+  
   font-size: 1em;
 
   display: flex;
@@ -189,11 +190,39 @@ button {
     transition: visibility 0s, opacity 1s;
   }
 
+  &.grey-hover {
+    @media (hover: hover ) {
+      &:hover {
+        background-color: $app-bg-lighter;
+      }
+    }
+  }
+
   &.red {
     background-color: red;
     @media (hover: hover) {
       &:hover {
         background-color: darkred;
+      }
+    }
+  }
+
+  &.noclick{
+    @media (hover: hover) {
+      &:hover {
+        cursor: default;
+      }
+    }
+  }
+
+  &.blue {
+    background-color: $app-bg-lighter;
+    color: white;
+    
+    @media (hover: hover) {
+      &:hover {
+        cursor: default;
+        background-color: $app-bg-color;
       }
     }
   }
@@ -210,67 +239,24 @@ button {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &.small {
+      font-size: 0.8em;
+    }
+
+    &.bold {
+      font-weight: bold;
+    }
   }
-  // &.cancel {
-  //   background-color: $button-cancel-bg-color;
-  // }
-
-  // &.success {
-  //   background-color: $button-success-bg-color;
-  //   filter: drop-shadow($no-shadow);
-  // }
-
-  // &-icon {
-  //   border: 1.5px solid white;
-  //   border-radius: 5px;
-  //   box-sizing: border-box;
-  //   height: 40px;
-  //   width: 40px;
-  //   margin-top: 10px;
-
-  //   display: flex;
-  //   justify-content: center;
-  //   align-items: center;
-
-  //   box-shadow: $shadow;
-
-  //   &.selected {
-  //     background-color: $button-hover-bg-color;
-  //     box-shadow: $no-shadow;
-  //   }
-  //   &.notify {
-  //     background-color: red;
-  //   }
-  // }
-
-  // &.error-msg {
-  //   background-color: $error-bg-color;
-  //   filter: drop-shadow($no-shadow);
-  //   border: none;
-  // }
 
   @media (hover: hover) {
     &:hover {
       cursor: pointer;
-      background-color: $button-hover-bg-color;
+      // background-color: $button-hover-bg-color;
       background-color: orange;
       color: white;
       transition: 0s;
     }
-
-    // &.success:hover {
-    //   background-color: $button-success-bg-color;
-    //   cursor: default;
-    // }
-
-    // &.cancel:hover {
-    //   filter: brightness(0.7);
-    // }
-
-    // &.error-msg:hover {
-    //   background-color: $error-bg-color;
-    //   cursor: default;
-    // }
   }
 
   &:active,

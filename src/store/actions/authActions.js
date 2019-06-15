@@ -31,25 +31,21 @@ export const checkUserIndex = currentUID => async dispatch => {
   try {
     // get current user reference
     const { userRef, userData } = await getCurrentUser(currentUID)
+    const batch = firestore.batch()
+
     // console.log('inside checkuserindex')
     if (!userData.index) {
       console.log('AuthActions/checkUserIndex: creating user index')
       const emailIndex = indexFunc(userData.email)
       const nameIndex = indexFunc(userData.displayName)
       const index = emailIndex.concat(nameIndex)
-      await userRef.update({
+      batch.update(userRef, {
         index,
       })
     }
 
-    if (
-      // !userData.pending.friends.confirmed ||
-      // !userData.pending.friends.madeRequest ||
-      // !userData.pending.friends.receivedRequest
-      !userData.pending
-    ) {
-      console.log('AuthActions/checkUserIndex: setting profile pending')
-      await userRef.update({
+    if (!userData.pending) {
+      batch.update(userRef, {
         pending: {
           friends: {
             confirmed: [],
@@ -58,9 +54,25 @@ export const checkUserIndex = currentUID => async dispatch => {
           },
         },
       })
+    } else {
+      if (!userData.pending.friends.confirmed) {
+        batch.update(userRef, {
+          'pending.friends.confirmed': [],
+        })
+      }
+      if (!userData.pending.friends.madeRequest) {
+        batch.update(userRef, {
+          'pending.friends.madeRequest': [],
+        })
+      }
+      if (!userData.pending.friends.receivedRequest) {
+        batch.update(userRef, {
+          'pending.friends.receivedRequest': [],
+        })
+      }
     }
 
-
+    await batch.commit()
   } catch (error) {
     console.log('ERROR: checkUserIndex => ', error)
   }
@@ -108,7 +120,6 @@ export const googleLoginThunk = () => async dispatch => {
     dispatch({ type: actions.AUTH_START, payload: { test: 'auth start' } })
 
     await firebase.auth().signInWithRedirect(googleAuthProvider)
-
 
     // dispatch({ type: actions.AUTH_SUCCESS })
     // dispatch({ type: actions.AUTH_END })
