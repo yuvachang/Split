@@ -1,0 +1,16 @@
+@import '../Elements/Variables.scss';
+
+#homepage {
+  position: relative;
+
+  background-color: $bg-ig;
+
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}

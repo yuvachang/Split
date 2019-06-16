@@ -160,11 +160,11 @@ button {
   text-align: center;
 
   width: 75%;
-  min-width: 200px;
+  min-width: 100px;
   // min-height: min-content;
   min-height: 45px;
   color: black;
-  
+
   font-size: 1em;
 
   display: flex;
@@ -190,8 +190,13 @@ button {
     transition: visibility 0s, opacity 1s;
   }
 
+  &.short {
+    min-width: 50px;
+    max-width: 85px;
+  }
+
   &.grey-hover {
-    @media (hover: hover ) {
+    @media (hover: hover) {
       &:hover {
         background-color: $app-bg-lighter;
       }
@@ -207,7 +212,7 @@ button {
     }
   }
 
-  &.noclick{
+  &.noclick {
     @media (hover: hover) {
       &:hover {
         cursor: default;
@@ -218,7 +223,7 @@ button {
   &.blue {
     background-color: $app-bg-lighter;
     color: white;
-    
+
     @media (hover: hover) {
       &:hover {
         cursor: default;
@@ -235,7 +240,10 @@ button {
   }
 
   & > .innertext {
+    position: absolute;
+
     width: 65%;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -264,11 +272,27 @@ button {
     // background-color: lightgray;
     background-color: darkorange;
   }
+
+  &.disabled {
+    background-color: #ccc;
+    @media (hover: hover) {
+      &:hover {
+        cursor: default;
+        color: inherit;
+        background-color: #ccc;
+      }
+    }
+  }
 }
 
 .user-row-container {
   display: flex;
   margin-bottom: 5px;
+
+  &.dropdown-only {
+    min-width: 75%;
+    max-width: 75%;
+  }
 }
 
 .added-user-row {
@@ -283,6 +307,8 @@ button {
 }
 
 .round-icon-button {
+  position: relative;
+
   border-radius: 50%;
   width: 26px;
   min-width: 26px;
@@ -362,6 +388,24 @@ button {
   }
 }
 
+.icon + .notif-bullet {
+  position: absolute;
+
+  transform: translateX(5px) translateY(-5px);
+
+  border: 0.3px solid $app-bg-color;
+  border-radius: 50%;
+
+  background-color: red;
+
+  width: 6px;
+  height: 6px;
+
+  &.wide {
+    transform: translateX(-46px) translateY(-5px);
+  }
+}
+
 .scroll-div {
   height: 100%;
   overflow-y: scroll;
@@ -384,14 +428,13 @@ button {
     width: 100%;
     max-width: 300px;
 
-    // overflow: hidden;
-
     position: relative;
 
     .title {
       position: absolute;
       top: 0;
     }
+
     .scroll-arrow {
       background-color: white;
 
@@ -403,6 +446,7 @@ button {
       justify-content: center;
 
       height: 30px;
+      min-height: 30px;
 
       padding: 4px;
       margin: 10px 0px;
@@ -410,7 +454,7 @@ button {
       transition: visibility 0s, opacity 0.2s;
 
       &.top {
-        top: 0;
+        // top: 0;
         top: -34px; //offset own height + 4px
         margin-bottom: 0;
       }
@@ -434,6 +478,8 @@ button {
 }
 
 .select-user {
+  
+
   &.container {
     position: relative;
 
@@ -448,6 +494,12 @@ button {
     padding-top: 2px;
 
     text-align: center;
+
+    & .innertext {
+      width: 70%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   &.user-item {
@@ -657,6 +709,32 @@ button {
     &:hover {
       background: white;
       cursor: pointer;
+    }
+  }
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &-menu {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+    width: 100px;
+
+    height: 40px;
+    transform: scaleY(1);
+    transform-origin: top;
+    transition: 0.5s;
+
+    &.hidden {
+      height: 0;
+      transform-origin: top;
+      transform: scaleY(0);
+      transition: 0.5s;
     }
   }
 }

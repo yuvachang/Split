@@ -8,7 +8,8 @@ import {
   cancelOutgoingRequest,
 } from '../../../store/actions/friendsActions'
 import ListItem from '../Elements/ListItem'
-import FadingScroll from '../Elements/FadingScroll'
+import ScrollContainer from '../Elements/ScrollContainer'
+import CardItemInnertext from '../Elements/CardItemInnertext'
 
 class FriendsPending extends Component {
   componentDidUpdate = async prevProps => {
@@ -43,51 +44,58 @@ class FriendsPending extends Component {
       !pendingFriends.confirmed[0]
 
     return (
-      <FadingScroll>
+      <ScrollContainer>
         <div className='friends-pending'>
           {pendingFriends.receivedRequest[0] ? (
-            <div>
+            <div className='pending-section'>
               Received Requests:
               {pendingFriends.receivedRequest.map(user => (
-                <ListItem
-                  key={user.email}
-                  success={true}
-                  content={user}
+                <CardItemInnertext
+                  key={user.id}
+                  message1={`${user.displayName}:`}
+                  message2='Accept request?'
+                  leftIcon='/images/remove.svg'
+                  leftTitle='Reject Request'
                   leftAction={() => rejectFriendRequest(user.id, currentUID)}
-                  leftIcon='./images/remove.svg'
+                  rightIcon='/images/check.svg'
+                  rightTitle='Accept Request'
                   rightAction={() => confirmFriendRequest(user.id, currentUID)}
-                  rightIcon='./images/check.svg'
                 />
               ))}
             </div>
           ) : null}
+
+          <br />
 
           {pendingFriends.madeRequest[0] ? (
-            <div>
+            <div className='pending-section'>
               Awaiting Confirmation:
               {pendingFriends.madeRequest.map(user => (
-                <ListItem
-                  key={user.email}
-                  success={true}
-                  content={user}
-                  rightAction={() => cancelOutgoingRequest(user.id, currentUID)}
-                  rightIcon='./images/trash.svg'
+                <CardItemInnertext
+                  key={user.id}
+                  message1={`${user.displayName}:`}
+                  message2='Request sent'
+                  leftIcon='/images/restore.svg'
+                  leftTitle='Cancel Request'
+                  leftAction={() => cancelOutgoingRequest(user.id, currentUID)}
                 />
               ))}
             </div>
           ) : null}
 
+          <br />
+
           {pendingFriends.confirmed[0] ? (
-            <div>
+            <div className='pending-section'>
               Confirmed Friendships:
               {pendingFriends.confirmed.map(user => (
-                <ListItem
-                  key={user.email}
-                  success={true}
-                  content={user}
-                  clickAction={() => null}
+                <CardItemInnertext
+                  key={user.id}
+                  message1={`${user.displayName}`}
+                  message2='is now your friend!'
+                  rightIcon='/images/check.svg'
+                  rightTitle='Clear notification'
                   rightAction={() => dismissConfirm(user.id, currentUID)}
-                  rightIcon='./images/check.svg'
                 />
               ))}
             </div>
@@ -95,7 +103,7 @@ class FriendsPending extends Component {
 
           {!!nothingNew && <h3>Nothing new.</h3>}
         </div>
-      </FadingScroll>
+      </ScrollContainer>
     )
   }
 }

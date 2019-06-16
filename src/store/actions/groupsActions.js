@@ -132,7 +132,7 @@ export const fetchGroups = currentUID => async dispatch => {
 
 export const selectGroup = groupId => async dispatch => {
   try {
-    dispatch({ type: actions.GROUPS_LOADING })
+    // dispatch({ type: actions.GROUPS_LOADING })
 
     const groupRef = await firestore.collection('groups').doc(groupId)
 
@@ -148,7 +148,16 @@ export const selectGroup = groupId => async dispatch => {
     groupData.members = groupMembers
 
     dispatch({ type: actions.GROUPS_SELECT, payload: groupData })
-    dispatch({ type: actions.GROUPS_ENDLOADING })
+    // dispatch({ type: actions.GROUPS_ENDLOADING })
+  } catch (error) {
+    console.log('ERROR: selectGroup => ', error)
+    dispatch({ type: actions.GROUPS_ERROR, payload: error.message })
+  }
+}
+
+export const deselectGroup = () => async dispatch => {
+  try {
+    dispatch({ type: actions.GROUPS_DESELECT })
   } catch (error) {
     console.log('ERROR: selectGroup => ', error)
     dispatch({ type: actions.GROUPS_ERROR, payload: error.message })

@@ -27,34 +27,38 @@ class SingleGroup extends Component {
       <ScrollContainer>
         <Modal
           display={displayModal}
-          header='Delete Group'
           message={`Delete ${group.groupName} forever?`}
-          yesMsg={'Yes'}
           yesAction={async () => {
             await deleteGroup(group.id)
             this.closeModal()
             backToList()
           }}
-          noMsg={'No'}
           noAction={this.closeModal}
         />
 
-        {/* <img
-          src='./images/down-arrow.svg'
-          className={`icon grey ${showDropdown && 'upsidedown'}`}
-          onClick={this.toggleDropdown}
-        />
+        <div className='profile'>
+          <h3>{group.groupName}</h3>
+          <img
+            src='./images/down-arrow.svg'
+            className={showDropdown ? 'icon upsidedown grey' : 'icon grey'}
+            onClick={this.toggleDropdown}
+          />
+        </div>
+
         <div className={showDropdown ? 'profile-menu' : 'profile-menu hidden'}>
+          <img
+            src='./images/poke.png'
+            className='icon grey'
+            style={{ transform: 'rotate(90deg)' }}
+          />
           <img
             src='./images/trash.svg'
             className='icon grey'
             onClick={this.openModal}
           />
-        </div> */}
+        </div>
 
         <div>
-          <h3>{group.groupName}:</h3>
-
           <div>
             group receipts
             <br />
@@ -64,7 +68,9 @@ class SingleGroup extends Component {
           <div>Group members:</div>
           <ul className='comma-list'>
             {group.members[0]
-              ? group.members.map(member => <li key={member.id}>{member.displayName}</li>)
+              ? group.members.map(member => (
+                  <li key={member.id}>{member.displayName}</li>
+                ))
               : null}
           </ul>
         </div>
@@ -72,10 +78,10 @@ class SingleGroup extends Component {
         <div className='button card' onClick={backToList}>
           Back to list
         </div>
-        <div className='button card' onClick={this.toggleDropdown}>
+        {/* <div className='button card' onClick={this.toggleDropdown}>
           {showDropdown ? 'Cancel' : 'Delete group'}
-        </div>
-        <button
+        </div> */}
+        {/* <button
           className={`card red ${!showDropdown && 'collapsed'}`}
           onClick={async () => {
             await deleteGroup(group.id)
@@ -83,7 +89,7 @@ class SingleGroup extends Component {
             backToList()
           }}>
           Delete group forever
-        </button>
+        </button> */}
       </ScrollContainer>
     )
   }

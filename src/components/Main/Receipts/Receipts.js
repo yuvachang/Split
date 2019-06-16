@@ -1,14 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import CreateReceipt from './CreateReceipt'
-import { fetchReceipts, selectReceipt } from '../../../store/actions/receiptsActions'
-import ListPage from '../Elements/ListPage';
-import SingleReceipt from './SingleReceipt';
+import {
+  fetchReceipts,
+  selectReceipt,
+} from '../../../store/actions/receiptsActions'
+import ListPage from '../Elements/ListPage'
+import SingleReceipt from './SingleReceipt'
+import TopMenu from '../Elements/TopMenu'
+import CardList from '../Elements/CardList'
 
 class Receipts extends Component {
   state = {
     view: 'list',
-    // singleReceipt: {},
+    receipts: [],
+    searchInput: '',
   }
 
   switchView = async (view, receipt) => {
@@ -23,44 +29,52 @@ class Receipts extends Component {
     }
   }
 
+  filterReceipts = (input, receiptsDataArr) =>
+    receiptsDataArr.filter(friend =>
+      friend.displayName.toLowerCase().includes(input.toLowerCase())
+    )
+
+  search = async e => {
+    if (e.target.value.length > 0) {
+      const results = this.filterReceipts(e.target.value, this.props.receipts)
+      await this.setState({ receipts: results, searchInput: e.target.value })
+    } else {
+      await this.setState({ receipts: this.props.receipts, searchInput: '' })
+    }
+  }
+
+  componentDidMount = async () => {
+    await this.props.fetchReceipts(this.props.currentUID)
+
+    await this.setState({
+      receipts: this.props.receipts,
+    })
+  }
+
   render() {
-    const { receipts, history, currentUID, fetchReceipts } = this.props
-    const { view, singleReceipt } = this.state
+    const { history, currentUID, fetchReceipts } = this.props
+    const { view, receipts } = this.state
     return (
       <div id='receipts'>
-        <div className='views'>
-          <div
-            className={
-              view === 'list' ? 'button-icon selected' : 'button-icon'
-            }>
-            <img
-              src='./images/receipts.svg'
-              className='icon large'
-              onClick={() => {
-                this.switchView('list')
-              }}
-            />
-          </div>
-          <div
-            className={view === 'add' ? 'button-icon selected' : 'button-icon'}>
-            <img
-              src='./images/add.svg'
-              className='icon large'
-              onClick={() => this.switchView('add')}
-            />
-          </div>
-        </div>
-        <hr />
+        <TopMenu
+          view={view}
+          searchPlaceholder='Receipt name...'
+          search={this.search}
+          b1Src='/images/list.svg'
+          b1Click={() => this.switchView('list')}
+          b2Src='/images/add.svg'
+          b2Click={() => this.switchView('add')}
+        />
+
         <br />
         {view === 'add' && <CreateReceipt history={history} />}
 
-        {view === 'list' && (
-          <ListPage
-            receipts={receipts}
-            fetchReceipts={() => fetchReceipts(currentUID)}
-            viewItem={this.switchView}
-          />
-        )}
+        {view === 'list' &&
+          (receipts[0] ? (
+            <CardList list={receipts} onClick={this.switchView} />
+          ) : (
+            'You have no receipts...'
+          ))}
 
         {view === 'singleView' && (
           <div id='groups-list'>
@@ -83,12 +97,12 @@ class Receipts extends Component {
 const mapState = state => ({
   currentUID: state.firebase.auth.uid,
   receipts: state.receipts.receipts,
-  loading: state.receipts.loading,
+  // loading: state.receipts.loading,
 })
 
 const mapDispatch = dispatch => ({
   fetchReceipts: uid => dispatch(fetchReceipts(uid)),
-  selectReceipt: RID => dispatch(selectReceipt(RID))
+  selectReceipt: RID => dispatch(selectReceipt(RID)),
   // createGroup: (group, uid) => dispatch(createGroup(group, uid)),
   // fetchFriends: uid => dispatch(fetchFriends(uid)),
   // createGroupInProgress: group => dispatch(createGroupInProgress(group)),

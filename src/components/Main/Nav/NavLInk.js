@@ -9,7 +9,8 @@ class NavLink extends Component {
       pathname,
       pushHistory,
       setMarker,
-      iconSrc
+      iconSrc,
+      showNotif,
     } = this.props
     return (
       <div
@@ -25,6 +26,9 @@ class NavLink extends Component {
             this.ref = node
           }}
         />
+        {showNotif && (
+          <div className={`notif-bullet ${windowWidth > 700 ? 'wide' : ''}`} />
+        )}
         {windowWidth > 700 && <div className='navlink-text'>{name}</div>}
         {windowWidth > 700 && (
           <div className={location === pathname ? 'bullet filled' : 'bullet'} />

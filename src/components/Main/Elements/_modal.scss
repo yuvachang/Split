@@ -14,13 +14,13 @@
 }
 
 .modal-container {
-  background-color: $app-bg-color;
-  border-radius: 5px;
-  padding: 18px 15px 15px;
-}
+  background-color: white;
 
-.modal-header {
-  font-size: 1.2em;
+  border-radius: 2px;
+
+  padding: 18px 15px 15px;
+
+  max-width: 200px;
 }
 
 .modal-message {
@@ -30,10 +30,7 @@
 
 .modal-buttons {
   display: flex;
-  padding-top: 8px;
-}
+  justify-content: space-evenly;
 
-.modal-buttons > * {
-  width: 100%;
-  margin: 8px 5px;
+  padding-top: 8px;
 }

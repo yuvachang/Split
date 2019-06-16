@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Modal from '../Elements/Modal'
+import ScrollContainer from '../Elements/ScrollContainer'
 
 class SingleFriend extends Component {
   state = {
@@ -23,53 +24,54 @@ class SingleFriend extends Component {
     const { friend, removeFriend, backToList, loading } = this.props
     const { displayModal, showDropdown } = this.state
     return (
-      <div>
+      <ScrollContainer>
         <Modal
           display={displayModal}
-          header='Unfriend'
           message={`Remove ${friend.displayName} from friends?`}
-          yesMsg={'Yes'}
           yesAction={async () => {
             await removeFriend()
             this.closeModal()
             backToList()
           }}
-          noMsg={'No'}
           noAction={this.closeModal}
         />
-        {loading && <h3>Deleting...</h3>}
+
         <div className='profile'>
           <img
             src={friend.avatarUrl ? friend.avatarUrl : './images/person.svg'}
             className='icon large'
+            style={{filter: 'invert(0)', borderRadius: '50%'}}
           />
           <img
             src='./images/down-arrow.svg'
-            className={showDropdown ? 'icon upsidedown' : 'icon'}
+            className={showDropdown ? 'icon upsidedown grey' : 'icon grey'}
             onClick={this.toggleDropdown}
           />
         </div>
+
         <div className={showDropdown ? 'profile-menu' : 'profile-menu hidden'}>
           <img
             src='./images/poke.png'
-            className='icon'
+            className='icon grey'
             style={{ transform: 'rotate(90deg)' }}
           />
           <img
             src='./images/dislike.svg'
-            className='icon'
+            className='icon grey'
             onClick={this.openModal}
           />
         </div>
+
+
         {friend.displayName}:
         <br />
         <br />
         <div>friend iou's here and stats here</div>
         <br />
-        <div className='button' onClick={backToList}>
+        <div className='button card' onClick={backToList}>
           Back to list
         </div>
-      </div>
+      </ScrollContainer>
     )
   }
 }

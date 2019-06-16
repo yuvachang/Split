@@ -173,8 +173,10 @@ class FindFriends extends Component {
                   return (
                     <CardItemInnertext
                       key={person.id}
-                      message='Request sent'
+                      message1={`${person.displayName}:`}
+                      message2='Request sent'
                       leftIcon='/images/restore.svg'
+                      leftTitle='Cancel Request'
                       leftAction={() => this.cancelRequest(person)}
                     />
                   )
@@ -183,10 +185,13 @@ class FindFriends extends Component {
                   return (
                     <CardItemInnertext
                       key={person.id}
-                      message='Accept request?'
+                      message1={`${person.displayName}:`}
+                      message2='Accept request?'
                       leftIcon='/images/remove.svg'
+                      leftTitle='Reject Request'
                       leftAction={() => this.handleIncomingRequest(person)}
                       rightIcon='/images/check.svg'
+                      rightTitle='Accept Request'
                       rightAction={() => this.handleIncomingRequest(person, 1)}
                     />
                   )

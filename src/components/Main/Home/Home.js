@@ -1,18 +1,47 @@
-import React from 'react'
-import {connect} from 'react-redux'
-import { logoutThunk, googleLoginThunk } from '../../../store/actions/authActions';
-import { Nav, UserRoutes } from '../../index'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import {
+  logoutThunk,
+  googleLoginThunk,
+} from '../../../store/actions/authActions'
+// import { Nav, UserRoutes } from '../../index'
+import FriendsPending from '../Friends/FriendsPending'
+import TopMenu from '../Elements/TopMenu'
 
-const Home = ({isLoaded, isLoggedIn}) => {
-  return (
-    <div>
-      home page
-      {/* <UserRoutes isLoggedIn={isLoggedIn} isLoaded={isLoaded}/> */}
-      {/* 
+class Home extends Component {
+  state = {
+    view: 'home',
+  }
+
+  switchView = async view => {
+    await this.setState({ view })
+  }
+
+  render() {
+    const { isLoaded, isLoggedIn } = this.props
+    const { view } = this.state
+    return (
+      <div id='homepage'>
+        <TopMenu
+          view={view}
+          // searchPlaceholder='Find existing friend...'
+          // search={this.search}
+          b1Src='/images/home.svg'
+          b1Click={() => this.switchView('home')}
+          b2Src='/images/bell.svg'
+          b2Click={() => this.switchView('notifs')}
+        />
+        {view === 'home' && <div>Welcome to your home page</div>}
+
+        {view === 'notifs' && <FriendsPending />}
+
+        {/* <UserRoutes isLoggedIn={isLoggedIn} isLoaded={isLoaded}/> */}
+        {/* 
         metrics, user info here. 
       */}
-    </div>
-  )
+      </div>
+    )
+  }
 }
 
 const mapState = state => ({
@@ -23,8 +52,10 @@ const mapState = state => ({
 
 const mapDispatch = dispatch => ({
   logout: () => dispatch(logoutThunk()),
-  googleOauth: () => dispatch(googleLoginThunk())
+  googleOauth: () => dispatch(googleLoginThunk()),
 })
 
-export default connect(mapState, mapDispatch)(Home)
-
+export default connect(
+  mapState,
+  mapDispatch
+)(Home)

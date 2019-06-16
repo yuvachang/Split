@@ -9,8 +9,10 @@ const CardListItemConfirm = ({
   rightAction,
 }) => (
   <div
-    className={`button card ${showConfirm && 'blue'} grey-hover`}
-    onClick={showConfirm ? () => null : onClick}>
+    className={`button card ${showConfirm ? 'blue' : ''} grey-hover ${
+      item.error ? 'disabled' : ''
+    }`}
+    onClick={showConfirm || item.error ? () => null : onClick}>
     {showConfirm && (
       <img
         src='/images/remove.svg'

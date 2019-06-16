@@ -12,6 +12,7 @@ class Nav extends Component {
       width: 0,
       height: 0,
     },
+    notifs: false,
   }
 
   capName = displayName => {
@@ -70,12 +71,40 @@ class Nav extends Component {
     })
   }
 
+  updateNotifs = async () => {
+    const hasNotifs =
+      !!this.props.pPending.receivedRequest[0] ||
+      // !!this.props.pPending.madeRequest[0] ||
+      !!this.props.pPending.confirmed[0]
+    console.log('hasnotifs?', hasNotifs)
+    if (!this.state.notifs && hasNotifs) {
+      console.log('turn on notifs')
+      await this.setState({
+        notifs: true,
+      })
+    } else if (this.state.notifs && !hasNotifs) {
+      console.log('turn off notifs')
+      await this.setState({
+        notifs: false,
+      })
+    }
+  }
+
+  componentDidUpdate = async prevProps => {
+    if (prevProps.pPending !== this.props.pPending) {
+      this.updateNotifs()
+    }
+  }
+
   componentDidMount = async () => {
     await this.props.checkUserIndex(this.props.currentUID)
     await this.setMarker()
     await this.setWindowSize()
+    await this.updateNotifs()
     window.addEventListener('resize', this.setWindowSize)
-    window.addEventListener('orientationchange', () => {window.setTimeout(this.setWindowSize, 350)})
+    window.addEventListener('orientationchange', () => {
+      window.setTimeout(this.setWindowSize, 350)
+    })
   }
 
   componentWillUnmount = () => {
@@ -85,7 +114,7 @@ class Nav extends Component {
 
   render() {
     const { logout, displayName, location, pending, profile } = this.props
-    const { window, bulletTop, bulletLeft } = this.state
+    const { window, bulletTop, bulletLeft, notifs } = this.state
 
     return (
       <div id='nav'>
@@ -109,6 +138,7 @@ class Nav extends Component {
 
           <NavLink
             name='Home'
+            showNotif={notifs ? true : false}
             windowWidth={window.width}
             location={location.pathname}
             pathname='/home'
@@ -194,6 +224,7 @@ const mapState = state => ({
   currentUID: state.firebase.auth.uid,
   profile: state.firebase.profile,
   displayName: state.firebase.profile.displayName,
+  pPending: state.firebase.profile.pending.friends,
 })
 
 const mapDispatch = dispatch => ({
