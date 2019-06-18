@@ -65,17 +65,27 @@ export const createReceipt = data => async dispatch => {
     const rows = await createEmptyRows(data.rows)
 
     // create userAmounts catalogue
-    const userAmounts = await createUserAmounts(groupData, data.payer.id)
+    const userAmounts = await createUserAmounts(
+      groupData,
+      data.payer.id || 123,
+      data.total
+    )
 
     // create receipt doc
     const newReceipt = {
       date: data.date,
       created: data.created,
       receiptName: data.receiptName,
+
+      subtotal: data.subtotal,
+      tip: data.tip,
+      total: data.total,
+
       rows,
       group: groupRef,
       userAmounts,
-      isEdit: false,
+
+      // isEdit: false,
     }
     const receiptRef = await firestore.collection('receipts').add(newReceipt)
 
@@ -149,13 +159,41 @@ export const fetchReceipts = currentUID => async dispatch => {
     // get current user
     const { userData, userRef } = await getCurrentUser(currentUID)
 
+    //check if all receipts exist, if any are undefined
+    const undefinedReceipts = []
     // get data of all receipts
+
     const userReceipts = await Promise.all(
-      userData.receipts.map(
-        async receiptRef => await getDataWithRef(receiptRef)
-      )
+      userData.receipts.map(async receiptRef => {
+        const receiptData = await getDataWithRef(receiptRef)
+        if (!receiptData) {
+          undefinedReceipts.push(receiptRef)
+        }
+        return receiptData
+      })
     )
-    console.log(userReceipts)
+
+    if (undefinedReceipts.length) {
+      //filter undefined from userReceipts
+      // !!!!moved to front end list component: filter=>map
+      // userReceipts.forEach((receipt, idx) => {
+      //   if (!receipt) {
+      //     userReceipts.splice(idx, 1)
+      //   }
+      // })
+
+      // delete undefined receiptRefs from db
+      const batch = firestore.batch()
+      undefinedReceipts.forEach(receiptRef => {
+        batch.update(userRef, {
+          receipts: firestore.FieldValue.arrayRemove(receiptRef),
+        })
+      })
+      await batch.commit()
+      console.log('undefinedReceipts removed')
+    }
+
+    // console.log(userReceipts)
 
     dispatch({ type: actions.RECEIPTS_FETCH, payload: userReceipts })
     dispatch({ type: actions.RECEIPTS_ENDLOADING })
@@ -183,11 +221,14 @@ export const updateRow = (
     )
 
     const batch = firestore.batch()
-
     const receiptRef = await firestore.collection('receipts').doc(receiptId)
+
+    // update affected row
     batch.update(receiptRef, {
       ['rows.' + rowIdx]: row,
     })
+
+    // update receipt's date-modified
     batch.set(
       receiptRef,
       {
@@ -196,6 +237,7 @@ export const updateRow = (
       { merge: true }
     )
 
+    // if users added to or removed from row, update userAmounts
     if (userAmounts) {
       console.log('updateRow: userAmounts updating')
       batch.update(receiptRef, {
@@ -204,11 +246,76 @@ export const updateRow = (
     }
 
     await batch.commit()
-    const newReceipt = await getDataWithRef(receiptRef)
-
-    // dispatch({ type: actions.RECEIPTS_SELECT, payload: newReceipt })
   } catch (error) {
     console.log('ERROR: updateRows => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+export const updateReceipt = (field, value, receiptId) => async dispatch => {
+  try {
+    console.log('inside updateReceipt thunk:', value)
+    const batch = firestore.batch()
+    const receiptRef = await firestore.collection('receipts').doc(receiptId)
+    const receiptData = await getDataWithRef(receiptRef)
+
+    if (field === 'tip' || field === 'subtotal') {
+      let newTotal
+      if (field === 'tip') {
+        newTotal =
+          (receiptData.subtotal * value) / 100 + Number(receiptData.subtotal)
+      } else if (field === 'subtotal') {
+        if (receiptData.tip) {
+          newTotal = (receiptData.tip * value) / 100 + Number(value)
+        } else {
+          newTotal = value
+        }
+      }
+      batch.update(receiptRef, {
+        total: Number(newTotal),
+      })
+    }
+    batch.update(receiptRef, {
+      [field]: value,
+    })
+
+    await batch.commit()
+  } catch (error) {
+    console.log('ERROR: updateReceipt => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+export const updateUserAmounts = (usrAmts, receiptId) => async dispatch => {
+  try {
+    console.log('inside updateUserAmounts thunk:')
+
+    const receiptRef = await firestore.collection('receipts').doc(receiptId)
+
+    await receiptRef.update({
+      userAmounts: usrAmts,
+    })
+  } catch (error) {
+    console.log('ERROR: updateUserAmounts => ', error)
+    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+export const updateSingleUserAmount = (
+  userId,
+  usrAmt,
+  receiptId
+) => async dispatch => {
+  try {
+    console.log('inside updateSingleUserAmount thunk:')
+
+    const receiptRef = await firestore.collection('receipts').doc(receiptId)
+
+    await receiptRef.update({
+      ['userAmounts.' + userId]: usrAmt,
+    })
+  } catch (error) {
+    console.log('ERROR: updateSingleUserAmount => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
   }
 }

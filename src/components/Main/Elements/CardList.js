@@ -11,14 +11,16 @@ class CardList extends Component {
     const { list, onClick } = this.props
     return (
       <ScrollContainer showButtons={true}>
-        {list[0]
-          ? list.map(item => (
-              <CardListItem
-                key={item.id}
-                item={item}
-                onClick={() => onClick('single', item)}
-              />
-            ))
+        {list.length
+          ? list
+              .filter(item => !!item)
+              .map(item => (
+                <CardListItem
+                  key={item.id}
+                  item={item}
+                  onClick={() => onClick('single', item)}
+                />
+              ))
           : null}
       </ScrollContainer>
     )

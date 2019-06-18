@@ -15,7 +15,7 @@ export const getCurrentUser = async uid => {
 
 export const getDataWithRef = async ref => {
   const get = await ref.get()
-  if (!get.exists) return 
+  if (!get.exists) return
   const data = await get.data()
   if (!data.id) {
     data.id = ref.id
@@ -62,19 +62,24 @@ export const createEmptyRows = rowCount => {
   return rows
 }
 
-export const createUserAmounts = async (groupData, payerId) => {
+export const createUserAmounts = async (groupData, payerId, total) => {
   const userAmounts = {}
 
   await Promise.all(
     groupData.members.map(async member => {
       const memberData = await getDataWithRef(member)
+      const paid = payerId === member.id ? total : 0
 
       userAmounts[memberData.id] = {
         id: member.id,
         name: memberData.displayName,
         amount: 0,
         items: {},
-        isPayer: payerId===member.id,
+        isPayer: payerId === member.id,
+        paid,
+        debt: {},
+        owe: 0,
+        percentageOfTotal: 0,
       }
       return
     })

@@ -83,7 +83,7 @@ class SelectUserDropdown extends Component {
   }
 
   render() {
-    const { clickAction, users } = this.props
+    const { placeholder, users } = this.props
     const { open, selected, filteredUsers, inputClearable } = this.state
 
     return (
@@ -91,7 +91,7 @@ class SelectUserDropdown extends Component {
         <div className='select-user container' ref={node => (this.menu = node)}>
           <div className='select-user message'>
             {selected.id ? (
-              <div className='select-user user-item'>
+              <div>
                 {selected.displayName}
                 <img
                   src='/images/remove.svg'
@@ -105,7 +105,7 @@ class SelectUserDropdown extends Component {
                 <input
                   ref={node => (this.searchInput = node)}
                   className='textarea-only'
-                  placeholder='Add a friend...'
+                  placeholder={placeholder}
                   type='text'
                   onChange={this.filterUsers}
                   autoCapitalize='off'

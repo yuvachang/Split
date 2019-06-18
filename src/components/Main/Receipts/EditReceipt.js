@@ -3,31 +3,33 @@ import { connect } from 'react-redux'
 import {
   listenReceipt,
   unlistenReceipt,
-  // selectReceipt,
   toggleDeleteRow,
   updateRow,
   deleteRow,
   addRow,
 } from '../../../store/actions/receiptsActions'
-import FadingScroll from '../Elements/FadingScroll'
 import Table from './Table'
+import ScrollContainer from '../Elements/ScrollContainer'
+import ReceiptHeader from './ReceiptHeader'
+import ReceiptAmountsPanel from './ReceiptAmountsPanel'
 
-const findPayer = usrAmt => {
-  const payer = Object.keys(usrAmt).filter(userId => usrAmt[userId].isPayer)
-  return usrAmt[payer[0]]
-}
+class EditReceipt extends Component {
+  state = {
+    payer: {},
+    showPanel: false,
+  }
 
-class SingleReceipt extends Component {
+  componentDidUpdate = async prevProps => {
+    if (!prevProps.receipt.id && this.props.receipt.id) {
+      console.log('componentdidupdate editreceipt')
+    }
+  }
+
   componentDidMount = async () => {
-    const receiptId = this.props.location.pathname.slice(10)
-
-    // if (!this.props.receipt.id) {
-    //   // await this.props.selectReceipt(receiptId)
-    // }
-
     // set listener on receipt, will fetch receipt to store
     // no need to use 'selectReceipt'
-    this.props.listenReceipt(receiptId)
+    const receiptId = this.props.location.pathname.slice(10)
+    await this.props.listenReceipt(receiptId)
   }
 
   componentWillUnmount = async () => {
@@ -36,7 +38,6 @@ class SingleReceipt extends Component {
   }
 
   render() {
-    // console.log('EDITRECEIPT: rendered, selected receipt=>', this.props.receipt)
     const {
       receipt,
       updateRow,
@@ -44,39 +45,46 @@ class SingleReceipt extends Component {
       deleteRow,
       addRow,
     } = this.props
+    const { showPanel } = this.state
     if (!receipt.id) {
       return null
     } else if (receipt.id === 'DNE') {
       return 'Receipt does not exist or has been deleted.'
     } else
       return (
-        <div className='receipt-edit'>
-          Receipt: {receipt.receiptName}
-          <br /> Members:
-          <ul>
-            {Object.keys(receipt.userAmounts).map(user => (
-              <li key={user}>
-                {receipt.userAmounts[user].name} : $
-                {receipt.userAmounts[user].amount}
-              </li>
-            ))}
-          </ul>
-          Payer: {findPayer(receipt.userAmounts).name}
-          <br />
-          <FadingScroll>
-            <Table
-              rows={receipt.rows}
-              updateRow={(rowIdx, row, userAmounts) =>
-                updateRow(rowIdx, row, userAmounts, receipt.id)
-              }
-              deleteRow={(rowIdx) => deleteRow(rowIdx, receipt.id)}
-              addRow={(idx)=> addRow(idx, receipt.id)}
-              toggleDeleteRow={(rowIdx, ua) =>
-                toggleDeleteRow(rowIdx, ua, receipt.id)
-              }
-              receipt={receipt}
-            />
-          </FadingScroll>
+        <div id='receipt-edit'>
+          <ReceiptHeader
+            showLeft={showPanel}
+            // searchPlaceholder='Find existing friend...'
+            // search={this.search}
+            b1Src='/images/list.svg'
+            b1Click={() => this.switchView('list')}
+            b2Src='/images/add.svg'
+            b2Click={() => this.switchView('add')}
+          />
+
+          <div id='receipt-body'>
+            <div id='receipt-left'>
+              <ReceiptAmountsPanel receipt={receipt} />
+            </div>
+
+            <div id='receipt-right'>
+              <ScrollContainer>
+                <Table
+                  rows={receipt.rows}
+                  updateRow={(rowIdx, row, userAmounts) =>
+                    updateRow(rowIdx, row, userAmounts, receipt.id)
+                  }
+                  deleteRow={rowIdx => deleteRow(rowIdx, receipt.id)}
+                  addRow={idx => addRow(idx, receipt.id)}
+                  toggleDeleteRow={(rowIdx, ua) =>
+                    toggleDeleteRow(rowIdx, ua, receipt.id)
+                  }
+                  receipt={receipt}
+                />
+              </ScrollContainer>
+            </div>
+          </div>
         </div>
       )
   }
@@ -100,4 +108,4 @@ const mapDispatch = dispatch => ({
 export default connect(
   mapState,
   mapDispatch
-)(SingleReceipt)
+)(EditReceipt)

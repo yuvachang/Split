@@ -13,7 +13,9 @@ class SingleGroup extends Component {
   }
 
   closeModal = async () => {
-    await this.setState({ displayModal: false, group: {} })
+    await this.setState({
+      displayModal: false,
+    })
   }
 
   toggleDropdown = () => {
@@ -21,7 +23,7 @@ class SingleGroup extends Component {
   }
 
   render() {
-    const { group, deleteGroup, backToList, loading } = this.props
+    const { group, deleteGroup, backToList } = this.props
     const { displayModal, showDropdown } = this.state
     return (
       <ScrollContainer>

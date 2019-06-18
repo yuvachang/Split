@@ -1,65 +1,78 @@
+@import '../Elements/Variables.scss';
+
 #receipts {
   position: relative;
+
+  background-color: $bg-ig;
+
+  width: 100%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  
-  width: 100%;
-  height: 100%;
-
-  background-color: $bg-ig;
-  
-
 
   text-align: center;
+}
 
-  // & > * {
-  //   display: flex;
-  //   max-width: 250px;
-  //   min-width: 245px;
-  // }
-
-  & > .views {
-    display: flex;
-    justify-content: space-around;
-    width: 60vw;
-    max-width: 150px;
-    min-height: 90px;
-  }
-
-  &-list {
-    display: flex;
-    flex-direction: column;
-    // justify-content: center;
-    align-items: center;
-    // height: 65vh;
-    // height: calc(0.64 * $height-with-header);
-    overflow: hidden;
-
-    & > * {
-      display: flex;
-      // justify-content: center;
-      flex-direction: column;
-      width: 100%;
-    }
-  }
-
-  &-create {
+#receipt {
+  &-edit {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    text-align: center;
 
     width: 100%;
     height: 100%;
+  }
 
-    // & > * {
-    //   display: flex;
-    //   justify-content: center;
-    //   width: 100%;
-    // }
+  &-body {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    display: flex;
+    // justify-content: center;
+  }
+
+  &-left {
+    // position: relative;
+    background-color: $bg-ig-lighter;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 50%;
+    min-width: 310px;
+    height: 100%;
+
+    & #amounts-panel {
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  &-right {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
   }
 }
+
+
+
+
+
+//////////
 
 .row-item {
   background-color: $button-success-bg-color;
@@ -155,28 +168,28 @@ table {
   }
 }
 
-.receipt {
-  &-edit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 5vh;
-    text-align: center;
+// .receipt {
+//   &-edit {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     margin-top: 5vh;
+//     text-align: center;
 
-    width: 90%;
+//     width: 90%;
 
-    & > ul {
-      display: flex;
-      justify-content: space-around;
-      margin: 1px;
-      max-width: 60vw;
-    }
+//     & > ul {
+//       display: flex;
+//       justify-content: space-around;
+//       margin: 1px;
+//       max-width: 60vw;
+//     }
 
-    & > * {
-      max-width: 100%;
-    }
-  }
-}
+//     & > * {
+//       max-width: 100%;
+//     }
+//   }
+// }
 
 // .mao {
 //   age: 10;
@@ -198,17 +211,17 @@ table {
 // .select-user {
 //   &.container {
 //     position: relative;
-    
+
 //     box-sizing: border-box;
 //     width: 100%;
 //     min-height: 30px;
-    
+
 //     border: 1.5px solid #ccc;
 //     border-radius: 5px;
 
 //     margin-top: 1.5px;
 //     padding: 10px;
-    
+
 //     text-align: center;
 //     // padding: 0px 8px;
 //   }

@@ -5,7 +5,6 @@ import {
   fetchReceipts,
   selectReceipt,
 } from '../../../store/actions/receiptsActions'
-import ListPage from '../Elements/ListPage'
 import SingleReceipt from './SingleReceipt'
 import TopMenu from '../Elements/TopMenu'
 import CardList from '../Elements/CardList'
@@ -53,7 +52,7 @@ class Receipts extends Component {
 
   render() {
     const { history, currentUID, fetchReceipts } = this.props
-    const { view, receipts } = this.state
+    const { view, receipts, searchInput } = this.state
     return (
       <div id='receipts'>
         <TopMenu
@@ -66,11 +65,21 @@ class Receipts extends Component {
           b2Click={() => this.switchView('add')}
         />
 
-        <br />
+        {view === 'add' && (
+          <div>
+            <br /> Create a receipt:
+          </div>
+        )}
         {view === 'add' && <CreateReceipt history={history} />}
 
+        {view === 'list' && (
+          <div>
+            <br />
+            {searchInput ? `Searching for '${searchInput}':` : 'Your receipts:'}
+          </div>
+        )}
         {view === 'list' &&
-          (receipts[0] ? (
+          (receipts.length ? (
             <CardList list={receipts} onClick={this.switchView} />
           ) : (
             'You have no receipts...'

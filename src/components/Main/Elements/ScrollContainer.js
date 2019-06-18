@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-// import ListItem from '../Elements/ListItem'
 
 class ScrollContainer extends Component {
   state = {
@@ -93,7 +92,7 @@ class ScrollContainer extends Component {
       <div className='scroll-div-container'>
         {showButtons && (
           <div
-            className={`scroll-arrow button card ${
+            className={`scrollArrowID scroll-arrow button card ${
               scrollUp ? '' : 'hidden'
             } top`}
             onMouseDown={() => this.scroll('up')}
@@ -103,7 +102,7 @@ class ScrollContainer extends Component {
             onTouchEnd={this.endScroll}
             onTouchCancel={this.endScroll}>
             <img
-              className='icon upsidedown'
+              className='icon upsidedown scrollArrowID'
               src='/images/down-arrow.png'
               style={{
                 width: '30px',
@@ -123,7 +122,7 @@ class ScrollContainer extends Component {
 
         {showButtons && (
           <div
-            className={`scroll-arrow button card ${
+            className={`scrollArrowID scroll-arrow button card ${
               scrollDown ? '' : 'hidden'
             } bottom`}
             onMouseDown={this.scroll}
@@ -133,7 +132,7 @@ class ScrollContainer extends Component {
             onTouchEnd={this.endScroll}
             onTouchCancel={this.endScroll}>
             <img
-              className='icon'
+              className='icon scrollArrowID'
               src='/images/down-arrow.png'
               style={{ width: '30px', filter: 'invert(0.4)' }}
             />

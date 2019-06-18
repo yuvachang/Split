@@ -86,3 +86,35 @@ const calcPayer = (p, balance1, balance2) => {
 
   return {user: payer, amount: net} 
 }
+
+
+
+
+
+
+
+PROCESS:
+
+  CREATE RECEIPT:
+    select 'group',
+    select 'payer',
+    add 'subtotal',
+    add 'tip percentage',
+    (add 'tax')?
+    'total' auto generates,
+    date, rows, finish
+
+
+  RECEIPT EDIT PAGE:
+    mainDisplay: {
+      subtotal, 
+      tip, 
+      tax, 
+      total, 
+      amount paid,
+    }
+
+    payer ? payer => {paid: total} : everyone's 
+      {paid: 0}
+
+    everyone's usrAmt.amount=pre-tip amount

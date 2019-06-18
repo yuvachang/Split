@@ -60,7 +60,6 @@ class SelectGroupDropdown extends Component {
   }
 
   selectGroup = group => {
-    console.log(group)
     this.props.clickAction(group)
 
     this.setState({
@@ -86,9 +85,8 @@ class SelectGroupDropdown extends Component {
   }
 
   render() {
-    const { groups } = this.props
+    const { placeholder, groups } = this.props
     const { open, selected, filteredGroups, inputClearable } = this.state
-    console.log(this.searchInput)
     return (
       <div className='user-row-container dropdown-only'>
         <div className='select-user container' ref={node => (this.menu = node)}>
@@ -108,7 +106,7 @@ class SelectGroupDropdown extends Component {
                 <input
                   ref={node => (this.searchInput = node)}
                   className='textarea-only'
-                  placeholder='Select a group...'
+                  placeholder={placeholder}
                   type='text'
                   onChange={this.filterGroups}
                   autoCapitalize='off'

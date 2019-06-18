@@ -7,7 +7,6 @@ import {
   rejectFriendRequest,
   cancelOutgoingRequest,
 } from '../../../store/actions/friendsActions'
-import ListItem from '../Elements/ListItem'
 import ScrollContainer from '../Elements/ScrollContainer'
 import CardItemInnertext from '../Elements/CardItemInnertext'
 

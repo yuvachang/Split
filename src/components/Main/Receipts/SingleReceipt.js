@@ -1,38 +1,66 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import {
-  listenReceipt,
-  unlistenReceipt,
-  deleteReceipt,
-} from '../../../store/actions/receiptsActions'
-import FadingScroll from '../Elements/FadingScroll'
-import Row from './Row'
+import { deleteReceipt } from '../../../store/actions/receiptsActions'
+import Modal from '../Elements/Modal'
+import ScrollContainer from '../Elements/ScrollContainer'
 
 class SingleReceipt extends Component {
-  componentDidMount = async () => {}
+  state = {
+    displayModal: false,
+    showDropdown: false,
+  }
+
+  openModal = async () => {
+    await this.setState({ displayModal: true })
+  }
+
+  closeModal = async () => {
+    await this.setState({ displayModal: false })
+  }
+
+  toggleDropdown = () => {
+    this.setState({ showDropdown: !this.state.showDropdown })
+  }
 
   render() {
     if (!this.props.receipt.id) {
       return <h3>Error: No receipt selected.</h3>
     } else {
       const { receipt, deleteReceipt, backToList } = this.props
+      const { displayModal, showDropdown } = this.state
       return (
-        <FadingScroll>
-          <div style={{ margin: '3px 0px' }}>
-            Receipt: {receipt.receiptName}
+        <ScrollContainer>
+          <Modal
+            display={displayModal}
+            message={`Delete ${receipt.receiptName} forever?`}
+            yesAction={async () => {
+              await deleteReceipt(receipt.id)
+              this.closeModal()
+              backToList()
+            }}
+            noAction={this.closeModal}
+          />
+          <div className='profile'>
+            <h3>{receipt.receiptName}</h3>
+            <img
+              src='./images/down-arrow.svg'
+              className={showDropdown ? 'icon upsidedown grey' : 'icon grey'}
+              onClick={this.toggleDropdown}
+            />
+          </div>
+          <div
+            className={showDropdown ? 'profile-menu' : 'profile-menu hidden'}>
             <Link to={`/receipts/${receipt.id}`}>
-              <img src='./images/edit.svg' className='icon' />
+              <img src='./images/edit.svg' className='icon grey' />
             </Link>
             <img
               src='./images/trash.svg'
-              className='icon'
-              onClick={() => {
-                deleteReceipt(receipt.id)
-                backToList()
-              }}
+              className='icon grey'
+              onClick={this.openModal}
             />
-            <br />
+          </div>
+          <div style={{ margin: '3px 0px' }}>
             Group: {receipt.group.groupName}
             <br />
             <ul className='comma-list'>
@@ -42,6 +70,7 @@ class SingleReceipt extends Component {
               ))}
             </ul>
           </div>
+          <br />
           Items:
           <ul style={{ listStyleType: 'none', width: '100%', margin: '0' }}>
             {Object.keys(receipt.rows).map(rowIdx => {
@@ -63,7 +92,7 @@ class SingleReceipt extends Component {
               )
             })}
           </ul>
-        </FadingScroll>
+        </ScrollContainer>
       )
     }
   }
@@ -71,20 +100,9 @@ class SingleReceipt extends Component {
 
 const mapState = state => ({
   receipt: state.receipts.selected,
-
-  // currentUID: state.firebase.auth.uid,
-  // loading: state.receipts.loading,
-  // groups: state.groups.groups,
-  // selectedGroup: state.groups.selected,
 })
 
 const mapDispatch = dispatch => ({
-  // createReceipt: data => dispatch(createReceipt(data)),
-  // fetchReceipts: uid => dispatch(fetchReceipts(uid)),
-  // fetchGroups: uid => dispatch(fetchGroups(uid)),
-  // selectGroup: gid => dispatch(selectGroup(gid)),
-  // listenReceipt: RID => dispatch(listenReceipt(RID)),
-  // unlistenReceipt: RID => dispatch(unlistenReceipt(RID)),
   deleteReceipt: RID => dispatch(deleteReceipt(RID)),
 })
 

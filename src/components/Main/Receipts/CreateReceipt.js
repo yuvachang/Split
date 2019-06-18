@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import ListItem from '../Elements/ListItem'
-import FadingScroll from '../Elements/FadingScroll'
 import {
   fetchGroups,
   selectGroup,
@@ -11,7 +9,6 @@ import {
   fetchReceipts,
   createReceipt,
 } from '../../../store/actions/receiptsActions'
-import DropDownList from '../Elements/DropDownList'
 import ScrollContainer from '../Elements/ScrollContainer'
 import SelectGroupDropdown from '../Groups/SelectGroupDropdown'
 import SelectUserDropdown from '../Elements/SelectUserDropdown'
@@ -23,11 +20,14 @@ class CreateReceipt extends Component {
     error: null,
 
     formData: {
+      subtotal: 0,
+      tip: 0,
+      total: 0,
+
       rows: 1,
       groupId: null,
       payer: {},
       receiptName: '',
-
       date: {
         day: 1,
         month: 1,
@@ -41,7 +41,9 @@ class CreateReceipt extends Component {
     // const { year, month, day } = this.state.date
 
     // make sure payer and group selected
-    if (!this.state.formData.payer || !this.state.formData.groupId) return
+    if (
+      // !this.state.formData.payer || 
+      !this.state.formData.groupId) return
 
     // set and save date as UTC
     const created = new Date()
@@ -115,7 +117,7 @@ class CreateReceipt extends Component {
           [e.target.name]: valueSlice,
         },
       })
-    } else {
+    } else if (e.target.type === 'number') {
       if (e.target.name.includes('date')) {
         let targetValue = e.target.value
 
@@ -136,13 +138,37 @@ class CreateReceipt extends Component {
           },
         })
       } else {
+        let total = this.state.formData.total
+        if (
+          (e.target.name === 'tip' && this.state.formData.subtotal) ||
+          e.target.name === 'subtotal'
+        ) {
+          const tarVal = Number(e.target.value)
+          if (e.target.name === 'tip') {
+            total =
+              this.state.formData.subtotal +
+              (this.state.formData.subtotal * tarVal) / 100
+          } else {
+            total = tarVal + (this.state.formData.tip / 100) * tarVal
+          }
+        } else if (e.target.name === 'total') {
+          total = e.target.value
+        }
         await this.setState({
           formData: {
             ...this.state.formData,
-            [e.target.name]: e.target.value,
+            [e.target.name]: Number(e.target.value),
+            total,
           },
         })
       }
+    } else {
+      await this.setState({
+        formData: {
+          ...this.state.formData,
+          [e.target.name]: e.target.value,
+        },
+      })
     }
   }
 
@@ -214,104 +240,130 @@ class CreateReceipt extends Component {
 
   render() {
     const { groups, loading, selectedGroup } = this.props
-    const { payer } = this.state.formData
+    const { payer, subtotal, tip, total, date } = this.state.formData
     return (
-      <div id='receipts-create'>
-        <ScrollContainer showButtons={true}>
-          {loading && <h3>Saving...</h3>}
+      <ScrollContainer showButtons={true}>
+        {loading && <h3>Saving...</h3>}
 
-          {this.state.error && `Error: ${this.state.error}`}
+        {this.state.error && `Error: ${this.state.error}`}
 
-          <SelectGroupDropdown
-            clickAction={this.selectGroup}
-            groups={groups}
-            clearAction={this.deselectGroup}
+        <SelectGroupDropdown
+          clickAction={this.selectGroup}
+          groups={groups}
+          clearAction={this.deselectGroup}
+          placeholder={'Select a group...'}
+        />
+
+        <br />
+
+        <SelectUserDropdown
+          users={selectedGroup.members || []}
+          clickAction={this.selectPayer}
+          clearAction={this.deselectPayer}
+          placeholder={
+            selectedGroup.id ? 'Select payer...' : 'Select a group first'
+          }
+        />
+
+        <form onSubmit={this.handleSubmit} style={{ width: '75%' }}>
+          <label>Receipt Name:</label>
+          <input
+            className='outline-only'
+            placeholder='Receipt name'
+            type='text'
+            required={true}
+            value={this.state.formData.receiptName}
+            name='receiptName'
+            onChange={this.handleChange}
+          />
+          <label>Subtotal:</label>
+          <input
+            className='outline-only'
+            placeholder='Subtotal'
+            type='number'
+            value={Number(subtotal).toString()}
+            name='subtotal'
+            onChange={this.handleChange}
+          />
+          <label>Tip(%):</label>
+          <input
+            className='outline-only'
+            placeholder='Tip(%):'
+            type='number'
+            value={Number(tip).toString()}
+            name='tip'
+            onChange={this.handleChange}
+          />
+          <label>Total:</label>
+          <input
+            readOnly={tip || subtotal ? true : false}
+            style={tip || subtotal ? { color: '#ccc' } : null}
+            className='outline-only'
+            placeholder='Total'
+            type='number'
+            required={true}
+            value={Number(total).toString()}
+            name='total'
+            onChange={this.handleChange}
           />
 
-          {selectedGroup.id ? (
-            <div>
-              <ul className='comma-list'>
-                Members:
-                {selectedGroup.members.map(member => (
-                  <li key={member.email}>{member.displayName}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-          <br />
-
-          <SelectUserDropdown
-            users={selectedGroup.members || []}
-            clickAction={this.selectPayer}
-            clearAction={this.deselectPayer}
-          />
-
-          {/* <DropDownList
-            listContent={selectedGroup.id ? selectedGroup.members : []}
-            message={'Who paid the bill?'}
-            clickAction={this.selectPayer}
-            selected={payer ? payer.displayName : null}
-          /> */}
-          <br />
-
-          <form onSubmit={this.handleSubmit}>
-            <label>Receipt name:</label>
+          <label>Date (M/D/Y):</label>
+          <div style={{ display: 'inherit' }}>
             <input
-              type='text'
-              required={true}
-              value={this.state.formData.receiptName}
-              name='receiptName'
-              onChange={this.handleChange}
-            />
-            <label>Date (M/D/Y):</label>
-            <div style={{ display: 'inherit' }}>
-              <input
-                title='Month'
-                type='number'
-                min='1'
-                max='12'
-                required={true}
-                onBlur={this.checkDateOnBlur}
-                value={Number(this.state.formData.date.month).toString()}
-                name='date.month'
-                onChange={this.handleChange}
-              />
-              <input
-                title='Day'
-                type='number'
-                min='1'
-                max='31'
-                required={true}
-                onBlur={this.checkDateOnBlur}
-                value={Number(this.state.formData.date.day).toString()}
-                name='date.day'
-                onChange={this.handleChange}
-              />
-              <input
-                title='Year'
-                type='number'
-                min='1950'
-                max='9999'
-                required={true}
-                value={this.state.formData.date.year}
-                name='date.year'
-                onChange={this.handleChange}
-              />
-            </div>
-
-            <label>Number of items:</label>
-            <input
+              className='outline-only'
+              title='Month'
               type='number'
               min='1'
-              max='55'
-              value={this.state.formData.rows}
-              name='rows'
+              max='12'
+              required={true}
+              onBlur={this.checkDateOnBlur}
+              value={Number(date.month).toString()}
+              name='date.month'
               onChange={this.handleChange}
             />
-            <button type='submit'>Create Receipt</button>
-          </form>
-        </ScrollContainer>
-      </div>
+            <input
+              className='outline-only'
+              title='Day'
+              type='number'
+              min='1'
+              max='31'
+              required={true}
+              onBlur={this.checkDateOnBlur}
+              value={Number(date.day).toString()}
+              name='date.day'
+              onChange={this.handleChange}
+            />
+            <input
+              className='outline-only'
+              title='Year'
+              type='number'
+              min='1950'
+              max='9999'
+              required={true}
+              value={date.year}
+              name='date.year'
+              onChange={this.handleChange}
+            />
+          </div>
+
+          <label>Number of items:</label>
+          <input
+            className='outline-only'
+            type='number'
+            min='1'
+            max='55'
+            value={this.state.formData.rows}
+            name='rows'
+            onChange={this.handleChange}
+          />
+          <button
+            className='button card'
+            type='submit'
+            style={{ width: '100%' }}>
+            Create Receipt
+          </button>
+        </form>
+      </ScrollContainer>
     )
   }
 }

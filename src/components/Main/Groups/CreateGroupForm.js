@@ -1,23 +1,17 @@
 import React, { Component } from 'react'
-import ListItem from '../Elements/ListItem'
 import CardListItem from '../Elements/CardListItem'
 import SelectUser from '../Elements/SelectUser'
 
 class CreateGroupForm extends Component {
   state = {
     friends: [],
-    // enableSearch: true,
   }
-
-  addUser = user => {}
 
   filterFriends = (input, friendsDataArr) =>
     friendsDataArr.filter(friend => friend.index.includes(input))
 
   search = async () => {
     if (this.searchInput.value.length > 0) {
-      // await this.setState({ enableSearch: false })
-      // window.setTimeout(async () => {
       const results = this.filterFriends(
         this.searchInput.value,
         this.props.friends
@@ -50,12 +44,8 @@ class CreateGroupForm extends Component {
       createGroup,
       addMember,
       members,
-      removeMember,
-      error,
     } = this.props
     const { friends } = this.state
-
-    
 
     const unaddedFriends = friends.filter(
       friend => !addedMemberEmails.includes(friend.email)
@@ -78,13 +68,10 @@ class CreateGroupForm extends Component {
           <br />
 
           <SelectUser
-            // removeUser={this.removeUser}
             addUser={addMember}
             users={unaddedFriends}
           />
           <br />
-          
-
 
           <div className='added-friends'>
             {members[0]
