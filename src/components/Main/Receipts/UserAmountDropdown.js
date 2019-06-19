@@ -85,7 +85,6 @@ class UserAmountDropdown extends Component {
   }
 
   updateInputValue = async () => {
-    console.log('setting inputvalue')
     await this.setState({
       inputValue: this.props.userAmount.paid,
     })
@@ -102,7 +101,7 @@ class UserAmountDropdown extends Component {
   componentDidMount = async () => {
     this.setMinHeight()
     document.addEventListener('mousedown', this.clickListener)
-    console.log('componentmounted')
+    console.log('UserAmountDropdown mounted')
     await this.updateInputValue()
   }
 
@@ -130,7 +129,9 @@ class UserAmountDropdown extends Component {
         style={open ? { minHeight } : null}>
         <div
           className='usr-amt-card color-bar'
-          style={{ backgroundColor: userAmount.color || 'blue' }}
+          style={{ backgroundColor: userAmount.color || 'blue',
+            border: `1px solid ${userAmount.color}`
+        }}
         />
         <div className='usr-amt-card rows'>
           <div className='usr-amt-card row'>

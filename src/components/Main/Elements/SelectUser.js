@@ -80,7 +80,7 @@ class SelectUser extends Component {
               </div>
             ) : (
               <div className='search-div' style={{ border: 'none' }}>
-                <img src='./images/search.svg' className='icon grey' />
+                <img src='/images/search.svg' className='icon grey' />
                 <input
                   className='textarea-only'
                   placeholder='Add a friend...'
@@ -94,9 +94,9 @@ class SelectUser extends Component {
             <img
               onClick={this.toggleDropdown}
               src='/images/down-arrow.svg'
-              className={
-                open ? 'icon right grey upsidedown' : 'icon right grey'
-              }
+              className={`icon right grey selectuserdropdownarrow ${
+                open ? 'upsidedown' : ''
+              }`}
             />
           </div>
 
@@ -119,7 +119,7 @@ class SelectUser extends Component {
                       className='select-user user-item'
                       key={user.id}
                       onClick={() => this.selectUser(user)}>
-                      {user.displayName}
+                      {user.displayName || user.name}
                     </div>
                   )
                 })

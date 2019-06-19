@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import RowEdit from './RowEdit'
-import Row from './Row'
+import RowEdit from '../RowEdit'
+import Row from '../Row'
 
 class Table extends Component {
   state = {

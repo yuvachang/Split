@@ -52,7 +52,7 @@ export const createEmptyRows = rowCount => {
   while (count < rowCount) {
     rows[count] = {
       item: '',
-      cost: '',
+      cost: 0,
       users: [],
       deletePending: false,
       isEdit: false,

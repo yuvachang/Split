@@ -292,6 +292,7 @@ button {
 
 .user-row-container {
   display: flex;
+  // align-items: center; //don't change this
   margin-bottom: 5px;
 
   &.dropdown-only {
@@ -537,7 +538,7 @@ button {
     height: auto;
     max-height: 235px;
 
-    transition: max-height 0.3s;
+    transition: max-height 0.5s;
 
     & > .button {
       padding: 0;
@@ -552,7 +553,7 @@ button {
     width: 100%;
     overflow: scroll;
     border: none;
-    transition: max-height 0.3s;
+    transition: max-height 0.5s;
     & > .button {
       filter: drop-shadow($no-shadow);
     }
