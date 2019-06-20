@@ -42,6 +42,10 @@ class ReceiptAmountsPanel extends Component {
     await this.props.updateReceipt(field, value, this.props.receipt.id)
   }
 
+  resizeListener = () => {
+    
+  }
+
   setColors = async () => {
     const { userAmounts } = this.props.receipt
     const userIds = Object.keys(userAmounts)
@@ -65,6 +69,7 @@ class ReceiptAmountsPanel extends Component {
 
   componentDidMount = async () => {
     console.log('componentdidmount receiptAmountPanel')
+    window.addEventListener('resize', this.clickListener)
     await this.setPayer()
 
     await this.setColors()

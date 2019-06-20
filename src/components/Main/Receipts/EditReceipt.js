@@ -5,14 +5,26 @@ import {
   unlistenReceipt,
 } from '../../../store/actions/receiptsActions'
 import ItemsList from './ItemsList'
-import ScrollContainer from '../Elements/ScrollContainer'
 import ReceiptHeader from './ReceiptHeader'
 import ReceiptAmountsPanel from './ReceiptAmountsPanel'
 
 class EditReceipt extends Component {
   state = {
     payer: {},
-    showPanel: false,
+    showMenu: false,
+    windowWidth: 0,
+  }
+
+  toggleMenu = async () => {
+    await this.setState({
+      showMenu: !this.state.showMenu,
+    })
+  }
+
+  setWindowWidth = () => {
+    this.setState({
+      windowWidth: window.innerWidth,
+    })
   }
 
   componentDidUpdate = async prevProps => {
@@ -27,11 +39,17 @@ class EditReceipt extends Component {
     // no need to use 'selectReceipt'
     const receiptId = this.props.location.pathname.slice(10)
     await this.props.listenReceipt(receiptId)
+
+    // determine window width for menu's translate-x distance
+    this.setWindowWidth()
+    window.addEventListener('resize', this.setWindowWidth)
   }
 
   componentWillUnmount = async () => {
     //unset listener for receipt
     this.props.unlistenReceipt(this.props.receipt.id)
+    //remove window listener
+    window.removeEventListener('resize', this.setWindowWidth)
   }
 
   render() {
@@ -42,7 +60,7 @@ class EditReceipt extends Component {
       deleteRow,
       addRow,
     } = this.props
-    const { showPanel } = this.state
+    const { showMenu, windowWidth } = this.state
     if (!receipt.id) {
       return null
     } else if (receipt.id === 'DNE') {
@@ -51,17 +69,22 @@ class EditReceipt extends Component {
       return (
         <div id='receipt-edit'>
           <ReceiptHeader
-            showLeft={showPanel}
-            // searchPlaceholder='Find existing friend...'
-            // search={this.search}
-            b1Src='/images/list.svg'
-            b1Click={() => this.switchView('list')}
-            b2Src='/images/add.svg'
-            b2Click={() => this.switchView('add')}
+            showMenu={showMenu}
+            b1Src='/images/menu.svg'
+            b1Click={this.toggleMenu}
+            // b2Src='/images/add.svg'
+            // b2Click={() => this.switchView('add')}
           />
 
           <div id='receipt-body'>
-            <div id='receipt-left'>
+            <div
+              id='receipt-left'
+              className={`${showMenu ? '' : 'hide-menu'}`}
+              style={
+                !showMenu
+                  ? { transform: `translateX(-${windowWidth}px)` }
+                  : null
+              }>
               <ReceiptAmountsPanel receipt={receipt} />
             </div>
 

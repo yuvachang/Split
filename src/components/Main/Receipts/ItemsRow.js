@@ -1,53 +1,3 @@
-// import React from 'react'
-
-// const ItemsRow = () => (
-//   <tr className={deleted ? 'deleted-row' : ''}>
-//     <td className='editbutton'>
-//       {row.edit ? (
-//         row.edit
-//       ) : deleted ? (
-//         <img
-//           src='/images/trash.svg'
-//           className='icon'
-//           onClick={() => deleteRow(rowIdx)}
-//         />
-//       ) : (
-//         <img
-//           src='/images/edit.svg'
-//           className='icon'
-//           onClick={() => startEdit(rowIdx)}
-//         />
-//       )}
-//     </td>
-//     <td className='item'>{row.item}</td>
-//     <td className='cost'>{row.cost}</td>
-//     <td className='users'>
-//       {!Array.isArray(row.users) ? (
-//         row.users
-//       ) : row.users[0] ? (
-//         <ul className='comma-list'>
-//           {row.users.map(user => (
-//             <li key={user.id}>{user.name}</li>
-//           ))}
-//         </ul>
-//       ) : (
-//         'No one yet.'
-//       )}
-//     </td>
-//     <td className='deletebutton'>
-//       {deleted ? (
-//         <img
-//           src='/images/restore.svg'
-//           className='icon'
-//           onClick={undelete ? undelete : null}
-//         />
-//       ) : null}
-//     </td>
-//   </tr>
-// )
-
-// export default ItemsRow
-
 import React, { Component } from 'react'
 import SelectUser from '../Elements/SelectUser'
 
@@ -266,12 +216,11 @@ class ItemsRow extends Component {
       deleteRow,
       userAmounts,
     } = this.props
-    const { open, minHeight, rowData, unaddedUsers } = this.state
+    const { open, isEdit, minHeight, rowData, unaddedUsers } = this.state
     return (
       <div
-        className={open? 'items-row container open': 'items-row container'}
-        ref={node => (this.menu = node)}
-        >
+        className={open ? 'items-row container open' : 'items-row container'}
+        ref={node => (this.menu = node)}>
         {/* {!!row.users.length &&  */}
         <div className='items-row color-bar' />
         {/* } */}
@@ -279,7 +228,7 @@ class ItemsRow extends Component {
         <div className='items-row top-row'>
           {/* TOP ROW */}
           <div className='items-row row'>
-            {open ? (
+            {isEdit ? (
               <input
                 name='item'
                 type='text'
@@ -292,8 +241,8 @@ class ItemsRow extends Component {
             ) : (
               <div className='items-row name'>{row.item || 'Item name'}</div>
             )}
-            {open && '$'}
-            {open ? (
+            {isEdit && '$'}
+            {isEdit ? (
               <input
                 name='cost'
                 type='number'
@@ -310,21 +259,29 @@ class ItemsRow extends Component {
               alt='open/close'
               onClick={
                 open
-                  ? async () => {
-                      this.toggleDropdown('close')
-                      await this.handleSave()
-                    }
+                  ? isEdit
+                    ? async () => {
+                        this.toggleDropdown('close')
+                        await this.handleSave()
+                      }
+                    : () => {
+                        this.toggleDropdown('close')
+                      }
                   : () => {
                       this.toggleDropdown('open')
                     }
               }
-              src={open ? '/images/save.svg' : '/images/edit.svg'}
-              className='icon right grey'
-              style={
+              src={
                 open
-                  ? { right: '-25px' }
-                  : { right: '-25px', borderRadius: '0', width: '17px' }
+                  ? isEdit
+                    ? '/images/save.svg'
+                    : '/images/down-arrow.svg'
+                  : '/images/down-arrow.svg'
               }
+              className={`icon right grey ${
+                open && !isEdit ? 'upsidedown' : ''
+              }`}
+              style={{ right: '-25px' }}
             />
           </div>
         </div>
@@ -335,7 +292,17 @@ class ItemsRow extends Component {
             <div
               className='items-row add-user'
               ref={node => (this.selectUser = node)}>
-              <SelectUser addUser={this.addUser} users={unaddedUsers} />
+              {isEdit ? (
+                <SelectUser addUser={this.addUser} users={unaddedUsers} />
+              ) : (
+                <div className='button card' onClick={this.toggleEdit}>
+                  <img
+                    src='/images/edit.svg'
+                    alt='edit icon'
+                    className='icon grey left'
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -361,6 +328,12 @@ class ItemsRow extends Component {
                   this.toggleEdit()
                 }}
                 style={{ right: '-25px' }}
+
+
+                 : { right: '-25px', width: '17px' }
+
+
+
               />
             ) : (
               <img

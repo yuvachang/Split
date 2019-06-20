@@ -43,7 +43,9 @@
   flex-direction: column;
   align-items: center;
 
-  @media only screen and (max-width: 390px) {
+  z-index: 99;
+
+  @media only screen and (max-width: 420px) {
     bottom: 0;
     top: inherit;
     
@@ -70,7 +72,7 @@
 
   // border-bottom: 1px solid white;
 
-  @media only screen and (max-width: 390px) {
+  @media only screen and (max-width: 420px) {
     display: none;
   }
 
@@ -129,7 +131,7 @@
       }
     }
   }
-  @media only screen and (max-width: 390px) {
+  @media only screen and (max-width: 420px) {
     flex-direction:row;
     justify-content: space-evenly;
 
@@ -148,7 +150,7 @@
 
   font-size: 0.75em;
 
-  @media only screen and (max-width: 390px) {
+  @media only screen and (max-width: 420px) {
    display: none;
   }
 }

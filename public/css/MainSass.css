@@ -33,7 +33,7 @@
   justify-content: center;
   align-items: center;
   background-color: white; }
-  @media only screen and (max-width: 390px) {
+  @media only screen and (max-width: 420px) {
     #routes {
       top: 0;
       width: 100vw;
@@ -451,12 +451,10 @@ button {
     transition: 0.5s; }
   .icon.left {
     position: absolute;
-    left: 15px;
-    border-radius: 50%; }
+    left: 15px; }
   .icon.right {
     position: absolute;
-    right: 15px;
-    border-radius: 50%; }
+    right: 15px; }
   .icon.large {
     width: 35px;
     height: 35px;
@@ -775,8 +773,9 @@ button {
   transition: 0.2s;
   display: flex;
   flex-direction: column;
-  align-items: center; }
-  @media only screen and (max-width: 390px) {
+  align-items: center;
+  z-index: 99; }
+  @media only screen and (max-width: 420px) {
     #nav {
       bottom: 0;
       top: inherit;
@@ -794,7 +793,7 @@ button {
   align-items: center;
   justify-content: center;
   text-align: center; }
-  @media only screen and (max-width: 390px) {
+  @media only screen and (max-width: 420px) {
     .nav-header {
       display: none; } }
 
@@ -834,7 +833,7 @@ button {
   .nav-links .link-item:hover {
     cursor: pointer;
     background-color: #30363d; } }
-  @media only screen and (max-width: 390px) {
+  @media only screen and (max-width: 420px) {
     .nav-links {
       flex-direction: row;
       justify-content: space-evenly;
@@ -848,7 +847,7 @@ button {
   display: flex;
   justify-content: center;
   font-size: 0.75em; }
-  @media only screen and (max-width: 390px) {
+  @media only screen and (max-width: 420px) {
     .nav-footer {
       display: none; } }
 
@@ -884,7 +883,26 @@ button {
   align-items: center;
   width: 50%;
   min-width: 310px;
-  height: 100%; }
+  height: 100%;
+  transform: translate-x(0);
+  transition: transform 1s 0.3s, width 0.3s, min-width 0.3s;
+  transition-timing-function: ease-out; }
+  @media only screen and (max-width: 760px) {
+    #receipt-left {
+      position: absolute;
+      width: 100%;
+      z-index: 55;
+      transition: width 0s, transform 1s; } }
+  #receipt-left.hide-menu {
+    transform: translateX(-310px);
+    min-width: 0;
+    width: 0%;
+    transition: transform 1s, width 0.5s 0.5s, min-width 0.5s 0.5s;
+    transition-timing-function: ease-out; }
+    @media only screen and (max-width: 760px) {
+      #receipt-left.hide-menu {
+        transform: translateX(-610px);
+        transition: transform 1s, width 0s 1s; } }
   #receipt-left #amounts-panel {
     width: 100%;
     height: 100%;

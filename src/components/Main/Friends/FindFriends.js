@@ -11,9 +11,9 @@ import ScrollContainer from '../Elements/ScrollContainer'
 import CardListItemConfirm from '../Elements/CardListItemConfirm'
 import CardItemInnertext from '../Elements/CardItemInnertext'
 
+// declare global var to allow cleartimeout
 let searchTimeout
 
-// needs to be class component to have ref on input node
 class FindFriends extends Component {
   state = {
     showConfirmPerson: {},
@@ -142,15 +142,10 @@ class FindFriends extends Component {
       receivedRequestIds,
     } = this.state
 
-    // const {
-    //   loading,
-    // } = this.props
-
     return (
       <div id='friends-add'>
         <br />
-        {/* <div>{loading ? 'Loading...' : 'Search for friends:'}</div> */}
-        <div>Search for friends:</div>
+        <div>Look for friends:</div>
         <br />
         <div className='search-div'>
           <img src='./images/search.svg' className='icon grey' />
