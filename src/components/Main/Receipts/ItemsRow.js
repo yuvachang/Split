@@ -1,38 +1,54 @@
 import React, { Component } from 'react'
 import SelectUser from '../Elements/SelectUser'
+import AddedUser from '../Elements/AddedUser'
+import CardItemInnertext from '../Elements/CardItemInnertext'
 
 class ItemsRow extends Component {
   state = {
     open: false,
     // minHeight: 0,
+    maxHeight: 0,
     isEdit: false,
     inputValue: 0,
-    rowData: {},
+    rowData: {
+      users: [],
+    },
     unaddedUsers: [],
+    showModal: false,
   }
 
-  // input methods
-  toggleEdit = () => {
-    this.setState({
+  toggleEdit = async () => {
+    //set maxHeight of bottomRows to ensure smooth&consistent css max-height transition
+    await this.setState({
       isEdit: !this.state.isEdit,
+      maxHeight: this.bottomRows.scrollHeight,
     })
   }
 
   handleSave = async () => {
-    console.log('save row function')
-    // if (this.state.inputValue !== this.props.userAmount.paid) {
-    //   const newUsrAmt = this.props.userAmount
-    //   newUsrAmt.paid = parseFloat(this.state.inputValue.toFixed(2))
-    //   await this.props.updateUserAmt(newUsrAmt)
-    // }
+    // adjust maxHeight for number of added users
+    await this.setState({
+      isEdit: false,
+      maxHeight: this.bottomRows.scrollHeight,
+    })
+  }
+
+  saveOnBlur = (e) => {
+    if (e.target.name==='item'){
+      this.updateUserAmountsAndRow('item')
+    } else {
+      this.updateUserAmountsAndRow()
+    }
   }
 
   handleChange = async e => {
     await this.setState({
-      inputValue: Number(e.target.value),
+      rowData: {
+        ...this.state.rowData,
+        [e.target.name]: e.target.value,
+      },
     })
   }
-  // end input methods
 
   toggleDropdown = action => {
     if (action === 'close') {
@@ -41,7 +57,7 @@ class ItemsRow extends Component {
         isEdit: false,
       })
     } else if (action === 'open') {
-      this.setState({ open: true })
+      this.setState({ open: true, maxHeight: this.bottomRows.scrollHeight })
     } else {
       const toggle = !this.state.open
       let isEdit = this.state.isEdit
@@ -53,30 +69,13 @@ class ItemsRow extends Component {
   }
 
   clickListener = async e => {
-    // console.log(
-    //   this.menu.clientHeight,
-    //   this.menu.scrollHeight,
-    //   this.menu.scrollTop
-    // )
-    if (e.target.className.includes('selectuserdropdownarrow')) {
-      console.log('setting minheight from clicklistener', this.state.minHeight)
-      // this.setMinHeight()
+    if (
+      !this.item.contains(e.target) &&
+      !this.state.isEdit &&
+      this.state.open
+    ) {
+      this.toggleDropdown('close')
     }
-    // console
-    //   .log
-    //   // e.target
-    //   // this.selectUser.clientHeight,
-    //   // this.selectUser.scrollHeight,
-    //   // this.selectUser.scrollTop
-    //   ()
-
-    // if (
-    //   this.state.open &&
-    //   !this.menu.contains(e.target) &&
-    //   !e.target.className.includes('scrollArrowID')
-    // ) {
-    //   this.toggleDropdown('close')
-    // }
   }
 
   selectUser = user => {
@@ -87,86 +86,108 @@ class ItemsRow extends Component {
     })
   }
 
-  // removeSelected = () => {
-  //   this.props.clearAction()
-  //   this.setState({
-  //     selected: {},
-  //   })
-  // }
-
-  // setMinHeight = async () => {
-  //   const users = this.props.row.users.length
-  //   let minHeight = 90 + (this.selectUser.scrollHeight - 35)
-  //   console.log(minHeight)
-  //   if (users) {
-  //     minHeight += users * 45 + 10
-  //   }
-  //   await this.setState({
-  //     minHeight,
-  //   })
-  // }
-
-  // updateInputValue = async () => {
-  //   await this.setState({
-  //     inputValue: this.props.userAmount.paid,
-  //   })
-  // }
-
-  usersChanged = () => {
-    const state = this.state.users
-    const row = this.props.row.users
-
-    if (state.length !== row.length) return true
-    const hash = {}
-    state.forEach(user => {
-      hash[user.id] = 1
-    })
-    for (let i = 0; i < row.length; i++) {
-      if (!hash[row[i].id]) return true
-    }
-
-    return false
-  }
-
-  updateUserAmountsAndRow = async () => {
-    const { userAmounts, rowIdx, row } = this.props
-    const { users, cost } = this.state
-
-    // dont update if nothing changed
-    if (!this.usersChanged() && row.cost === cost) return
-
-    const usersIds = users.map(user => user.id)
-    const amount = Number((cost / users.length).toFixed(2))
-
-    Object.keys(userAmounts).forEach(userId => {
-      if (usersIds.includes(userId)) {
-        userAmounts[userId].items[rowIdx] = amount
-      } else {
-        delete userAmounts[userId].items[rowIdx]
-      }
-      userAmounts[userId].amount = this.sumCosts(userAmounts[userId].items)
-    })
-
-    // console.log('usrAmts', userAmounts, 'users', users)
-
-    this.updateRow(userAmounts)
-  }
-
   addUser = async user => {
-    // add user to row
+    // add userId to state.rowData.users
     await this.setState({
-      users: [...this.state.users, { id: user.id, name: user.name }],
+      rowData: {
+        ...this.state.rowData,
+        users: [...this.state.rowData.users, user.id],
+      },
+      unaddedUsers: this.state.unaddedUsers.filter(
+        unaddedUser => unaddedUser.id !== user.id
+      ),
     })
+
+    // calculate new userAmounts
+    this.updateUserAmountsAndRow('users')
+  }
+
+  removeUser = async user => {
+    // remove userId from state.rowData.users
+    await this.setState({
+      rowData: {
+        ...this.state.rowData,
+        users: this.state.rowData.users.filter(userId => userId !== user.id),
+      },
+      unaddedUsers: [...this.state.unaddedUsers, user],
+    })
+
+    // calculate new userAmounts
+    this.updateUserAmountsAndRow('users')
+  }
+
+  sumCosts = obj => {
+    const vals = Object.values(obj)
+    if (vals.length) {
+      return Number(vals.reduce((a, b) => a + b).toFixed(2))
+    } else return 0
+  }
+
+  updateUserAmountsAndRow = async whatChanged => {
+    const { userAmounts, rowIdx, row } = this.props
+    const { users: usersIds, cost, item } = this.state.rowData
+
+    // return if nothing changed
+    if (!whatChanged && row.cost === cost && row.item === item) return
+    // no userAmounts update if only name changed
+    else if (whatChanged === 'item') {
+      this.updateRow()
+      return
+    } else {
+      // else update receipt.userAmounts
+      const amount = Number((cost / usersIds.length).toFixed(2))
+
+      Object.keys(userAmounts).forEach(userId => {
+        if (usersIds.includes(userId)) {
+          userAmounts[userId].items[rowIdx] = amount
+        } else {
+          delete userAmounts[userId].items[rowIdx]
+        }
+        userAmounts[userId].amount = this.sumCosts(userAmounts[userId].items)
+      })
+
+      // pass to props backend handler
+      this.updateRow(userAmounts)
+    }
   }
 
   //vvv DISPATCH METHODS
 
+  deleteRow = async (e, pendRowDelete) => {
+    console.log(pendRowDelete)
+    if (pendRowDelete) {
+      if (pendRowDelete === 'perm-delete') {
+        this.props.deleteRow(rowIdx, userAmounts)
+      }
+      const { userAmounts, rowIdx, row } = this.props
+
+      row.users.forEach(userId => {
+        delete userAmounts[userId].items[rowIdx]
+        // run sumCosts on all userAmounts to ensure no data falls out of sync
+        userAmounts[userId].amount = this.sumCosts(userAmounts[userId].items)
+      })
+
+      await this.props.toggleDeleteRow(rowIdx, userAmounts)
+    } else {
+      const { item, cost } = this.state.rowData
+      if (item || cost) {
+        // trigger modal/alert
+        this.setState({
+          open: false,
+          showModal: true,
+        })
+      } else {
+        this.props.deleteRow()
+      }
+    }
+  }
+
   updateRow = async userAmounts => {
     const { rowIdx, updateRow } = this.props
     if (userAmounts) {
-      await updateRow(rowIdx, this.state, userAmounts)
+      await updateRow(rowIdx, this.state.rowData, userAmounts)
     } else {
-      await updateRow(rowIdx, this.state, null)
+      await updateRow(rowIdx, this.state.rowData, null)
     }
   }
 
@@ -174,13 +195,18 @@ class ItemsRow extends Component {
 
   mapRowToState = async () => {
     const { row, userAmounts } = this.props
+    const unaddedUsers = []
 
-    const unaddedUsers = Object.keys(userAmounts)
-      .filter(userId => !row.users.includes(userId))
-      .map(id => userAmounts[id])
+    // state.rowData.users = array of userIds
+    // state.unaddedUsers = array of userAmount user objs
+    Object.keys(userAmounts).forEach(userId => {
+      if (!row.users.includes(userId)) {
+        unaddedUsers.push(userAmounts[userId])
+      }
+    })
 
     await this.setState({
-      rowData: this.props.row,
+      rowData: row,
       unaddedUsers,
     })
   }
@@ -188,18 +214,17 @@ class ItemsRow extends Component {
   componentDidUpdate = async prevProps => {
     if (prevProps !== this.props) {
       console.log('ItemsRow updated')
+      await this.mapRowToState()
       // await this.updateInputValue()
       // this.setMinHeight()
     }
   }
 
   componentDidMount = async () => {
-    console.log('ItemsRow mounted', this.selectUser)
+    // console.log('ItemsRow mounted', this.selectUser)
 
     document.addEventListener('mousedown', this.clickListener)
     await this.mapRowToState()
-    // this.setMinHeight()
-    // await this.updateInputValue()
   }
 
   componentWillUnmount = () => {
@@ -207,23 +232,56 @@ class ItemsRow extends Component {
   }
 
   render() {
+    const { row, userAmounts, deleteRow, toggleDeleteRow } = this.props
+
     const {
-      row,
-      startEdit,
-      rowIdx,
-      deleted,
-      undelete,
-      deleteRow,
-      userAmounts,
-    } = this.props
-    const { open, isEdit, minHeight, rowData, unaddedUsers } = this.state
+      open,
+      isEdit,
+      maxHeight,
+      rowData,
+      unaddedUsers,
+      showModal,
+    } = this.state
     return (
-      <div
-        className={open ? 'items-row container open' : 'items-row container'}
-        ref={node => (this.menu = node)}>
-        {/* {!!row.users.length &&  */}
-        <div className='items-row color-bar' />
-        {/* } */}
+      <div className='items-row container' ref={node => (this.item = node)}>
+        {/* DELETE DIALOGUE */}
+        {showModal && (
+          <div className='items-row confirm-delete'>
+            Delete this item?
+            <div className='options'>
+              <div
+                className='button card short grey-hover'
+                onClick={() => {
+                  this.setState({
+                    showModal: false,
+                  })
+                }}>
+                No
+              </div>
+              <div
+                className='button card short red'
+                onClick={e => {
+                  this.deleteRow(e, 'pendDelete')
+                }}>
+                Yes
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* COLOR-BAR-BOTTOM */}
+        <div className={`items-row color-bar ${open ? 'collapsed' : ''}`}>
+          {!!row.users.length &&
+            row.users.map(userId => {
+              return (
+                <div
+                  key={userId}
+                  className='color-bar-segment'
+                  style={{ backgroundColor: userAmounts[userId].color }}
+                />
+              )
+            })}
+        </div>
 
         <div className='items-row top-row'>
           {/* TOP ROW */}
@@ -237,6 +295,12 @@ class ItemsRow extends Component {
                 style={{ marginRight: '5px' }}
                 value={rowData.item}
                 onChange={this.handleChange}
+                onBlur={this.saveOnBlur}
+                onKeyPress={e => {
+                  if (e.key === 'Enter') {
+                    e.target.blur()
+                  }
+                }}
               />
             ) : (
               <div className='items-row name'>{row.item || 'Item name'}</div>
@@ -247,9 +311,15 @@ class ItemsRow extends Component {
                 name='cost'
                 type='number'
                 className='outline-only'
-                style={{ maxWidth: '75px', textAlign: 'right' }}
+                style={{ maxWidth: '65px', textAlign: 'right' }}
                 value={Number(rowData.cost).toString() || 0}
                 onChange={this.handleChange}
+                onBlur={this.saveOnBlur}
+                onKeyPress={e => {
+                  if (e.key === 'Enter') {
+                    e.target.blur()
+                  }
+                }}
               />
             ) : (
               <div className='items-row amount'>${row.cost || '0'}</div>
@@ -260,9 +330,8 @@ class ItemsRow extends Component {
               onClick={
                 open
                   ? isEdit
-                    ? async () => {
-                        this.toggleDropdown('close')
-                        await this.handleSave()
+                    ? () => {
+                        this.handleSave()
                       }
                     : () => {
                         this.toggleDropdown('close')
@@ -275,75 +344,80 @@ class ItemsRow extends Component {
                 open
                   ? isEdit
                     ? '/images/save.svg'
-                    : '/images/down-arrow.svg'
-                  : '/images/down-arrow.svg'
+                    : '/images/down-arrow.png'
+                  : '/images/down-arrow.png'
               }
               className={`icon right grey ${
                 open && !isEdit ? 'upsidedown' : ''
               }`}
-              style={{ right: '-25px' }}
+              style={{ right: '-25px', width: '24px', height: '18px' }}
             />
           </div>
         </div>
 
-        <div className={`items-row bottom-rows ${open ? '' : 'collapsed'}`}>
-          {/* SECOND ROW */}
-          <div className='items-row row' style={{ alignItems: 'flex-start' }}>
-            <div
-              className='items-row add-user'
-              ref={node => (this.selectUser = node)}>
-              {isEdit ? (
+        {/* BOTTOM-ROWS */}
+        <div
+          className={`items-row bottom-rows ${open ? '' : 'collapsed'}`}
+          style={
+            open
+              ? isEdit
+                ? { maxHeight: 'none' }
+                : { maxHeight }
+              : { maxHeight: '0' }
+          }
+          ref={node => (this.bottomRows = node)}>
+          {/* EDIT BUTTON OR ADD USER DROPDOWN */}
+          <div className='items-row row'>
+            {isEdit ? (
+              <div>
                 <SelectUser addUser={this.addUser} users={unaddedUsers} />
-              ) : (
-                <div className='button card' onClick={this.toggleEdit}>
+              </div>
+            ) : (
+              <div>
+                <div className='row-button' onClick={this.toggleEdit}>
                   <img
                     src='/images/edit.svg'
+                    style={{ width: '17px' }}
                     alt='edit icon'
                     className='icon grey left'
                   />
+                  Edit item
                 </div>
-              )}
-            </div>
+                <div
+                  className='round-icon-button delete-row'
+                  onClick={this.deleteRow}>
+                  <img src='/images/trash.svg' className='icon' />
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* {isEdit ? (
-              <input
-                className='outline-only'
-                style={{ maxWidth: '75px' }}
-                value={Number(inputValue).toString()}
-                type='number'
-                onChange={this.handleChange}
-              />
-            ) : (
-              <div className='items-row amount'>${userAmounts.paid}</div>
-            )} */}
+          {/* ADDED USERS LIST */}
+          {!!rowData.users.length &&
+            rowData.users.map(userId => {
+              return (
+                <div
+                  className='items-row row'
+                  key={userId}
+                  style={isEdit ? null : { width: '216px' }}>
+                  <div
+                    className={`user-color-bar ${isEdit ? 'collapsed' : ''}`}
+                    style={{ backgroundColor: userAmounts[userId].color }}
+                  />
 
-          {/* {isEdit ? (
-              <img
-                src='/images/save.svg'
-                alt='save icon'
-                className='icon grey right'
-                onClick={async () => {
-                  await this.handleSave()
-                  this.toggleEdit()
-                }}
-                style={{ right: '-25px' }}
-
-
-                 : { right: '-25px', width: '17px' }
-
-
-
-              />
-            ) : (
-              <img
-                src='/images/edit.svg'
-                alt='edit icon'
-                className='icon grey right'
-                onClick={this.toggleEdit}
-                style={{ right: '-25px', borderRadius: '0', width: '17px' }}
-              />
-            )} */}
+                  {isEdit ? (
+                    <AddedUser
+                      user={userAmounts[userId]}
+                      removeUser={this.removeUser}
+                    />
+                  ) : (
+                    <div className='user-row-container-buttonless'>
+                      {userAmounts[userId].name}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
         </div>
       </div>
     )

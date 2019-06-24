@@ -32,6 +32,10 @@ class UserAmountDropdown extends Component {
 
   toggleDropdown = action => {
     if (action === 'close') {
+      if (this.props.userAmount.paid !== this.state.inputValue) {
+        this.handleSave()
+      }
+
       this.setState({
         open: false,
         isEdit: false,
@@ -75,7 +79,7 @@ class UserAmountDropdown extends Component {
 
   setMinHeight = () => {
     const debt = this.props.userAmount.debt
-    let minHeight = 135
+    let minHeight = 135 + 45
     if (Object.keys(debt).length) {
       minHeight += Object.keys(debt).length * 17 + 10
     }
@@ -92,7 +96,7 @@ class UserAmountDropdown extends Component {
 
   componentDidUpdate = async prevProps => {
     if (prevProps !== this.props) {
-      console.log('UserAmountDropdown updated', this.props.userAmount.id)
+      // console.log('UserAmountDropdown updated', this.props.userAmount.id)
       await this.updateInputValue()
       this.setMinHeight()
     }
@@ -129,9 +133,10 @@ class UserAmountDropdown extends Component {
         style={open ? { minHeight } : null}>
         <div
           className='usr-amt-card color-bar'
-          style={{ backgroundColor: userAmount.color || 'blue',
-            border: `1px solid ${userAmount.color}`
-        }}
+          style={{
+            backgroundColor: userAmount.color || 'blue',
+            border: `1px solid ${userAmount.color}`,
+          }}
         />
         <div className='usr-amt-card rows'>
           <div className='usr-amt-card row'>
@@ -152,9 +157,18 @@ class UserAmountDropdown extends Component {
           <div className='usr-amt-card row'>
             <div className='usr-amt-card name'>
               <div className='row-bullet' />
+              Owes
+            </div>
+
+            <div className='usr-amt-card amount'>${userAmount.owe}</div>
+          </div>
+
+          <div className='usr-amt-card row'>
+            <div className='usr-amt-card name'>
+              <div className='row-bullet' />
               Paid
               {String(userAmount.paid).length > 4 && <br />}
-              (towards total)
+              <p>(towards total)</p>
             </div>
 
             {isEdit ? (

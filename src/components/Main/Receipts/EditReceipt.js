@@ -6,7 +6,7 @@ import {
 } from '../../../store/actions/receiptsActions'
 import ItemsList from './ItemsList'
 import ReceiptHeader from './ReceiptHeader'
-import ReceiptAmountsPanel from './ReceiptAmountsPanel'
+import ReceiptAmountsPanel from './AmountsPanel/ReceiptAmountsPanel'
 
 class EditReceipt extends Component {
   state = {
@@ -22,9 +22,15 @@ class EditReceipt extends Component {
   }
 
   setWindowWidth = () => {
-    this.setState({
-      windowWidth: window.innerWidth,
-    })
+    if (window.innerWidth <= 760) {
+      this.setState({
+        windowWidth: window.innerWidth,
+      })
+    } else {
+      this.setState({
+        windowWidth: 310,
+      })
+    }
   }
 
   componentDidUpdate = async prevProps => {
@@ -53,13 +59,7 @@ class EditReceipt extends Component {
   }
 
   render() {
-    const {
-      receipt,
-      updateRow,
-      toggleDeleteRow,
-      deleteRow,
-      addRow,
-    } = this.props
+    const { receipt } = this.props
     const { showMenu, windowWidth } = this.state
     if (!receipt.id) {
       return null
@@ -92,18 +92,7 @@ class EditReceipt extends Component {
               <br />
               Receipt Items
               <br />
-              <ItemsList
-                rows={receipt.rows}
-                updateRow={(rowIdx, row, userAmounts) =>
-                  updateRow(rowIdx, row, userAmounts, receipt.id)
-                }
-                deleteRow={rowIdx => deleteRow(rowIdx, receipt.id)}
-                addRow={idx => addRow(idx, receipt.id)}
-                toggleDeleteRow={(rowIdx, ua) =>
-                  toggleDeleteRow(rowIdx, ua, receipt.id)
-                }
-                receipt={receipt}
-              />
+              <ItemsList />
             </div>
           </div>
         </div>

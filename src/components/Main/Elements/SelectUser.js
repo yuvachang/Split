@@ -40,6 +40,13 @@ class SelectUser extends Component {
     }
   }
 
+  addUser = () => {
+    if (this.state.selected.id) {
+      this.props.addUser(this.state.selected)
+      this.removeSelected()
+    }
+  }
+
   selectUser = user => {
     this.setState({
       selected: user,
@@ -62,21 +69,23 @@ class SelectUser extends Component {
   }
 
   render() {
-    const { addUser, users } = this.props
+    const { users } = this.props
     const { open, selected, filteredUsers } = this.state
 
     return (
       <div className='user-row-container'>
         <div className='select-user container' ref={node => (this.menu = node)}>
-          <div className='select-user message'>
+          <div
+            className='select-user message'
+            style={selected.id ? { marginTop: '1px' } : null}>
             {selected.id ? (
               <div>
-                {selected.displayName}
                 <img
                   src='/images/remove.svg'
                   className='icon grey left'
                   onClick={this.removeSelected}
                 />
+                {selected.displayName || selected.name}
               </div>
             ) : (
               <div className='search-div' style={{ border: 'none' }}>
@@ -126,12 +135,7 @@ class SelectUser extends Component {
               : 'No one here...'}
           </div>
         </div>
-        <div
-          className='round-icon-button'
-          onClick={() => {
-            addUser(selected)
-            this.removeSelected()
-          }}>
+        <div className='round-icon-button' onClick={this.addUser}>
           <img
             src='/images/add.svg'
             className='icon'

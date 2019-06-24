@@ -48,27 +48,25 @@
     min-width: 310px;
     height: 100%;
 
-    transform: translate-x(0);
-    transition: transform 1s 0.3s, width 0.3s, min-width 0.3s;
-    transition-timing-function: ease-out;
+    transform: translateX(0);
+    transition: 1s;
+    // transition: transform 0.8s, width 0.8s, min-width 0.8s;
+    // transition-timing-function: ease-out;
 
     @media only screen and (max-width: 760px) {
       position: absolute;
       width: 100%;
       z-index: 55;
       transition: width 0s, transform 1s;
-
-      // transform: translateX(-310px);
-      // min-width: 310px;
-      // transition: transform 1s, width 0.5s 0.5s, min-width 0.5s 0.5s;
     }
 
     &.hide-menu {
       transform: translateX(-310px);
       min-width: 0;
       width: 0%;
-      transition: transform 1s, width 0.5s 0.5s, min-width 0.5s 0.5s;
-      transition-timing-function: ease-out;
+      transition: 1s;
+      // transition: transform 1s, width 0.8s, min-width 0.8s;
+      // transition-timing-function: ease-in;
 
       @media only screen and (max-width: 760px) {
         transform: translateX(-610px);
@@ -94,6 +92,18 @@
 
     width: 100%;
     height: 100%;
+
+    & .deleted-item-row {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+
+      & .button.card.blue {
+        width: 95%;
+        border: 1px solid #ccc;
+        background-color: gray;
+      }
+    }
 
     // @media only screen and (max-width: 760px) {
     //   // transform: translateX(-310px);
@@ -125,60 +135,175 @@
     // overflow: hidden;
     // max-height: 45px;
 
-    transition: 0.5s;
+    // transition: 0.5s;
 
     // &.open {
     //   overflow: unset;
     //   max-height: 500px;
     // }
 
-    & .color-bar {
+    & .confirm-delete {
       position: absolute;
-      background-color: $bg-ig-lighter;
-      height: 12px;
-      bottom: 0;
+      top: 0;
+      left: 0;
+
       width: 100%;
+      height: 100%;
+
+      background-color: rgba(150, 150, 150, 0.95);
+
+      border-radius: 4px;
+
+      z-index: 88;
+
+      & > .options {
+        display: flex;
+        justify-content: space-evenly;
+
+        & > * {
+          border: none;
+          min-height: 25px;
+          max-height: 20px;
+        }
+      }
+    }
+
+    & .color-bar {
+      background-color: $bg-ig-lighter;
+
+      position: absolute;
+      bottom: 0;
+
+      display: flex;
+
+      overflow: hidden;
+
+      height: 12px;
+      width: 100%;
+
       border-radius: 0px 0px 4px 4px;
+
+      transition: 0.5s;
+
+      &-segment {
+        width: 100%;
+      }
+
+      &.collapsed {
+        height: 0px;
+        transition: 0.5s;
+      }
     }
   }
 
   &.bottom-rows {
-    max-height: 500px;
-    transition: 1s;
+    overflow: hidden;
+    // max-height: 500px; // maxHeight dynamically set in ItemsRow component
+    transition: 0.5s;
 
     &.collapsed {
       max-height: 0;
-      transition: 1s;
-
-      & * {
-        max-height: 0;
-        margin: 0;
-        padding: 0;
-        border: none;
-        min-height: 0;
-        transition: 1s;
-      }
-      // & input, img {
-      //   visibility: hidden;
-      //   transition: 0s;
-      // }
+      transition: 0.5s;
     }
 
-    & .add-user {
-      top: 0;
-      left: 0;
-      width: 242px;
-      margin-left: 25px;
+    & .row {
+      position: relative;
 
-      & .round-icon-button {
-        width: 20px;
-        min-width: 20px;
-        height: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-        margin-top: 4px;
+      min-height: 25px;
+      margin: 5px 25px;
+
+      & > .user-color-bar {
+        background-color: grey;
+
+        position: absolute;
+        left: 0;
+
+        height: 100%;
+        width: 10px;
+
+        border-radius: 4px 0 0 4px;
+
+        transition: 0.5s;
+
+        &.collapsed {
+          border-radius: 4px 0 0 4px;
+
+          width: 0;
+
+          transition: 0.5s;
+        }
       }
+
+      & .user-row-container-buttonless {
+        // position: relative;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: 100%;
+        min-height: 25px;
+
+        border: 1px solid #ccc;
+        border-radius: 5px;
+
+        color: $grey-text-darker;
+      }
+
+      & .row-button {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 214px; //same as 'add-friend' dropdown width;
+        min-height: 28px;
+
+        border: 1px solid #ccc;
+        border-radius: 5px;
+
+        background-color: white;
+
+        @media (hover: hover) {
+          &:hover {
+            cursor: pointer;
+            background-color: darkorange;
+            color: white;
+            transition: 0.2s;
+            & img {
+              filter: invert(1);
+            }
+          }
+        }
+      }
+
+      & .delete-row {
+        background-color: red;
+        position: absolute;
+        right: -8px;
+        top: 0;
+      }
+    }
+
+    & .user-row-container,
+    .added-user-row {
+      width: 242px;
+      margin-bottom: 0;
+    }
+
+    & .round-icon-button {
+      width: 20px;
+      min-width: 20px;
+      height: 20px;
+      margin-top: 4px;
     }
   }
+
   &.top-row {
     display: flex;
     flex-direction: column;
@@ -212,6 +337,10 @@
 
       min-height: 45px;
 
+      & > input {
+        margin: 0;
+      }
+
       & .name {
         overflow: hidden;
         white-space: nowrap;
@@ -234,35 +363,35 @@
   }
 }
 
-.row-item {
-  background-color: $button-success-bg-color;
-  position: relative;
+// .row-item {
+//   background-color: $button-success-bg-color;
+//   position: relative;
 
-  border: 1.5px solid white;
-  border-radius: 5px;
+//   border: 1.5px solid white;
+//   border-radius: 5px;
 
-  box-sizing: border-box;
-  padding: 4px 5px;
-  margin: 8px 0px;
-  text-align: center;
+//   box-sizing: border-box;
+//   padding: 4px 5px;
+//   margin: 8px 0px;
+//   text-align: center;
 
-  width: 100%;
-  min-height: min-content;
-  color: white;
-  font-weight: bold;
-  font-size: 1em;
+//   width: 100%;
+//   min-height: min-content;
+//   color: white;
+//   font-weight: bold;
+//   font-size: 1em;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
 
-  & > .innertext {
-    width: 65%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
+//   & > .innertext {
+//     width: 65%;
+//     white-space: nowrap;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+//   }
+// }
 
 table {
   border-collapse: collapse;

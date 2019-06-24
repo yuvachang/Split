@@ -4,8 +4,8 @@ import {
   updateSingleUserAmount,
   updateReceipt,
   updateUserAmounts,
-} from '../../../store/actions/receiptsActions'
-import ScrollContainer from '../Elements/ScrollContainer'
+} from '../../../../store/actions/receiptsActions'
+import ScrollContainer from '../../Elements/ScrollContainer'
 import UserAmountDropdown from './UserAmountDropdown'
 import AmountsCard from './AmountsCard'
 

@@ -39,10 +39,10 @@ class AmountsCard extends Component {
           <div className='usr-amt-card row'>
             <div className='usr-amt-card name'>{label}</div>
 
-            {isEdit ? (
+            {isEdit && allowEdit ? (
               <input
                 className='outline-only'
-                style={{maxWidth:'100px'}}
+                style={{ maxWidth: '100px' }}
                 value={Number(inputValue).toString()}
                 type='number'
                 onChange={this.handleChange}

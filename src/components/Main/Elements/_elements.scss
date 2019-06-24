@@ -349,7 +349,7 @@ button {
   width: 20px;
   height: 20px;
   filter: invert(1);
-  transition: 0.2s;
+  transition: 0.6s;
 
   &.gray,
   &.grey {
@@ -358,7 +358,8 @@ button {
 
   &.upsidedown {
     transform: rotate(180deg);
-    transition: 0.5s;
+    /* transform: rotateX(180deg); */
+    transition: 0.6s;
   }
 
   &.left {
@@ -568,12 +569,14 @@ button {
     white-space: nowrap;
     text-overflow: ellipsis;
 
-    & > .comma-list {
-      margin: 0;
-      & > li {
-        align-content: center;
-      }
-    }
+    // margin-top: 1px;
+
+    // & > .comma-list {
+    //   margin: 0;
+    //   & > li {
+    //     align-content: center;
+    //   }
+    // }
   }
 }
 

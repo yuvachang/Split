@@ -443,12 +443,13 @@ button {
   width: 20px;
   height: 20px;
   filter: invert(1);
-  transition: 0.2s; }
+  transition: 0.6s; }
   .icon.gray, .icon.grey {
     filter: invert(0.4); }
   .icon.upsidedown {
     transform: rotate(180deg);
-    transition: 0.5s; }
+    /* transform: rotateX(180deg); */
+    transition: 0.6s; }
   .icon.left {
     position: absolute;
     left: 15px; }
@@ -584,10 +585,6 @@ button {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis; }
-  .select-user.message > .comma-list {
-    margin: 0; }
-    .select-user.message > .comma-list > li {
-      align-content: center; }
 
 .search-div {
   display: flex;
@@ -884,9 +881,8 @@ button {
   width: 50%;
   min-width: 310px;
   height: 100%;
-  transform: translate-x(0);
-  transition: transform 1s 0.3s, width 0.3s, min-width 0.3s;
-  transition-timing-function: ease-out; }
+  transform: translateX(0);
+  transition: 1s; }
   @media only screen and (max-width: 760px) {
     #receipt-left {
       position: absolute;
@@ -897,8 +893,7 @@ button {
     transform: translateX(-310px);
     min-width: 0;
     width: 0%;
-    transition: transform 1s, width 0.5s 0.5s, min-width 0.5s 0.5s;
-    transition-timing-function: ease-out; }
+    transition: 1s; }
     @media only screen and (max-width: 760px) {
       #receipt-left.hide-menu {
         transform: translateX(-610px);
@@ -917,6 +912,14 @@ button {
   align-items: center;
   width: 100%;
   height: 100%; }
+  #receipt-right .deleted-item-row {
+    width: 100%;
+    display: flex;
+    justify-content: center; }
+    #receipt-right .deleted-item-row .button.card.blue {
+      width: 95%;
+      border: 1px solid #ccc;
+      background-color: gray; }
 
 .items-row.container {
   position: relative;
@@ -927,39 +930,105 @@ button {
   width: 95%;
   padding-bottom: 10px;
   margin: 4px 0px;
-  z-index: 11;
-  transition: 0.5s; }
-  .items-row.container .color-bar {
+  z-index: 11; }
+  .items-row.container .confirm-delete {
     position: absolute;
-    background-color: #e1e1e1;
-    height: 12px;
-    bottom: 0;
-    width: 100%;
-    border-radius: 0px 0px 4px 4px; }
-
-.items-row.bottom-rows {
-  max-height: 500px;
-  transition: 1s; }
-  .items-row.bottom-rows.collapsed {
-    max-height: 0;
-    transition: 1s; }
-    .items-row.bottom-rows.collapsed * {
-      max-height: 0;
-      margin: 0;
-      padding: 0;
-      border: none;
-      min-height: 0;
-      transition: 1s; }
-  .items-row.bottom-rows .add-user {
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(150, 150, 150, 0.95);
+    border-radius: 4px;
+    z-index: 88; }
+    .items-row.container .confirm-delete > .options {
+      display: flex;
+      justify-content: space-evenly; }
+      .items-row.container .confirm-delete > .options > * {
+        border: none;
+        min-height: 25px;
+        max-height: 20px; }
+  .items-row.container .color-bar {
+    background-color: #e1e1e1;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    overflow: hidden;
+    height: 12px;
+    width: 100%;
+    border-radius: 0px 0px 4px 4px;
+    transition: 0.5s; }
+    .items-row.container .color-bar-segment {
+      width: 100%; }
+    .items-row.container .color-bar.collapsed {
+      height: 0px;
+      transition: 0.5s; }
+
+.items-row.bottom-rows {
+  overflow: hidden;
+  transition: 0.5s; }
+  .items-row.bottom-rows.collapsed {
+    max-height: 0;
+    transition: 0.5s; }
+  .items-row.bottom-rows .row {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 25px;
+    margin: 5px 25px; }
+    .items-row.bottom-rows .row > .user-color-bar {
+      background-color: grey;
+      position: absolute;
+      left: 0;
+      height: 100%;
+      width: 10px;
+      border-radius: 4px 0 0 4px;
+      transition: 0.5s; }
+      .items-row.bottom-rows .row > .user-color-bar.collapsed {
+        border-radius: 4px 0 0 4px;
+        width: 0;
+        transition: 0.5s; }
+    .items-row.bottom-rows .row .user-row-container-buttonless {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      min-height: 25px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      color: #595959; }
+    .items-row.bottom-rows .row .row-button {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 214px;
+      min-height: 28px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: white; }
+      @media (hover: hover) {
+        .items-row.bottom-rows .row .row-button:hover {
+          cursor: pointer;
+          background-color: darkorange;
+          color: white;
+          transition: 0.2s; }
+          .items-row.bottom-rows .row .row-button:hover img {
+            filter: invert(1); } }
+    .items-row.bottom-rows .row .delete-row {
+      background-color: red;
+      position: absolute;
+      right: -8px;
+      top: 0; }
+  .items-row.bottom-rows .user-row-container,
+  .items-row.bottom-rows .added-user-row {
     width: 242px;
-    margin-left: 25px; }
-    .items-row.bottom-rows .add-user .round-icon-button {
-      width: 20px;
-      min-width: 20px;
-      height: 20px;
-      margin-top: 4px; }
+    margin-bottom: 0; }
+  .items-row.bottom-rows .round-icon-button {
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+    margin-top: 4px; }
 
 .items-row.top-row {
   display: flex;
@@ -981,6 +1050,8 @@ button {
     justify-content: space-between;
     align-items: center;
     min-height: 45px; }
+    .items-row.top-row .row > input {
+      margin: 0; }
     .items-row.top-row .row .name {
       overflow: hidden;
       white-space: nowrap;
@@ -993,29 +1064,6 @@ button {
       max-width: 75px;
       overflow: hidden;
       text-overflow: ellipsis; }
-
-.row-item {
-  background-color: #5b677a;
-  position: relative;
-  border: 1.5px solid white;
-  border-radius: 5px;
-  box-sizing: border-box;
-  padding: 4px 5px;
-  margin: 8px 0px;
-  text-align: center;
-  width: 100%;
-  min-height: min-content;
-  color: white;
-  font-weight: bold;
-  font-size: 1em;
-  display: flex;
-  justify-content: center;
-  align-items: center; }
-  .row-item > .innertext {
-    width: 65%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; }
 
 table {
   border-collapse: collapse; }
@@ -1097,6 +1145,9 @@ table {
       margin-right: 10px;
       display: flex;
       align-items: center; }
+      .usr-amt-card.rows .row .name > p {
+        font-size: 0.8em;
+        color: #595959; }
     .usr-amt-card.rows .row .amount {
       max-width: 75px;
       overflow: hidden;

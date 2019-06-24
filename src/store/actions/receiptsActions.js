@@ -364,7 +364,7 @@ export const deleteRow = (rowIdx, receiptId) => async dispatch => {
 
 export const addRow = (startIdx, receiptId) => async dispatch => {
   try {
-    console.log('inside addRow')
+    console.log('inside addRow', startIdx, receiptId)
     const receiptRef = await firestore.collection('receipts').doc(receiptId)
     await receiptRef.update({
       ['rows.' + startIdx]: {

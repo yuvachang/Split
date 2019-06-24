@@ -55,7 +55,6 @@ export const createEmptyRows = rowCount => {
       cost: 0,
       users: [],
       deletePending: false,
-      isEdit: false,
     }
     count++
   }

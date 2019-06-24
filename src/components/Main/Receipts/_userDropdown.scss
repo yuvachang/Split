@@ -73,6 +73,11 @@
 
         display: flex;
         align-items: center;
+
+        & > p {
+          font-size: 0.8em;
+          color: $grey-text-darker;
+        }
       }
       & .amount {
         max-width: 75px;
