@@ -10,13 +10,12 @@ import UserAmountDropdown from './UserAmountDropdown'
 import AmountsCard from './AmountsCard'
 
 class ReceiptAmountsPanel extends Component {
-  state = {
-    payer: {},
-    showPanel: false,
-  }
-
   updateUserAmt = async usrAmt => {
-    // calculate new debts with usrAmt.paid
+    // only usrAmt.paid changed,
+    // calculate new debts with usrAmt.paid 
+    // calc new usrAmt.owe for everyone
+
+    
 
     await this.props.updateSingleUserAmount(
       usrAmt.id,
@@ -25,25 +24,8 @@ class ReceiptAmountsPanel extends Component {
     )
   }
 
-  setPayer = () => {
-    const usrAmt = this.props.receipt.userAmounts
-    const payerIdArr = Object.keys(usrAmt).filter(
-      userId => usrAmt[userId].isPayer
-    )
-    if (payerIdArr.length) {
-      const payer = usrAmt[payerIdArr[0]]
-      this.setState({
-        payer,
-      })
-    }
-  }
-
   handleEditAmount = async (value, field) => {
     await this.props.updateReceipt(field, value, this.props.receipt.id)
-  }
-
-  resizeListener = () => {
-    
   }
 
   setColors = async () => {
@@ -62,15 +44,14 @@ class ReceiptAmountsPanel extends Component {
 
   componentDidUpdate = async prevProps => {
     if (prevProps !== this.props) {
-      // console.log('componentDidUpdate receiptAmountPanel')
-      await this.setPayer()
+      console.log('componentDidUpdate receiptAmountPanel')
+
+      // recalculate everyone's usrAmt.owe && usrAmt.debt
     }
   }
 
   componentDidMount = async () => {
     console.log('componentdidmount receiptAmountPanel')
-    window.addEventListener('resize', this.clickListener)
-    await this.setPayer()
 
     await this.setColors()
   }
@@ -79,7 +60,6 @@ class ReceiptAmountsPanel extends Component {
 
   render() {
     const { receipt } = this.props
-    const { payer, showPanel } = this.state
     if (!receipt.id) {
       return null
     } else if (receipt.id === 'DNE') {
@@ -112,7 +92,6 @@ class ReceiptAmountsPanel extends Component {
               }
             />
             <br />
-            {payer.id && <p>Payer: {payer.name}</p>}
             {Object.keys(receipt.userAmounts).map(userId => (
               <UserAmountDropdown
                 key={userId}

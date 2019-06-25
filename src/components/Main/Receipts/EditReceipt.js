@@ -11,7 +11,7 @@ import ReceiptAmountsPanel from './AmountsPanel/ReceiptAmountsPanel'
 class EditReceipt extends Component {
   state = {
     payer: {},
-    showMenu: false,
+    showMenu: true,
     windowWidth: 0,
   }
 
@@ -91,7 +91,12 @@ class EditReceipt extends Component {
             <div id='receipt-right'>
               <br />
               Receipt Items
-              <br />
+              <p style={{ margin: '0', fontSize: '0.9em', color: '#7f7f7f' }}>
+                total: $
+                {Object.keys(receipt.rows)
+                  .map(rowIdx => receipt.rows[rowIdx].deletePending ? 0 : Number(receipt.rows[rowIdx].cost))
+                  .reduce((a, b) => a + b)}
+              </p>
               <ItemsList />
             </div>
           </div>

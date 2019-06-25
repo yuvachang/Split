@@ -33,15 +33,41 @@ class ItemsRow extends Component {
     })
   }
 
-  saveOnBlur = (e) => {
-    if (e.target.name==='item'){
+  saveOnBlur = async e => {
+    if (e.target.name === 'item') {
       this.updateUserAmountsAndRow('item')
     } else {
+      // etargetname = cost
+      // check if all item costs + this item cost < receipt.total
+      const { rows, total: receiptTotal } = this.props.receipt
+      const itemsTotal = Object.keys(rows)
+        .map(rowIdx =>
+          rows[rowIdx].deletePending ? 0 : Number(rows[rowIdx].cost)
+        )
+        .reduce((a, b) => a + b)
+      const remainderCost = Number(receiptTotal) - itemsTotal
+      console.log(remainderCost, receiptTotal, itemsTotal)
+      let targetValue = Number(e.target.value)
+
+      if (targetValue > remainderCost) {
+        targetValue = remainderCost
+        await this.setState({
+          rowData: {
+            ...this.state.rowData,
+            cost: targetValue,
+          },
+        })
+      }
+
       this.updateUserAmountsAndRow()
     }
   }
 
   handleChange = async e => {
+    if (e.target.name === 'cost') {
+      e.target.value = Number(e.target.value)
+    }
+
     await this.setState({
       rowData: {
         ...this.state.rowData,
@@ -143,7 +169,9 @@ class ItemsRow extends Component {
         } else {
           delete userAmounts[userId].items[rowIdx]
         }
+
         userAmounts[userId].amount = this.sumCosts(userAmounts[userId].items)
+        userAmounts[userId].owe = userAmounts[userId].amount
       })
 
       // pass to props backend handler

@@ -42,8 +42,10 @@ class CreateReceipt extends Component {
 
     // make sure payer and group selected
     if (
-      // !this.state.formData.payer || 
-      !this.state.formData.groupId) return
+      // !this.state.formData.payer ||
+      !this.state.formData.groupId
+    )
+      return
 
     // set and save date as UTC
     const created = new Date()
@@ -181,15 +183,19 @@ class CreateReceipt extends Component {
     let newDay = 0
 
     if (e.target.name === 'date.month') {
-      if (targetValue > 12) {
+      if (!targetValue || targetValue === 0) {
+        targetValue = 1
+      } else if (targetValue > 12) {
         targetValue = 12
       } else if (days30.includes(targetValue) && day > 30) {
         newDay = 30
-      } else if ((targetValue = 2 && day > 28)) {
+      } else if (targetValue === 2 && day > 28) {
         newDay = 28
       }
     } else if (e.target.name === 'date.day') {
-      if (!month || (days31.includes(month) && targetValue > 31)) {
+      if (!targetValue || targetValue === 0) {
+        targetValue = 1
+      } else if (days31.includes(month) && targetValue > 31) {
         targetValue = 31
       } else if (days30.includes(month) && targetValue > 30) {
         targetValue = 30
@@ -209,7 +215,7 @@ class CreateReceipt extends Component {
           },
         },
       })
-    } else
+    } else {
       await this.setState({
         formData: {
           ...this.state.formData,
@@ -219,6 +225,7 @@ class CreateReceipt extends Component {
           },
         },
       })
+    }
   }
 
   componentDidMount = async () => {
@@ -297,7 +304,7 @@ class CreateReceipt extends Component {
           <label>Total:</label>
           <input
             readOnly={tip || subtotal ? true : false}
-            style={tip || subtotal ? { color: '#ccc' } : null}
+            style={tip || subtotal ? { color: '#7f7f7f' } : null}
             className='outline-only'
             placeholder='Total'
             type='number'

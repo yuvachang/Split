@@ -67,7 +67,7 @@ export const createReceipt = data => async dispatch => {
     // create userAmounts catalogue
     const userAmounts = await createUserAmounts(
       groupData,
-      data.payer.id || 123,
+      data.payer.id || 0,
       data.total
     )
 

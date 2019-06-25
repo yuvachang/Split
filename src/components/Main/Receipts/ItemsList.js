@@ -103,15 +103,16 @@ class ItemsList extends Component {
                   stopEdit={this.stopEdit}
                   row={rows[rowIdx]}
                   rowIdx={rowIdx}
+                  userAmounts={receipt.userAmounts}
+                  receipt={receipt}
                   updateRow={(rowIdx, row, usrAmts) =>
                     updateRow(rowIdx, row, usrAmts, receipt.id)
                   }
-                  userAmounts={receipt.userAmounts}
                   toggleDeleteRow={(rowIdx, ua) =>
                     toggleDeleteRow(rowIdx, ua, receipt.id)
                   }
                   deleteRow={() => deleteRow(rowIdx, receipt.id)}
-                  undelete={() => this.undeleteRow(rowIdx)}
+                  // undelete={() => this.undeleteRow(rowIdx)}
                 />
               )
           })}
@@ -144,57 +145,3 @@ export default connect(
   mapState,
   mapDispatch
 )(ItemsList)
-
-// export default ItemsList
-
-// <table>
-// <tbody id='receipt-table'>
-//   {Object.keys(rows).map(rowIdx => {
-//     // if row deleted, render RowDeleted
-//     if (rows[rowIdx].deletePending)
-//       return (
-//         <ItemsRow
-//           key={rowIdx}
-//           startEdit={this.startEdit}
-//           row={rows[rowIdx]}
-//           rowIdx={rowIdx}
-//           deleted={true}
-//           deleteRow={deleteRow}
-//           undelete={() => this.undeleteRow(rowIdx)}
-//         />
-//       )
-//     else if (rowIdx === editing)
-//       // if editing row, render RowEdit
-//       return (
-//         <RowEdit
-//           key={rowIdx}
-//           stopEdit={this.stopEdit}
-//           row={rows[rowIdx]}
-//           rowIdx={rowIdx}
-//           updateRow={updateRow}
-//           userAmounts={receipt.userAmounts}
-//           deleteRow={this.props.toggleDeleteRow}
-//         />
-//       )
-//     // else show normal row
-//     else
-//       return (
-//         <ItemsRow
-//           key={rowIdx}
-//           startEdit={this.startEdit}
-//           row={rows[rowIdx]}
-//           rowIdx={rowIdx}
-//         />
-//       )
-//   })}
-//   <tr>
-//     <td>
-//       <img
-//         src='/images/add.svg'
-//         className='icon'
-//         onClick={this.addRow}
-//       />
-//     </td>
-//   </tr>
-// </tbody>
-// </table>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Debts from './Debts'
 
 class UserAmountDropdown extends Component {
   state = {
@@ -53,13 +54,13 @@ class UserAmountDropdown extends Component {
   }
 
   clickListener = e => {
-    if (
-      this.state.open &&
-      !this.menu.contains(e.target) &&
-      !e.target.className.includes('scrollArrowID')
-    ) {
-      this.toggleDropdown('close')
-    }
+    // if (
+    //   this.state.open &&
+    //   !this.menu.contains(e.target) &&
+    //   !e.target.className.includes('scrollArrowID')
+    // ) {
+    //   this.toggleDropdown('close')
+    // }
   }
 
   selectUser = user => {
@@ -79,10 +80,14 @@ class UserAmountDropdown extends Component {
 
   setMinHeight = () => {
     const debt = this.props.userAmount.debt
+    const numberOfDebts = Object.keys(debt).length
+
     let minHeight = 135
-    if (Object.keys(debt).length) {
-      minHeight += Object.keys(debt).length * 17 + 10
+
+    if (numberOfDebts) {
+      minHeight += numberOfDebts * 17 + 10
     }
+
     this.setState({
       minHeight,
     })
@@ -119,7 +124,7 @@ class UserAmountDropdown extends Component {
     //   name,
     //   amount,
     //   items,
-    //   isPayer,
+    //   paidTotal,
     //   paid,
     //   debt,
     //   owe,
@@ -139,7 +144,9 @@ class UserAmountDropdown extends Component {
             border: `1px solid ${userAmount.color}`,
           }}
         />
+
         <div className='usr-amt-card rows'>
+          {/* TOP ROW */}
           <div className='usr-amt-card row'>
             <div
               className='usr-amt-card name'
@@ -153,19 +160,18 @@ class UserAmountDropdown extends Component {
             <img
               alt='open/close'
               onClick={this.toggleDropdown}
-              src='/images/down-arrow.svg'
-              className={
-                open ? 'icon right grey upsidedown' : 'icon right grey'
-              }
-              style={{ right: '-25px' }}
+              src='/images/down-arrow.png'
+              className={`icon right grey ${open ? 'upsidedown' : ''}`}
+              // style={{ right: '-25px' }}
+              style={{ right: '-25px', width: '24px', height: '18px' }}
             />
           </div>
 
+          {/* PAID */}
           <div className='usr-amt-card row'>
             <div className='usr-amt-card name'>
               <div className='row-bullet' />
               Paid
-              {String(userAmount.paid).length > 4 && <br />}
               <p>(towards total)</p>
             </div>
 
@@ -176,6 +182,12 @@ class UserAmountDropdown extends Component {
                 value={Number(inputValue).toString()}
                 type='number'
                 onChange={this.handleChange}
+                onKeyPress={e => {
+                  if (e.key === 'Enter') {
+                    this.handleSave()
+                    this.toggleEdit()
+                  }
+                }}
               />
             ) : (
               <div className='usr-amt-card amount'>${userAmount.paid}</div>
@@ -203,6 +215,7 @@ class UserAmountDropdown extends Component {
             )}
           </div>
 
+          {/* OWES */}
           <div className='usr-amt-card row'>
             <div className='usr-amt-card name'>
               <div className='row-bullet' />
@@ -212,18 +225,14 @@ class UserAmountDropdown extends Component {
             <div className='usr-amt-card amount'>${userAmount.owe}</div>
           </div>
 
-          {/* {Object.keys(userAmount.debt)[0] && ( */}
-          <div className='usr-amt-card footer'>
+          {/* DEBTS */}
+          <Debts userAmount={userAmount} />
+
+          {/* <div className='usr-amt-card footer'>
             {Object.keys(userAmount.debt).map(userId => {
-              return (
-                <p key={userId}>
-                  Pay {userAmount.debt[userId].name} $
-                  {userAmount.debt[userId].amount}.
-                </p>
-              )
+              return <Debts key={userId} userId={userId} userAmount={userAmount} />
             })}
-          </div>
-          {/* )} */}
+          </div> */}
         </div>
       </div>
     )

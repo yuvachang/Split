@@ -67,18 +67,26 @@ export const createUserAmounts = async (groupData, payerId, total) => {
   await Promise.all(
     groupData.members.map(async member => {
       const memberData = await getDataWithRef(member)
-      const paid = payerId === member.id ? total : 0
+      let paid
+      let owe
+
+      const isPayer = payerId === member.id 
+      if (isPayer) {
+        owe = 0
+        paid = total
+      } else {
+        owe = total / (groupData.members.length)
+        paid = 0
+      }
 
       userAmounts[memberData.id] = {
         id: member.id,
         name: memberData.displayName,
         amount: 0,
         items: {},
-        isPayer: payerId === member.id,
         paid,
         debt: {},
-        owe: 0,
-        percentageOfTotal: 0,
+        owe,
       }
       return
     })
