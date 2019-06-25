@@ -43,6 +43,7 @@ class Nav extends Component {
         node = 'groupsLink'
       }
       if (node) {
+        console.log(node)
         if (window.innerWidth < 390) {
           await this.setState({
             bulletLeft: Math.round(

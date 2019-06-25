@@ -79,7 +79,7 @@ class UserAmountDropdown extends Component {
 
   setMinHeight = () => {
     const debt = this.props.userAmount.debt
-    let minHeight = 135 + 45
+    let minHeight = 135
     if (Object.keys(debt).length) {
       minHeight += Object.keys(debt).length * 17 + 10
     }
@@ -126,6 +126,7 @@ class UserAmountDropdown extends Component {
     //   percentageOfTotal,
     // } = userAmount
     const { open, minHeight, isEdit, inputValue } = this.state
+    const userItemCount = Object.keys(userAmount.items).length
     return (
       <div
         className={`usr-amt-card container ${open ? 'open' : ''} `}
@@ -140,7 +141,13 @@ class UserAmountDropdown extends Component {
         />
         <div className='usr-amt-card rows'>
           <div className='usr-amt-card row'>
-            <div className='usr-amt-card name'>{userAmount.name}</div>
+            <div
+              className='usr-amt-card name'
+              style={{ display: 'block', textAlign: 'left' }}>
+              {userAmount.name}
+              <br />
+              <p>{`${userItemCount} item${userItemCount === 1 ? '' : 's'}.`}</p>
+            </div>
 
             <div className='usr-amt-card amount'>${userAmount.amount}</div>
             <img
@@ -152,15 +159,6 @@ class UserAmountDropdown extends Component {
               }
               style={{ right: '-25px' }}
             />
-          </div>
-
-          <div className='usr-amt-card row'>
-            <div className='usr-amt-card name'>
-              <div className='row-bullet' />
-              Owes
-            </div>
-
-            <div className='usr-amt-card amount'>${userAmount.owe}</div>
           </div>
 
           <div className='usr-amt-card row'>

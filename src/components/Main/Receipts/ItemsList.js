@@ -34,28 +34,22 @@ class ItemsList extends Component {
         return Number(vals.reduce((a, b) => a + b).toFixed(2))
       } else return 0
     }
+    const { users, cost: itemCost, deletePending } = this.props.receipt.rows[
+      rowIdx
+    ]
 
-    const { users, cost, deletePending } = this.props.receipt.rows[rowIdx]
-    if (deletePending) {
-      const { userAmounts } = this.props.receipt
-      const usersIds = users.map(user => user.id)
-      const amount = Number((cost / users.length).toFixed(2))
+    const { userAmounts } = this.props.receipt
+    const itemAmountPerUser = Number((itemCost / users.length).toFixed(2))
 
-      Object.keys(userAmounts).forEach(userId => {
-        if (usersIds.includes(userId)) {
-          userAmounts[userId].items[rowIdx] = amount
-          // userAmounts[userId].amount += amount
-          // run sumCosts to ensure data in sync
-          userAmounts[userId].amount = sumCosts(userAmounts[userId].items)
-        }
-      })
+    Object.keys(userAmounts).forEach(userId => {
+      if (users.includes(userId)) {
+        userAmounts[userId].items[rowIdx] = itemAmountPerUser
+        // run sumCosts to ensure data in sync
+        userAmounts[userId].amount = sumCosts(userAmounts[userId].items)
+      }
+    })
 
-      await this.props.toggleDeleteRow(
-        rowIdx,
-        userAmounts,
-        this.props.receipt.id
-      )
-    }
+    await this.props.toggleDeleteRow(rowIdx, userAmounts, this.props.receipt.id)
   }
 
   addRow = async () => {

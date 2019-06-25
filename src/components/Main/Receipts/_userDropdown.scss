@@ -60,15 +60,18 @@
       justify-content: space-between;
       align-items: center;
 
-      // height: 45px;
       min-height: 45px;
+
+      &.text-only {
+        font-size: 0.8em;
+        color: $grey-text-darker;
+      }
 
       & .name {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
 
-        display: block;
         margin-right: 10px;
 
         display: flex;

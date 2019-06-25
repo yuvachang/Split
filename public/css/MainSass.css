@@ -416,7 +416,8 @@ button {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding-top: 2px;
-  text-align: center; }
+  text-align: center;
+  color: #595959; }
 
 .round-icon-button {
   position: relative;
@@ -1137,11 +1138,13 @@ table {
     justify-content: space-between;
     align-items: center;
     min-height: 45px; }
+    .usr-amt-card.rows .row.text-only {
+      font-size: 0.8em;
+      color: #595959; }
     .usr-amt-card.rows .row .name {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      display: block;
       margin-right: 10px;
       display: flex;
       align-items: center; }

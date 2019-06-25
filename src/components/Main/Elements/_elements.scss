@@ -303,13 +303,20 @@ button {
 
 .added-user-row {
   position: relative;
+
   box-sizing: border-box;
+
   width: 100%;
   min-height: 28px;
+
   border: 1px solid #ccc;
   border-radius: 5px;
+
   padding-top: 2px;
+
   text-align: center;
+
+  color: $grey-text-darker;
 }
 
 .round-icon-button {
