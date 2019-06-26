@@ -37,20 +37,32 @@ class ItemsRow extends Component {
     if (e.target.name === 'item') {
       this.updateUserAmountsAndRow('item')
     } else {
-      // etargetname = cost
       // check if all item costs + this item cost < receipt.total
+      let targetValue = Number(e.target.value)
+
       const { rows, total: receiptTotal } = this.props.receipt
       const itemsTotal = Object.keys(rows)
         .map(rowIdx =>
-          rows[rowIdx].deletePending ? 0 : Number(rows[rowIdx].cost)
+          rowIdx === this.props.rowIdx
+            ? 0
+            : rows[rowIdx].deletePending
+            ? 0
+            : Number(rows[rowIdx].cost)
         )
         .reduce((a, b) => a + b)
       const remainderCost = Number(receiptTotal) - itemsTotal
-      console.log(remainderCost, receiptTotal, itemsTotal)
-      let targetValue = Number(e.target.value)
 
-      if (targetValue > remainderCost) {
-        targetValue = remainderCost
+      if (remainderCost < 0) {
+        targetValue = 0
+      } else {
+        if (targetValue > remainderCost) {
+          targetValue = remainderCost
+        } else if (targetValue < 0) {
+          targetValue = Math.abs(targetValue)
+        }
+      }
+
+      if (targetValue !== e.target.value) {
         await this.setState({
           rowData: {
             ...this.state.rowData,
@@ -65,7 +77,7 @@ class ItemsRow extends Component {
 
   handleChange = async e => {
     if (e.target.name === 'cost') {
-      e.target.value = Number(e.target.value)
+      e.target.value = Number(Number(e.target.value).toFixed(2))
     }
 
     await this.setState({
@@ -171,7 +183,14 @@ class ItemsRow extends Component {
         }
 
         userAmounts[userId].amount = this.sumCosts(userAmounts[userId].items)
-        userAmounts[userId].owe = userAmounts[userId].amount
+
+        // calculate owe against paid
+        if (userAmounts[userId].amount > userAmounts[userId].paid) {
+          userAmounts[userId].owe =
+            userAmounts[userId].amount - userAmounts[userId].paid
+        } else {
+          userAmounts[userId].owe = 0
+        }
       })
 
       // pass to props backend handler
@@ -182,11 +201,10 @@ class ItemsRow extends Component {
   //vvv DISPATCH METHODS
 
   deleteRow = async (e, pendRowDelete) => {
-    console.log(pendRowDelete)
     if (pendRowDelete) {
-      if (pendRowDelete === 'perm-delete') {
-        this.props.deleteRow(rowIdx, userAmounts)
-      }
+      // if (pendRowDelete === 'perm-delete') {
+      //   this.props.deleteRow(rowIdx, userAmounts)
+      // }
       const { userAmounts, rowIdx, row } = this.props
 
       row.users.forEach(userId => {

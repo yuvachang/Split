@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-  updateSingleUserAmount,
   updateReceipt,
   updateUserAmounts,
 } from '../../../../store/actions/receiptsActions'
@@ -10,18 +9,14 @@ import UserAmountDropdown from './UserAmountDropdown'
 import AmountsCard from './AmountsCard'
 
 class ReceiptAmountsPanel extends Component {
+  state = { totalPaid: 0 }
+
   updateUserAmt = async usrAmt => {
-    // only usrAmt.paid changed,
-    // calculate new debts with usrAmt.paid 
-    // calc new usrAmt.owe for everyone
-
-    
-
-    await this.props.updateSingleUserAmount(
-      usrAmt.id,
-      usrAmt,
-      this.props.receipt.id
-    )
+    let userAmounts = this.props.receipt.userAmounts
+    if (usrAmt) {
+      userAmounts[usrAmt.id] = usrAmt
+    }
+    await this.props.updateUserAmounts(userAmounts, this.props.receipt.id)
   }
 
   handleEditAmount = async (value, field) => {
@@ -32,6 +27,7 @@ class ReceiptAmountsPanel extends Component {
     const { userAmounts } = this.props.receipt
     const userIds = Object.keys(userAmounts)
     if (userIds.filter(userId => !userAmounts[userId].color).length) {
+      console.log('setting user colors')
       let hslIncrement = 360 / userIds.length
       userIds.forEach(userId => {
         userAmounts[userId].color =
@@ -42,24 +38,37 @@ class ReceiptAmountsPanel extends Component {
     }
   }
 
+  setTotalPaid = async () => {
+    const { receipt } = this.props
+    const { userAmounts } = receipt
+    const totalPaid = Object.keys(userAmounts)
+      .map(uid => (userAmounts[uid].paid ? Number(userAmounts[uid].paid) : 0))
+      .reduce((a, b) => a + b)
+    await this.setState({
+      totalPaid,
+    })
+  }
+
   componentDidUpdate = async prevProps => {
     if (prevProps !== this.props) {
       console.log('componentDidUpdate receiptAmountPanel')
-
-      // recalculate everyone's usrAmt.owe && usrAmt.debt
+      await this.setTotalPaid()
     }
   }
 
   componentDidMount = async () => {
     console.log('componentdidmount receiptAmountPanel')
-
     await this.setColors()
+    await this.setTotalPaid()
   }
 
   componentWillUnmount = async () => {}
 
   render() {
     const { receipt } = this.props
+    const { userAmounts } = receipt
+    const { totalPaid } = this.state
+
     if (!receipt.id) {
       return null
     } else if (receipt.id === 'DNE') {
@@ -91,12 +100,20 @@ class ReceiptAmountsPanel extends Component {
                 receipt.subtotal != 0 || receipt.tip != 0 ? false : true
               }
             />
+            <AmountsCard
+              label='Amount paid'
+              amount={totalPaid}
+              handleEditAmount={val => this.handleEditAmount(val, 'subtotal')}
+              allowEdit={false}
+            />
+
             <br />
-            {Object.keys(receipt.userAmounts).map(userId => (
+            {Object.keys(userAmounts).map(userId => (
               <UserAmountDropdown
                 key={userId}
+                receipt={receipt}
                 updateUserAmt={this.updateUserAmt}
-                userAmount={receipt.userAmounts[userId]}
+                userAmount={userAmounts[userId]}
               />
             ))}
           </ScrollContainer>
@@ -110,8 +127,6 @@ const mapState = state => ({})
 const mapDispatch = dispatch => ({
   updateReceipt: (field, value, receiptId) =>
     dispatch(updateReceipt(field, value, receiptId)),
-  updateSingleUserAmount: (userId, usrAmt, receiptId) =>
-    dispatch(updateSingleUserAmount(userId, usrAmt, receiptId)),
   updateUserAmounts: (usrAmts, receiptId) =>
     dispatch(updateUserAmounts(usrAmts, receiptId)),
 })

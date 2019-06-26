@@ -6,7 +6,7 @@ import {
   getDataWithRef,
   createEmptyRows,
   createUserAmounts,
-  getUserByEmail,
+  calcOwesAndDebts,
 } from './utilActions'
 
 const firebase = getFirebase()
@@ -31,18 +31,6 @@ export const selectReceipt = receiptId => async dispatch => {
     const receiptData = await getDataWithRef(receiptRef)
     const groupData = await getDataWithRef(receiptData.group)
 
-    // const members = await Promise.all(
-    //   receiptData.members.map(async memberRef => {
-    //     if (memberRef.id===receiptData.payer.id) {
-    //       const member = await getDataWithRef(memberRef)
-    //       receiptData.payer = member
-    //       return member
-    //     }
-    //     return await getDataWithRef(memberRef)
-    //   })
-    // )
-
-    // receiptData.members = members
     receiptData.group = groupData
 
     dispatch({ type: actions.RECEIPTS_SELECT, payload: receiptData })
@@ -210,15 +198,7 @@ export const updateRow = (
   receiptId
 ) => async dispatch => {
   try {
-    console.log(
-      'inside updateRow thunk: ',
-      'idx=>',
-      rowIdx,
-      'row=>',
-      row,
-      'rid=>',
-      receiptId
-    )
+    console.log('inside updateRow thunk')
 
     const batch = firestore.batch()
     const receiptRef = await firestore.collection('receipts').doc(receiptId)
@@ -229,19 +209,14 @@ export const updateRow = (
     })
 
     // update receipt's date-modified
-    batch.set(
-      receiptRef,
-      {
-        updated: new Date(),
-      },
-      { merge: true }
-    )
+    batch.set(receiptRef, { updated: new Date() }, { merge: true })
 
     // if users added to or removed from row, update userAmounts
     if (userAmounts) {
-      console.log('updateRow: userAmounts updating')
+      // console.log('updateRow: userAmounts updating')
+      const newUsrAmts = calcOwesAndDebts(userAmounts)
       batch.update(receiptRef, {
-        userAmounts,
+        userAmounts: newUsrAmts,
       })
     }
 
@@ -254,7 +229,7 @@ export const updateRow = (
 
 export const updateReceipt = (field, value, receiptId) => async dispatch => {
   try {
-    console.log('inside updateReceipt thunk:', value)
+    console.log('inside updateReceipt thunk, value: ', value)
     const batch = firestore.batch()
     const receiptRef = await firestore.collection('receipts').doc(receiptId)
     const receiptData = await getDataWithRef(receiptRef)
@@ -286,36 +261,17 @@ export const updateReceipt = (field, value, receiptId) => async dispatch => {
   }
 }
 
-export const updateUserAmounts = (usrAmts, receiptId) => async dispatch => {
+export const updateUserAmounts = (userAmounts, receiptId) => async dispatch => {
   try {
-    console.log('inside updateUserAmounts thunk:')
+    console.log('inside updateUserAmounts thunk:', userAmounts)
 
     const receiptRef = await firestore.collection('receipts').doc(receiptId)
-
+    const newUsrAmts = calcOwesAndDebts(userAmounts)
     await receiptRef.update({
-      userAmounts: usrAmts,
+      userAmounts: newUsrAmts,
     })
   } catch (error) {
     console.log('ERROR: updateUserAmounts => ', error)
-    dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
-  }
-}
-
-export const updateSingleUserAmount = (
-  userId,
-  usrAmt,
-  receiptId
-) => async dispatch => {
-  try {
-    console.log('inside updateSingleUserAmount thunk:')
-
-    const receiptRef = await firestore.collection('receipts').doc(receiptId)
-
-    await receiptRef.update({
-      ['userAmounts.' + userId]: usrAmt,
-    })
-  } catch (error) {
-    console.log('ERROR: updateSingleUserAmount => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
   }
 }
@@ -328,19 +284,17 @@ export const toggleDeleteRow = (
   try {
     console.log('inside toggleDeleteRow')
     const batch = firestore.batch()
-
     const receiptRef = await firestore.collection('receipts').doc(receiptId)
     const receiptData = await getDataWithRef(receiptRef)
-
     const del = !receiptData.rows[rowIdx].deletePending
+    const newUsrAmts = calcOwesAndDebts(userAmounts)
+
     batch.update(receiptRef, {
       ['rows.' + rowIdx + '.deletePending']: del,
     })
-
     batch.update(receiptRef, {
-      userAmounts,
+      userAmounts: newUsrAmts,
     })
-
     batch.commit()
   } catch (error) {
     console.log('ERROR: toggleDeleteRow => ', error)
@@ -385,7 +339,7 @@ let unsubscribe
 
 export const listenReceipt = receiptId => async dispatch => {
   try {
-    console.log('subscribed to receipt: ', receiptId)
+    console.log('%c Subscribed to receipt: ' + receiptId, 'color: green;')
 
     unsubscribe = await firestore
       .collection('receipts')
@@ -416,7 +370,7 @@ export const unlistenReceipt = receiptId => async dispatch => {
 
     unsubscribe()
 
-    console.log('unsubscribed from receipt: ', receiptId)
+    console.log('%c Unsubscribed from receipt: ' + receiptId, 'color: red;')
   } catch (error) {
     console.log('ERROR: listenReceipt => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })

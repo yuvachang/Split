@@ -875,7 +875,7 @@ button {
   display: flex; }
 
 #receipt-left {
-  background-color: #e1e1e1;
+  background-color: #f0f0f0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -949,7 +949,7 @@ button {
         min-height: 25px;
         max-height: 20px; }
   .items-row.container .color-bar {
-    background-color: #e1e1e1;
+    background-color: #f0f0f0;
     position: absolute;
     bottom: 0;
     display: flex;

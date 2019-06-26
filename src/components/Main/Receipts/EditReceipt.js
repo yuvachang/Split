@@ -92,10 +92,16 @@ class EditReceipt extends Component {
               <br />
               Receipt Items
               <p style={{ margin: '0', fontSize: '0.9em', color: '#7f7f7f' }}>
-                total: $
-                {Object.keys(receipt.rows)
-                  .map(rowIdx => receipt.rows[rowIdx].deletePending ? 0 : Number(receipt.rows[rowIdx].cost))
-                  .reduce((a, b) => a + b)}
+                Items total: $
+                {!!Object.keys(receipt.rows).length
+                  ? Object.keys(receipt.rows)
+                      .map(rowIdx =>
+                        receipt.rows[rowIdx].deletePending
+                          ? 0
+                          : Number(receipt.rows[rowIdx].cost)
+                      )
+                      .reduce((a, b) => a + b)
+                  : '0'}
               </p>
               <ItemsList />
             </div>

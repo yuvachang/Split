@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Debts from './Debts'
+import { rdNum2, rdNum3 } from '../../../../store/actions/utilActions'
 
 class UserAmountDropdown extends Component {
   state = {
@@ -18,9 +18,10 @@ class UserAmountDropdown extends Component {
 
   handleSave = async () => {
     if (this.state.inputValue !== this.props.userAmount.paid) {
-      const newUsrAmt = this.props.userAmount
-      newUsrAmt.paid = parseFloat(this.state.inputValue.toFixed(2))
-      await this.props.updateUserAmt(newUsrAmt)
+      let usrAmt = this.props.userAmount
+      let { inputValue } = this.state
+      usrAmt.paid = rdNum3(inputValue)
+      await this.props.updateUserAmt(usrAmt)
     }
   }
 
@@ -36,7 +37,6 @@ class UserAmountDropdown extends Component {
       if (this.props.userAmount.paid !== this.state.inputValue) {
         this.handleSave()
       }
-
       this.setState({
         open: false,
         isEdit: false,
@@ -81,13 +81,10 @@ class UserAmountDropdown extends Component {
   setMinHeight = () => {
     const debt = this.props.userAmount.debt
     const numberOfDebts = Object.keys(debt).length
-
     let minHeight = 135
-
     if (numberOfDebts) {
       minHeight += numberOfDebts * 17 + 10
     }
-
     this.setState({
       minHeight,
     })
@@ -99,37 +96,29 @@ class UserAmountDropdown extends Component {
     })
   }
 
-  componentDidUpdate = async prevProps => {
+  componentDidUpdate = async (prevProps, prevState) => {
     if (prevProps !== this.props) {
-      // console.log('UserAmountDropdown updated', this.props.userAmount.id)
-      await this.updateInputValue()
-      this.setMinHeight()
+      // console.log('UserAmountDropdown updated')
+      if (this.state.inputValue !== this.props.userAmount.paid) {
+        await this.updateInputValue()
+      }
+      await this.setMinHeight()
     }
   }
 
   componentDidMount = async () => {
-    this.setMinHeight()
-    document.addEventListener('mousedown', this.clickListener)
-    console.log('UserAmountDropdown mounted')
+    // console.log('UserAmountDropdown mounted')
+    // document.addEventListener('mousedown', this.clickListener)
+    await this.setMinHeight()
     await this.updateInputValue()
   }
 
   componentWillUnmount = () => {
-    document.removeEventListener('mousedown', this.clickListener)
+    // document.removeEventListener('mousedown', this.clickListener)
   }
 
   render() {
-    const { userAmount } = this.props
-    // const {
-    //   name,
-    //   amount,
-    //   items,
-    //   paidTotal,
-    //   paid,
-    //   debt,
-    //   owe,
-    //   percentageOfTotal,
-    // } = userAmount
+    const { userAmount, receipt } = this.props
     const { open, minHeight, isEdit, inputValue } = this.state
     const userItemCount = Object.keys(userAmount.items).length
     return (
@@ -153,7 +142,7 @@ class UserAmountDropdown extends Component {
               style={{ display: 'block', textAlign: 'left' }}>
               {userAmount.name}
               <br />
-              <p>{`${userItemCount} item${userItemCount === 1 ? '' : 's'}.`}</p>
+              <p>{`${userItemCount} item${userItemCount === 1 ? '' : 's'}`}</p>
             </div>
 
             <div className='usr-amt-card amount'>${userAmount.amount}</div>
@@ -162,7 +151,6 @@ class UserAmountDropdown extends Component {
               onClick={this.toggleDropdown}
               src='/images/down-arrow.png'
               className={`icon right grey ${open ? 'upsidedown' : ''}`}
-              // style={{ right: '-25px' }}
               style={{ right: '-25px', width: '24px', height: '18px' }}
             />
           </div>
@@ -172,7 +160,7 @@ class UserAmountDropdown extends Component {
             <div className='usr-amt-card name'>
               <div className='row-bullet' />
               Paid
-              <p>(towards total)</p>
+              <p style={{ marginLeft: '4px' }}>(towards total)</p>
             </div>
 
             {isEdit ? (
@@ -182,15 +170,20 @@ class UserAmountDropdown extends Component {
                 value={Number(inputValue).toString()}
                 type='number'
                 onChange={this.handleChange}
+                onBlur={() => {
+                  this.handleSave()
+                  this.toggleEdit()
+                }}
                 onKeyPress={e => {
                   if (e.key === 'Enter') {
-                    this.handleSave()
-                    this.toggleEdit()
+                    e.target.blur()
                   }
                 }}
               />
             ) : (
-              <div className='usr-amt-card amount'>${userAmount.paid}</div>
+              <div className='usr-amt-card amount'>
+                ${rdNum2(userAmount.paid)}
+              </div>
             )}
 
             {isEdit ? (
@@ -222,17 +215,20 @@ class UserAmountDropdown extends Component {
               Owes
             </div>
 
-            <div className='usr-amt-card amount'>${userAmount.owe}</div>
+            <div className='usr-amt-card amount'>${rdNum2(userAmount.owe)}</div>
           </div>
 
           {/* DEBTS */}
-          <Debts userAmount={userAmount} />
-
-          {/* <div className='usr-amt-card footer'>
+          <div className='usr-amt-card footer'>
             {Object.keys(userAmount.debt).map(userId => {
-              return <Debts key={userId} userId={userId} userAmount={userAmount} />
+              return (
+                <p key={userId} style={{ color: '#595959' }}>
+                  Pay {receipt.userAmounts[userId].name} $
+                  {userAmount.debt[userId].toFixed(2)}
+                </p>
+              )
             })}
-          </div> */}
+          </div>
         </div>
       </div>
     )
