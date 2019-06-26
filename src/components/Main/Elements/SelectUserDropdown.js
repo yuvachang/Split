@@ -101,7 +101,7 @@ class SelectUserDropdown extends Component {
               </div>
             ) : (
               <div className='search-div' style={{ border: 'none' }}>
-                <img src='./images/search.svg' className='icon grey' />
+                <img src='/images/search.svg' className='icon grey' />
                 <input
                   ref={node => (this.searchInput = node)}
                   className='textarea-only'

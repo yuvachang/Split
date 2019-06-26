@@ -1,8 +1,14 @@
-import React, { Component } from 'react'
-
+import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import { Auth, Home, Friends, Groups, Receipts, EditReceipt } from './index'
-import CreateReceipt from './Main/Receipts/CreateReceipt';
+import {
+  Auth,
+  Home,
+  Friends,
+  Groups,
+  Receipts,
+  EditReceipt,
+  AddReceiptPage,
+} from './index'
 
 const Routes = ({ isLoggedIn, isLoaded }) => {
   return (
@@ -14,7 +20,7 @@ const Routes = ({ isLoggedIn, isLoaded }) => {
             <Route exact path='/friends' component={Friends} />
             <Route exact path='/groups' component={Groups} />
             <Route exact path='/receipts' component={Receipts} />
-            <Route exact path='/receipts/create' component={CreateReceipt} />
+            <Route exact path='/receipts/create' component={AddReceiptPage} />
             <Route exact path='/receipts/:receiptId' component={EditReceipt} />
             <Redirect to='/home' component={Home} />
           </Switch>

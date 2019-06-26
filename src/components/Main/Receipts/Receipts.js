@@ -51,7 +51,7 @@ class Receipts extends Component {
   }
 
   render() {
-    const { history, currentUID, fetchReceipts } = this.props
+    const { currentUID, fetchReceipts } = this.props
     const { view, receipts, searchInput } = this.state
     return (
       <div id='receipts'>
@@ -70,7 +70,7 @@ class Receipts extends Component {
             <br /> Create a receipt:
           </div>
         )}
-        {view === 'add' && <CreateReceipt history={history} />}
+        {view === 'add' && <CreateReceipt />}
 
         {view === 'list' && (
           <div>

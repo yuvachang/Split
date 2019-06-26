@@ -253,19 +253,19 @@ input {
   border: none;
   border-bottom: 1.25px solid white;
   box-sizing: border-box;
-  background-color: #3c434d;
+  background-color: white;
   color: white;
   font-size: 1em;
   font-family: 'Karla' sans-serif; }
   input::placeholder {
     opacity: 0.6; }
   input:valid {
-    background-color: #3c434d; }
+    background-color: white; }
   input[type='number']::-webkit-inner-spin-button, input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0; }
   input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
-    background-color: #3c434d !important;
+    background-color: white !important;
     background-image: none !important;
     margin: 5px 0px;
     padding: 5px 0px 4px;
@@ -281,7 +281,7 @@ input {
     text-align: center;
     font-size: 0.8em;
     color: black;
-    background-color: inherit;
+    background-color: white;
     padding: 5px 10px;
     margin: 10px 0px;
     border: 1px solid #ccc;
@@ -379,7 +379,7 @@ button {
       font-size: 0.8em; }
     .button > .innertext.bold,
     button > .innertext.bold {
-      font-weight: bold; }
+      font-size: 0.9em; }
   @media (hover: hover) {
     .button:hover,
     button:hover {
@@ -529,6 +529,7 @@ button {
 
 .select-user.container {
   position: relative;
+  background-color: white;
   box-sizing: border-box;
   width: 100%;
   min-height: 28px;
@@ -591,6 +592,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: white;
   max-width: 175px;
   max-height: 30px;
   padding: 0px 4px 0px 10px;
@@ -1173,3 +1175,20 @@ table {
   flex-direction: column;
   align-items: center;
   text-align: center; }
+  #homepage .homepage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    height: 100%; }
+  #homepage .stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    width: 75%;
+    min-height: 50px;
+    border: 1px solid #d6dbe0;
+    border-radius: 5px;
+    font-size: 0.9em; }

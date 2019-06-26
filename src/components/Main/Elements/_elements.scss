@@ -70,7 +70,7 @@ input {
   border: none;
   border-bottom: 1.25px solid white;
   box-sizing: border-box;
-  background-color: $app-bg-color;
+  background-color: white;
 
   color: white;
   font-size: 1em;
@@ -81,7 +81,7 @@ input {
   }
 
   &:valid {
-    background-color: $app-bg-color;
+    background-color: white;
   }
 
   &[type='number']::-webkit-inner-spin-button,
@@ -94,7 +94,7 @@ input {
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,
   &:-webkit-autofill:active {
-    background-color: $app-bg-color !important;
+    background-color: white !important;
     background-image: none !important;
     margin: 5px 0px;
     padding: 5px 0px 4px;
@@ -117,7 +117,8 @@ input {
 
     font-size: 0.8em;
     color: black;
-    background-color: inherit;
+
+    background-color: white;
 
     padding: 5px 10px;
     margin: 10px 0px;
@@ -181,7 +182,7 @@ button {
   filter: drop-shadow($shadow);
 
   &.card {
-    border: 1px solid #d6dbe0;
+    border: 1px solid $button-card-border;
     border-radius: 5px;
 
     filter: none;
@@ -258,7 +259,8 @@ button {
     }
 
     &.bold {
-      font-weight: bold;
+      // font-weight: bold;
+      font-size: 0.9em;
     }
   }
 
@@ -495,6 +497,8 @@ button {
   &.container {
     position: relative;
 
+    background-color: white;
+
     box-sizing: border-box;
     width: 100%;
 
@@ -591,6 +595,8 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  background-color: white;
 
   max-width: 175px;
   max-height: 30px;

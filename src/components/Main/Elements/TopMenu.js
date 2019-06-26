@@ -11,14 +11,14 @@ class TopMenu extends Component {
       !!this.props.pPending.receivedRequest[0] ||
       // !!this.props.pPending.madeRequest[0] ||
       !!this.props.pPending.confirmed[0]
-    console.log('hasnotifs?', hasNotifs)
+    // console.log('hasnotifs?', hasNotifs)
     if (!this.state.notifs && hasNotifs) {
-      console.log('turn on notifs')
+      // console.log('turn on notifs')
       await this.setState({
         notifs: true,
       })
     } else if (this.state.notifs && !hasNotifs) {
-      console.log('turn off notifs')
+      // console.log('turn off notifs')
       await this.setState({
         notifs: false,
       })

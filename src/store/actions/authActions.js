@@ -118,11 +118,7 @@ export const signupThunk = userData => async dispatch => {
 export const googleLoginThunk = () => async dispatch => {
   try {
     dispatch({ type: actions.AUTH_START, payload: { test: 'auth start' } })
-
     await firebase.auth().signInWithRedirect(googleAuthProvider)
-
-    // dispatch({ type: actions.AUTH_SUCCESS })
-    // dispatch({ type: actions.AUTH_END })
   } catch (error) {
     console.error(error)
     // // handle account-already-exists-with-different-credential
@@ -196,3 +192,4 @@ export const logoutThunk = () => async dispatch => {
     dispatch({ type: actions.AUTH_FAIL, payload: error.message })
   }
 }
+

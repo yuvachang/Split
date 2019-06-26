@@ -82,7 +82,11 @@ class CreateGroup extends Component {
       },
     })
 
-    this.props.backToList()
+    if (this.props.backToList) {
+      this.props.backToList()
+    } else if (this.props.backToForm) {
+      this.props.backToForm()
+    }
   }
 
   handleGroupName = async e => {

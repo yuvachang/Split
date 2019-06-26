@@ -6,6 +6,7 @@ const initialState = {
   searchResults: [],
   selected: {},
   receipts: [],
+  stats: {},
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -45,6 +46,12 @@ export default (state = initialState, { type, payload }) => {
         ...state,
         selected: payload,
         error: null,
+      }
+
+    case actions.RECEIPTS_STATS:
+      return {
+        ...state,
+        stats: payload,
       }
 
     default:

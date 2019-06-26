@@ -38,8 +38,6 @@ class CreateReceipt extends Component {
 
   handleSubmit = async e => {
     e.preventDefault()
-    // const { year, month, day } = this.state.date
-
     // make sure payer and group selected
     if (
       // !this.state.formData.payer ||
@@ -49,15 +47,6 @@ class CreateReceipt extends Component {
 
     // set and save date as UTC
     const created = new Date()
-
-    // const date = Number(
-    //   `${year}${month.toString().padStart(2, '0')}${day
-    //     .toString()
-    //     .padStart(2, '0')}`
-    // )
-
-    // // offset current date by timezone...
-    // created.setTime( created.getTime() + created.getTimezoneOffset()*60*1000 )
 
     // create the receipt firestore instance
     const newReceipt = await this.props.createReceipt({
@@ -71,7 +60,6 @@ class CreateReceipt extends Component {
 
   selectGroup = async group => {
     await this.props.selectGroup(group.id)
-
     await this.setState({
       formData: {
         ...this.state.formData,
@@ -82,7 +70,6 @@ class CreateReceipt extends Component {
 
   deselectGroup = async () => {
     await this.props.deselectGroup()
-
     await this.setState({
       formData: {
         ...this.state.formData,

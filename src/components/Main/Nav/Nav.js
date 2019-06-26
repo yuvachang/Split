@@ -30,6 +30,9 @@ class Nav extends Component {
   setMarker = async () => {
     if (window.innerWidth < 700) {
       let node = ''
+      if (this.props.location.pathname === '/receipts/create') {
+        node = 'newReceiptLink'
+      }
       if (this.props.location.pathname === '/home') {
         node = 'homeLink'
       }
@@ -43,18 +46,24 @@ class Nav extends Component {
         node = 'groupsLink'
       }
       if (node) {
-        console.log(node)
-        if (window.innerWidth < 390) {
+        if (window.innerWidth < 420 && this[node]) {
           await this.setState({
             bulletLeft: Math.round(
               this[node].ref.getBoundingClientRect().left - 5
             ),
           })
         } else {
-          await this.setState({
-            bulletTop: this[node].ref.getBoundingClientRect().top - 5,
-            bulletLeft: null,
-          })
+          if (!this[node] || node === 'newReceiptLink') {
+            await this.setState({
+              bulletTop: -50,
+              bulletLeft: null,
+            })
+          } else {
+            await this.setState({
+              bulletTop: this[node].ref.getBoundingClientRect().top - 5,
+              bulletLeft: null,
+            })
+          }
         }
       }
     }
@@ -164,7 +173,7 @@ class Nav extends Component {
             }}
           />
 
-          {window.width < 390 && (
+          {window.width < 420 && (
             <NavLink
               name='New Receipt'
               windowWidth={window.width}
@@ -206,7 +215,6 @@ class Nav extends Component {
           />
         </div>
         <div className='nav-footer'>
-          {/* {profile.pending && <div>PENDING HERE</div>} */}
           <a
             href=''
             onClick={e => {

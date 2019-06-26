@@ -7,7 +7,9 @@ import {
   createEmptyRows,
   createUserAmounts,
   calcOwesAndDebts,
+  rdNum2,
 } from './utilActions'
+import { promised } from 'q'
 
 const firebase = getFirebase()
 const firestore = getFirestore()
@@ -72,8 +74,6 @@ export const createReceipt = data => async dispatch => {
       rows,
       group: groupRef,
       userAmounts,
-
-      // isEdit: false,
     }
     const receiptRef = await firestore.collection('receipts').add(newReceipt)
 
@@ -105,8 +105,6 @@ export const createReceipt = data => async dispatch => {
 
 export const deleteReceipt = receiptId => async dispatch => {
   try {
-    dispatch({ type: actions.RECEIPTS_LOADING })
-
     // get receipt ref and data
     const receiptRef = await firestore.collection('receipts').doc(receiptId)
     const receiptData = await getDataWithRef(receiptRef)
@@ -129,7 +127,6 @@ export const deleteReceipt = receiptId => async dispatch => {
     await receiptRef.delete()
 
     dispatch({ type: actions.RECEIPTS_DELETE, payload: receiptId })
-    dispatch({ type: actions.RECEIPTS_ENDLOADING })
   } catch (error) {
     console.log('ERROR: deleteReceipt => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
@@ -141,7 +138,6 @@ export const deleteReceipt = receiptId => async dispatch => {
 
 export const fetchReceipts = currentUID => async dispatch => {
   try {
-    dispatch({ type: actions.RECEIPTS_LOADING })
     console.log('inside fetchReceipts')
 
     // get current user
@@ -149,8 +145,8 @@ export const fetchReceipts = currentUID => async dispatch => {
 
     //check if all receipts exist, if any are undefined
     const undefinedReceipts = []
-    // get data of all receipts
 
+    // get data of all receipts
     const userReceipts = await Promise.all(
       userData.receipts.map(async receiptRef => {
         const receiptData = await getDataWithRef(receiptRef)
@@ -181,10 +177,7 @@ export const fetchReceipts = currentUID => async dispatch => {
       console.log('undefinedReceipts removed')
     }
 
-    // console.log(userReceipts)
-
     dispatch({ type: actions.RECEIPTS_FETCH, payload: userReceipts })
-    dispatch({ type: actions.RECEIPTS_ENDLOADING })
   } catch (error) {
     console.log('ERROR: fetchReceipts => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
@@ -374,5 +367,37 @@ export const unlistenReceipt = receiptId => async dispatch => {
   } catch (error) {
     console.log('ERROR: listenReceipt => ', error)
     dispatch({ type: actions.RECEIPTS_ERROR, payload: error.message })
+  }
+}
+
+// get user stats
+export const getUserStats = currentUID => async dispatch => {
+  try {
+    console.log(currentUID)
+    const { userRef, userData } = await getCurrentUser(currentUID)
+    const stats = {}
+
+    const userReceipts = await Promise.all(
+      userData.receipts.map(async receiptRef => {
+        const receiptData = await getDataWithRef(receiptRef)
+
+        if (!receiptData) {
+          return 0
+        } else {
+          return (
+            receiptData.userAmounts[currentUID].amount ||
+            receiptData.userAmounts[currentUID].owe ||
+            0
+          )
+        }
+      })
+    )
+
+    stats.totalSpending = rdNum2(userReceipts.reduce((a, b) => a + b))
+
+    dispatch({ type: actions.RECEIPTS_STATS, payload: stats })
+  } catch (error) {
+    console.error(error)
+    dispatch({ type: actions.AUTH_FAIL, payload: error.message })
   }
 }
