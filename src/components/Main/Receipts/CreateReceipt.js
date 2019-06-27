@@ -258,7 +258,7 @@ class CreateReceipt extends Component {
             selectedGroup.id ? 'Select payer...' : 'Select a group first'
           }
         />
-
+        <br />
         <form onSubmit={this.handleSubmit} style={{ width: '75%' }}>
           <label>Receipt Name:</label>
           <input
@@ -302,7 +302,7 @@ class CreateReceipt extends Component {
           />
 
           <label>Date (M/D/Y):</label>
-          <div style={{ display: 'inherit' }}>
+          <div style={{ display: 'inherit', minHeight: '48px' }}>
             <input
               className='outline-only'
               title='Month'

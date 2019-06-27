@@ -87,7 +87,7 @@ class SelectUserDropdown extends Component {
     const { open, selected, filteredUsers, inputClearable } = this.state
 
     return (
-      <div className='user-row-container dropdown-only'>
+      <div style={{minWidth: '75%', maxWidth: '75%'}}>
         <div className='select-user container' ref={node => (this.menu = node)}>
           <div className='select-user message'>
             {selected.id ? (

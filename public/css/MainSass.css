@@ -402,11 +402,7 @@ button {
         background-color: #ccc; } }
 
 .user-row-container {
-  display: flex;
-  margin-bottom: 5px; }
-  .user-row-container.dropdown-only {
-    min-width: 75%;
-    max-width: 75%; }
+  display: flex; }
 
 .added-user-row {
   position: relative;
@@ -532,7 +528,7 @@ button {
   background-color: white;
   box-sizing: border-box;
   width: 100%;
-  min-height: 28px;
+  min-height: 30px;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding-top: 2px;
@@ -541,6 +537,30 @@ button {
     width: 70%;
     overflow: hidden;
     text-overflow: ellipsis; }
+
+.select-user.open {
+  position: relative;
+  overflow: scroll;
+  width: 100%;
+  height: 100%;
+  max-height: 200px;
+  transition: max-height 0.5s;
+  transition: max-height 0.5s, min-height 0.5s, height 0.5s; }
+  .select-user.open > .button {
+    padding: 0;
+    filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
+
+.select-user.closed {
+  position: relative;
+  height: 0;
+  max-height: 0px;
+  min-height: 0px;
+  width: 100%;
+  overflow: hidden;
+  border: none;
+  transition: max-height 0.5s, min-height 0.5s, height 0.5s; }
+  .select-user.closed > .button {
+    filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
 
 .select-user.user-item {
   min-height: 28px;
@@ -558,27 +578,6 @@ button {
       background-color: #79879a; } }
   .select-user.user-item:active {
     background-color: orange; }
-
-.select-user.open {
-  position: relative;
-  overflow: scroll;
-  width: 100%;
-  height: auto;
-  max-height: 235px;
-  transition: max-height 0.5s; }
-  .select-user.open > .button {
-    padding: 0;
-    filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
-
-.select-user.closed {
-  position: relative;
-  max-height: 0px;
-  width: 100%;
-  overflow: scroll;
-  border: none;
-  transition: max-height 0.5s; }
-  .select-user.closed > .button {
-    filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0)); }
 
 .select-user.message {
   display: flex;
@@ -760,6 +759,9 @@ button {
     background-color: orange;
     transition: 0.3s;
     transition-timing-function: ease-out; }
+    @media (prefers-color-scheme: dark) {
+      .bullet.mobile {
+        background-color: blue; } }
 
 #nav {
   font-family: 'Kara', sans-serif;

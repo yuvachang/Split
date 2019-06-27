@@ -88,7 +88,7 @@ class SelectGroupDropdown extends Component {
     const { placeholder, groups } = this.props
     const { open, selected, filteredGroups, inputClearable } = this.state
     return (
-      <div className='user-row-container dropdown-only'>
+      <div style={{minWidth: '75%', maxWidth: '75%'}}>
         <div className='select-user container' ref={node => (this.menu = node)}>
           <div className='select-user message'>
             {selected.id ? (
@@ -155,6 +155,7 @@ class SelectGroupDropdown extends Component {
                   )
                 })
               : 'No groups...'}
+            {/* <div style={{ height: '25px' }} /> */}
           </div>
         </div>
       </div>
