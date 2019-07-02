@@ -223,21 +223,21 @@ form {
   form > * {
     width: 100%; }
 
-a {
+a, .alink {
   text-decoration: underline;
   text-align: center; }
-  a:visited {
+  a:visited, .alink:visited {
     color: #ccc; }
-  a:hover {
+  a:hover, .alink:hover {
     cursor: pointer;
     color: orange;
     font-size: 1.05em; }
-  a:active {
+  a:active, .alink:active {
     color: white; }
-  a.small {
+  a.small, .alink.small {
     z-index: 22;
     font-size: 0.7em; }
-    a.small:hover {
+    a.small:hover, .alink.small:hover {
       font-size: 0.8em; }
 
 h1,

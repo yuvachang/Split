@@ -306,7 +306,7 @@ class ItemsRow extends Component {
   }
 
   render() {
-    const { row, userAmounts, deleteRow, toggleDeleteRow } = this.props
+    const { row, userAmounts } = this.props
 
     const {
       open,
@@ -445,24 +445,24 @@ class ItemsRow extends Component {
           {open && isEdit && (
             <div>
               {error && (
-                <a
+                <div
                   style={{
                     color: '#7f7f7f',
                     marginBottom: '6px',
                     textDecoration: 'none',
                   }}
-                  className='small'>
+                  className='alink small'>
                   {error}
                   <br />
-                </a>
+                </div>
               )}
 
-              <a
+              <div
                 style={{ color: '#7f7f7f', marginBottom: '6px' }}
-                className='small'
+                className='alink small'
                 onClick={this.setRemainderCost}>
                 Set cost as remainder of receipt total.
-              </a>
+              </div>
             </div>
           )}
           {/* EDIT BUTTON OR ADD USER DROPDOWN */}
@@ -489,7 +489,7 @@ class ItemsRow extends Component {
                 <div
                   className='round-icon-button delete-row'
                   onClick={this.deleteRow}>
-                  <img src='/images/trash.svg' className='icon' />
+                  <img alt='icon' src='/images/trash.svg' className='icon' />
                 </div>
               </div>
             )}

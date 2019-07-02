@@ -9,7 +9,7 @@ class ReceiptHeader extends Component {
   componentDidMount = async () => {}
 
   render() {
-    const { showMenu, b1Src, b1Click, b2Src, b2Click } = this.props
+    const { showMenu, b1Src, b1Click} = this.props
     return (
       <div className='menu'>
         <div className='menu-views'>

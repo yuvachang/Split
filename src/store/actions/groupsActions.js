@@ -1,10 +1,9 @@
 import * as actions from './actionTypes'
-import { getFirebase } from 'react-redux-firebase'
+// import { getFirebase } from 'react-redux-firebase'
 import { getFirestore } from 'redux-firestore'
-import { getCurrentUser, getDataWithRef, getUserByEmail } from './utilActions'
-import { typeCastExpression } from '@babel/types'
+import { getCurrentUser, getDataWithRef } from './utilActions'
 
-const firebase = getFirebase()
+// const firebase = getFirebase()
 const firestore = getFirestore()
 
 // THUNK CREATORS
@@ -35,7 +34,7 @@ export const createGroup = (group, currentUID) => async dispatch => {
     )
 
     // get current user
-    const { userRef, userData } = await getCurrentUser(currentUID)
+    const { userRef } = await getCurrentUser(currentUID)
 
     // push current user into members list
     memberRefs.push(userRef)

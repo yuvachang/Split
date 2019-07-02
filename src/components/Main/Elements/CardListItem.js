@@ -13,6 +13,7 @@ const CardListItem = ({
     onClick={onClick ? (item.error ? null : onClick) : null}>
     {leftIcon && (
       <img
+        alt='icon'
         src={leftIcon}
         className='icon left'
         onClick={leftAction ? leftAction : () => null}
@@ -25,6 +26,7 @@ const CardListItem = ({
     </div>
     {rightIcon && (
       <img
+        alt='icon'
         src={rightIcon}
         className='icon right'
         onClick={rightAction ? rightAction : null}

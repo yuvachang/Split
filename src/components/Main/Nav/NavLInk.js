@@ -20,6 +20,7 @@ class NavLink extends Component {
           await setMarker()
         }}>
         <img
+          alt='icon'
           src={iconSrc}
           className={windowWidth < 700 ? 'icon center' : 'icon'}
           ref={node => {

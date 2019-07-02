@@ -1,5 +1,5 @@
 import * as actions from './actionTypes'
-import { getFirebase } from 'react-redux-firebase'
+// import { getFirebase } from 'react-redux-firebase'
 import { getFirestore } from 'redux-firestore'
 import {
   getCurrentUser,
@@ -9,9 +9,8 @@ import {
   calcOwesAndDebts,
   rdNum2,
 } from './utilActions'
-import { promised } from 'q'
 
-const firebase = getFirebase()
+// const firebase = getFirebase()
 const firestore = getFirestore()
 
 // THUNK CREATORS

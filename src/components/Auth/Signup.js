@@ -11,7 +11,7 @@ class Signup extends Component {
     email: '',
     password: '',
     passwordCheck: '',
-    error: '',
+    formError: '',
     page: '1',
   }
 
@@ -34,34 +34,35 @@ class Signup extends Component {
 
     // validation
     if (!firstName || !lastName || !email || !password || !passwordCheck) {
-      await this.setState({ error: 'Please make sure you filled out all fields.'})
+      await this.setState({ formError: 'Please make sure you filled out all fields.'})
       return
     }
     if (password !== passwordCheck) {
-      this.setState({ error: 'Passwords need to be the same.' })
+      this.setState({ formError: 'Passwords need to be the same.' })
       return
     }
     
     await this.props.signup(this.state)
 
-    if (this.props.error) {
-      await this.setState({ error: this.props.error })
-    } else {
-      await this.setState({
-        firstName: '',
-        lastName: '',
-        tel: '',
-        email: '',
-        password: '',
-        passwordCheck: '',
-        error: '',
-        page: '1',
-      })
-    }
+    // if (this.props.error) {
+    //   await this.setState({ error: this.props.error })
+    // }
+    //  else {
+    //   await this.setState({
+    //     firstName: '',
+    //     lastName: '',
+    //     tel: '',
+    //     email: '',
+    //     password: '',
+    //     passwordCheck: '',
+    //     error: '',
+    //     page: '1',
+    //   })
+    // }
   }
 
   render() {
-    const { googleOauth } = this.props
+    const { googleOauth, error } = this.props
     const {
       email,
       password,
@@ -69,8 +70,8 @@ class Signup extends Component {
       firstName,
       lastName,
       tel,
-      error,
-      page
+      page,
+      formError
     } = this.state
 
     return (
@@ -85,6 +86,7 @@ class Signup extends Component {
         email={email}
         password={password}
         passwordCheck={passwordCheck}
+        formError={formError}
         error={error}
         handleChange={this.handleChange}
         handleSubmit={this.handleSubmit}

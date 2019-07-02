@@ -87,13 +87,14 @@ class SelectUserDropdown extends Component {
     const { open, selected, filteredUsers, inputClearable } = this.state
 
     return (
-      <div style={{minWidth: '75%', maxWidth: '75%'}}>
+      <div style={{ minWidth: '75%', maxWidth: '75%' }}>
         <div className='select-user container' ref={node => (this.menu = node)}>
           <div className='select-user message'>
             {selected.id ? (
               <div>
                 {selected.displayName}
                 <img
+                  alt='icon'
                   src='/images/remove.svg'
                   className='icon grey left'
                   onClick={this.removeSelected}
@@ -101,7 +102,11 @@ class SelectUserDropdown extends Component {
               </div>
             ) : (
               <div className='search-div' style={{ border: 'none' }}>
-                <img src='/images/search.svg' className='icon grey' />
+                <img
+                  alt='icon'
+                  src='/images/search.svg'
+                  className='icon grey'
+                />
                 <input
                   ref={node => (this.searchInput = node)}
                   className='textarea-only'
@@ -113,6 +118,7 @@ class SelectUserDropdown extends Component {
                 />
                 {inputClearable && (
                   <img
+                    alt='icon'
                     src='/images/remove.svg'
                     className='icon grey left'
                     style={{ transform: 'translateX(-8px)' }}
@@ -122,6 +128,7 @@ class SelectUserDropdown extends Component {
               </div>
             )}
             <img
+              alt='icon'
               onClick={this.toggleDropdown}
               src='/images/down-arrow.svg'
               className={

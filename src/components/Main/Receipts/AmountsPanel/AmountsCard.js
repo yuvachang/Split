@@ -31,7 +31,7 @@ class AmountsCard extends Component {
   }
 
   render() {
-    const { label, amount, handleEditAmount, allowEdit } = this.props
+    const { label, amount, allowEdit } = this.props
     const { isEdit, inputValue } = this.state
     return (
       <div className={`usr-amt-card container`}>

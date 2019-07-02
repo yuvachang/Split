@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { loginThunk, googleLoginThunk } from '../../store/actions/authActions'
 import LoginForm from './LoginForm'
 
-// TODO: sign in with telephone?
+// TODO: sign in with telephone
 // throttle number of sign in attempts with one email
 
 class Login extends Component {
@@ -25,7 +25,7 @@ class Login extends Component {
   }
 
   render() {
-    const { showForm, toggleForm, authType, googleOauth } = this.props
+    const { googleOauth, error } = this.props
     const { email, password } = this.state
 
     return (
@@ -33,6 +33,7 @@ class Login extends Component {
         email={email}
         password={password}
         googleOauth={googleOauth}
+        error={error}
         handleChange={this.handleChange}
         handleSubmit={this.handleSubmit}
       />

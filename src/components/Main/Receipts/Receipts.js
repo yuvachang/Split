@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import CreateReceipt from './CreateReceipt'
 import {
   fetchReceipts,
   selectReceipt,
@@ -8,7 +7,7 @@ import {
 import SingleReceipt from './SingleReceipt'
 import TopMenu from '../Elements/TopMenu'
 import CardList from '../Elements/CardList'
-import AddReceiptPage from './AddReceiptPage';
+import AddReceiptPage from './AddReceiptPage'
 
 class Receipts extends Component {
   state = {
@@ -60,7 +59,7 @@ class Receipts extends Component {
   }
 
   render() {
-    const { currentUID, fetchReceipts, history } = this.props
+    const { currentUID, fetchReceipts } = this.props
     const { view, receipts, searchInput } = this.state
     return (
       <div id='receipts'>
@@ -79,10 +78,7 @@ class Receipts extends Component {
             <br /> Create a receipt:
           </div>
         )}
-        {/* {view === 'add' && <CreateReceipt history={history} />} */}
-        {/* {view === 'add' && <CreateReceipt />} */}
         {view === 'add' && <AddReceiptPage />}
-        
 
         {view === 'list' && (
           <div>

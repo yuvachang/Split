@@ -1,4 +1,4 @@
-import { getFirebase } from 'react-redux-firebase'
+// import { getFirebase } from 'react-redux-firebase'
 import { getFirestore } from 'redux-firestore'
 
 // const firebase = getFirebase()

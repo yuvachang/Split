@@ -7,7 +7,6 @@ import { getUserStats } from '../../../store/actions/receiptsActions'
 class SingleFriend extends Component {
   state = {
     displayModal: false,
-    showDropdown: false,
   }
 
   openModal = async () => {
@@ -18,17 +17,13 @@ class SingleFriend extends Component {
     await this.setState({ displayModal: false, person: {} })
   }
 
-  toggleDropdown = () => {
-    this.setState({ showDropdown: !this.state.showDropdown })
-  }
-
   componentDidMount = async () => {
     await this.props.getUserStats(this.props.friend.id)
   }
 
   render() {
-    const { friend, removeFriend, backToList, loading } = this.props
-    const { displayModal, showDropdown } = this.state
+    const { friend, removeFriend, backToList } = this.props
+    const { displayModal } = this.state
     console.log(this.props.stats)
     return (
       <ScrollContainer>
@@ -45,6 +40,7 @@ class SingleFriend extends Component {
 
         {friend.avatarUrl && (
           <img
+            alt='icon'
             src={friend.avatarUrl}
             className='icon large'
             style={{ filter: 'invert(0)', borderRadius: '50%' }}
@@ -59,12 +55,12 @@ class SingleFriend extends Component {
           <br />
         </div>
         <br />
-        <a
+        <div
           onClick={this.openModal}
           style={{ color: '#7f7f7f', margin: '6px 0' }}
-          className='small'>
+          className='alink small'>
           Unfriend {friend.displayName}
-        </a>
+        </div>
       </ScrollContainer>
     )
   }

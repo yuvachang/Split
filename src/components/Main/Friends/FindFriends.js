@@ -148,7 +148,11 @@ class FindFriends extends Component {
         <div>Look for friends:</div>
         <br />
         <div className='search-div'>
-          <img src='./images/search.svg' className='icon grey' />
+          <img
+            alt='search icon'
+            src='./images/search.svg'
+            className='icon grey'
+          />
           <input
             className='textarea-only'
             placeholder='Name or email...'

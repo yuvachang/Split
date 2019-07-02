@@ -274,12 +274,12 @@ class CreateReceipt extends Component {
           clearAction={this.deselectGroup}
           placeholder={'Select a group...'}
         />
-        <a
+        <div
           onClick={this.props.toggleCreateGroup}
           style={{ color: '#7f7f7f', margin: '6px 0 4px 0' }}
-          className='small'>
+          className='alink small'>
           Or create a group
-        </a>
+        </div>
 
         <label style={{ width: '75%', margin: '10px 0 6px 0' }}>
           If someone paid the entire <br />

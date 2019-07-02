@@ -14,6 +14,7 @@ const CardItemInnertext = ({
   <div className='button card blue' onClick={onClick ? onClick : null}>
     {leftIcon && (
       <img
+        alt='icon'
         src={leftIcon}
         title={leftTitle ? leftTitle : ''}
         className='icon left'
@@ -26,6 +27,7 @@ const CardItemInnertext = ({
     </div>
     {rightIcon && (
       <img
+        alt='icon'
         src={rightIcon}
         title={rightTitle ? rightTitle : ''}
         className='icon right'

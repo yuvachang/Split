@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { logoutThunk, checkUserIndex } from '../../../store/actions/authActions'
 import NavLink from './NavLInk'
 
@@ -83,9 +83,9 @@ class Nav extends Component {
 
   updateNotifs = async () => {
     const hasNotifs =
-      !!this.props.pPending.receivedRequest[0] ||
+      !!this.props.pPending.friends.receivedRequest[0] ||
       // !!this.props.pPending.madeRequest[0] ||
-      !!this.props.pPending.confirmed[0]
+      !!this.props.pPending.friends.confirmed[0]
     // console.log('hasnotifs?', hasNotifs)
     if (!this.state.notifs && hasNotifs) {
       // console.log('turn on notifs')
@@ -101,7 +101,7 @@ class Nav extends Component {
   }
 
   componentDidUpdate = async prevProps => {
-    if (prevProps.pPending !== this.props.pPending) {
+    if (prevProps.pPending.friends !== this.props.pPending.friends) {
       this.updateNotifs()
     }
   }
@@ -123,16 +123,16 @@ class Nav extends Component {
   }
 
   render() {
-    const { logout, displayName, location, pending, profile } = this.props
+    const { logout, displayName, location, profile } = this.props
     const { window, bulletTop, bulletLeft, notifs } = this.state
 
     return (
       <div id='nav'>
         <div className='nav-header'>
           {profile.avatarUrl ? (
-            <img src={profile.avatarUrl} className='large-avatar' />
+            <img alt='icon' src={profile.avatarUrl} className='large-avatar' />
           ) : (
-            <img src='/images/person.svg' className='large-avatar' />
+            <img alt='icon' src='/images/person.svg' className='large-avatar' />
           )}
 
           {displayName && <p>{this.capName(displayName)}</p>}
@@ -215,14 +215,14 @@ class Nav extends Component {
           />
         </div>
         <div className='nav-footer'>
-          <a
-            href=''
+          <div
+          className='alink'
             onClick={e => {
               e.preventDefault()
               logout()
             }}>
             Log Out
-          </a>
+          </div>
         </div>
       </div>
     )
@@ -233,7 +233,7 @@ const mapState = state => ({
   currentUID: state.firebase.auth.uid,
   profile: state.firebase.profile,
   displayName: state.firebase.profile.displayName,
-  pPending: state.firebase.profile.pending.friends,
+  pPending: state.firebase.profile.pending,
 })
 
 const mapDispatch = dispatch => ({

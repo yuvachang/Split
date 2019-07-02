@@ -69,7 +69,7 @@ class Friends extends Component {
   }
 
   render() {
-    const { currentUID, removeFriend, getUserStats } = this.props
+    const { currentUID, removeFriend } = this.props
     const { view, singleFriend, friends, searchInput } = this.state
 
     return (

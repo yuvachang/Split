@@ -5,7 +5,6 @@ import {
   googleLoginThunk,
 } from '../../../store/actions/authActions'
 import { getUserStats } from '../../../store/actions/receiptsActions'
-// import { Nav, UserRoutes } from '../../index'
 import FriendsPending from '../Friends/FriendsPending'
 import TopMenu from '../Elements/TopMenu'
 
@@ -23,14 +22,16 @@ class Home extends Component {
   }
 
   render() {
-    const { isLoaded, isLoggedIn, stats } = this.props
+    const {
+      // isLoaded,
+      // isLoggedIn,
+      stats,
+    } = this.props
     const { view } = this.state
     return (
       <div id='homepage'>
         <TopMenu
           view={view}
-          // searchPlaceholder='Find existing friend...'
-          // search={this.search}
           b1Src='/images/home.svg'
           b1Click={() => this.switchView('home')}
           b2Src='/images/bell.svg'
@@ -65,8 +66,8 @@ class Home extends Component {
 
 const mapState = state => ({
   displayName: state.firebase.profile.displayName,
-  isLoaded: state.firebase.profile.isLoaded,
-  isLoggedIn: !state.firebase.profile.isEmpty,
+  // isLoaded: state.firebase.profile.isLoaded,
+  // isLoggedIn: !state.firebase.profile.isEmpty,
   currentUID: state.firebase.auth.uid,
   stats: state.receipts.stats,
 })

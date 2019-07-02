@@ -54,16 +54,8 @@ class CreateGroup extends Component {
     e.preventDefault()
 
     // validation
-    const { groupName, members } = this.state.createGroup
+    const { groupName } = this.state.createGroup
     const existingGroupNames = this.props.groups.map(group => group.groupName)
-
-    // allow groups by self
-    // if (!members.length) {
-    //   this.setState({
-    //     error: 'Please add one or more friends.',
-    //   })
-    //   return
-    // }
 
     if (existingGroupNames.includes(groupName)) {
       this.setState({
@@ -129,7 +121,7 @@ class CreateGroup extends Component {
   }
 
   render() {
-    const { friends, loading, backToForm } = this.props
+    const { loading, backToForm } = this.props
     const { createGroup, error, unaddedFriends } = this.state
     const { members } = this.state.createGroup
 
@@ -137,12 +129,12 @@ class CreateGroup extends Component {
       <ScrollContainer showButtons={true}>
         {loading && <h3>Saving...</h3>}
         {backToForm && (
-          <a
+          <div
             onClick={backToForm}
             style={{ color: '#7f7f7f', margin: '6px 0 4px 0' }}
-            className='small'>
+            className='alink small'>
             Back to Create Receipt
-          </a>
+          </div>
         )}
 
         <form onSubmit={this.handleSubmit} style={{ width: '75%' }}>

@@ -32,7 +32,7 @@ class ReceiptAmountsPanel extends Component {
       let hslIncrement = 360 / userIds.length
       userIds.forEach(userId => {
         usrAmts[userId].color =
-          'hsla(' + Math.floor(hslIncrement % 360) + ',' + '90%,' + '60%,1)'
+          'hsla(' + Math.floor(hslIncrement % 360) + ', 90%, 60%,1)'
         hslIncrement += 360 / userIds.length
       })
       console.log('ReceiptAmountsPanel.setColors(): usrAmts', usrAmts)
@@ -103,7 +103,7 @@ class ReceiptAmountsPanel extends Component {
               amount={receipt.total}
               handleEditAmount={val => this.handleEditAmount(val, 'total')}
               allowEdit={
-                receipt.subtotal != 0 || receipt.tip != 0 ? false : true
+                receipt.subtotal !== 0 || receipt.tip !== 0 ? false : true
               }
             />
             <AmountsCard

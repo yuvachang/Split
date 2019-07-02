@@ -88,13 +88,14 @@ class SelectGroupDropdown extends Component {
     const { placeholder, groups } = this.props
     const { open, selected, filteredGroups, inputClearable } = this.state
     return (
-      <div style={{minWidth: '75%', maxWidth: '75%'}}>
+      <div style={{ minWidth: '75%', maxWidth: '75%' }}>
         <div className='select-user container' ref={node => (this.menu = node)}>
           <div className='select-user message'>
             {selected.id ? (
               <div className='innertext'>
                 {selected.groupName}
                 <img
+                  alt='icon'
                   src='/images/remove.svg'
                   className='icon grey left'
                   onClick={this.removeSelected}
@@ -102,7 +103,11 @@ class SelectGroupDropdown extends Component {
               </div>
             ) : (
               <div className='search-div' style={{ border: 'none' }}>
-                <img src='/images/search.svg' className='icon grey' />
+                <img
+                  alt='icon'
+                  src='/images/search.svg'
+                  className='icon grey'
+                />
                 <input
                   ref={node => (this.searchInput = node)}
                   className='textarea-only'
@@ -114,6 +119,7 @@ class SelectGroupDropdown extends Component {
                 />
                 {inputClearable && (
                   <img
+                    alt='icon'
                     src='/images/remove.svg'
                     className='icon grey left'
                     style={{ transform: 'translateX(-8px)' }}
@@ -123,6 +129,7 @@ class SelectGroupDropdown extends Component {
               </div>
             )}
             <img
+              alt='icon'
               onClick={this.toggleDropdown}
               src='/images/down-arrow.svg'
               className={

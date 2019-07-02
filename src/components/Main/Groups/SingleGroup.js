@@ -5,7 +5,6 @@ import ScrollContainer from '../Elements/ScrollContainer'
 class SingleGroup extends Component {
   state = {
     displayModal: false,
-    showDropdown: false,
   }
 
   openModal = async () => {
@@ -18,13 +17,9 @@ class SingleGroup extends Component {
     })
   }
 
-  toggleDropdown = () => {
-    this.setState({ showDropdown: !this.state.showDropdown })
-  }
-
   render() {
     const { group, deleteGroup, backToList } = this.props
-    const { displayModal, showDropdown } = this.state
+    const { displayModal } = this.state
     console.log(group.receipts.map(r => r.total).reduce((a, b) => a + b))
     return (
       <ScrollContainer>
@@ -78,12 +73,12 @@ class SingleGroup extends Component {
           ) : null}
         </div>
         <br />
-        <a
+        <div
           onClick={this.openModal}
           style={{ color: '#7f7f7f', margin: '6px 0' }}
-          className='small'>
+          className='alink small'>
           Delete receipt
-        </a>
+        </div>
       </ScrollContainer>
     )
   }

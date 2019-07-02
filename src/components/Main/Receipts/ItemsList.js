@@ -34,9 +34,7 @@ class ItemsList extends Component {
         return Number(vals.reduce((a, b) => a + b).toFixed(2))
       } else return 0
     }
-    const { users, cost: itemCost, deletePending } = this.props.receipt.rows[
-      rowIdx
-    ]
+    const { users, cost: itemCost } = this.props.receipt.rows[rowIdx]
 
     const { userAmounts } = this.props.receipt
     const itemAmountPerUser = Number((itemCost / users.length).toFixed(2))
@@ -66,7 +64,6 @@ class ItemsList extends Component {
   render() {
     const { rows, updateRow, receipt, deleteRow, toggleDeleteRow } = this.props
 
-    const { editing } = this.state
     return (
       <ScrollContainer showButtons={false}>
         {!!Object.keys(rows).length &&

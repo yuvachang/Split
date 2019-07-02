@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 class SignupForm extends Component {
   render() {
     const {
-      authType,
       email,
       password,
       passwordCheck,
@@ -11,6 +10,7 @@ class SignupForm extends Component {
       lastName,
       handleChange,
       error,
+      formError,
       handleSubmit,
       googleOauth,
       togglePage,
@@ -20,15 +20,18 @@ class SignupForm extends Component {
       <div className='auth-form'>
         <p>Already have a Google Account?</p>
 
-        <a onClick={() => googleOauth()}> Log in with Google.</a>
+        <div className='alink' onClick={() => googleOauth()}>
+          Log in with Google.
+        </div>
         <br />
 
         <form onSubmit={handleSubmit}>
           {page === '1' && (
             <div className='auth-form-div'>
-              <img src='./images/person.svg' className='icon' />
+              <img alt='icon' src='./images/person.svg' className='icon' />
               <input
                 placeholder='First Name'
+                autoComplete='given-name'
                 type='text'
                 name='firstName'
                 value={firstName}
@@ -39,9 +42,10 @@ class SignupForm extends Component {
           )}
           {page === '1' && (
             <div className='auth-form-div'>
-              <img src='./images/person.svg' className='icon' />
+              <img alt='icon' src='./images/person.svg' className='icon' />
               <input
                 placeholder='Last Name'
+                autoComplete='family-name'
                 type='text'
                 name='lastName'
                 value={lastName}
@@ -56,9 +60,10 @@ class SignupForm extends Component {
 
           {page === '2' && (
             <div className='auth-form-div'>
-              <img src='./images/mail.svg' className='icon' />
+              <img alt='icon' src='./images/mail.svg' className='icon' />
               <input
                 placeholder='Email'
+                autoComplete='email'
                 type='email'
                 name='email'
                 value={email}
@@ -69,9 +74,10 @@ class SignupForm extends Component {
           )}
           {page === '2' && (
             <div className='auth-form-div'>
-              <img src='./images/lock.svg' className='icon' />
+              <img alt='icon' src='./images/lock.svg' className='icon' />
               <input
                 placeholder='Password'
+                autoComplete='new-password'
                 type='password'
                 name='password'
                 value={password}
@@ -82,9 +88,10 @@ class SignupForm extends Component {
           )}
           {page === '2' && (
             <div className='auth-form-div'>
-              <img src='./images/lock.svg' className='icon' />
+              <img alt='icon' src='./images/lock.svg' className='icon' />
               <input
                 placeholder='Repeat Password'
+                autoComplete='new-password'
                 type='password'
                 name='passwordCheck'
                 value={passwordCheck}
@@ -95,7 +102,8 @@ class SignupForm extends Component {
           )}
           {page === '2' && (
             <div className='auth-form'>
-              {error && <div>{error}</div>}
+              {error && <div className='alink small'>{error}</div>}
+              {formError && <div className='alink small'>{formError}</div>}
               <br />
               <button onClick={() => togglePage('1')}>Back</button>
               <button type='submit'>Submit</button>

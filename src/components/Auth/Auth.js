@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { logoutThunk, googleLoginThunk } from '../../store/actions/authActions'
+import { logoutThunk } from '../../store/actions/authActions'
 import Login from './Login'
 import Signup from './Signup'
 
@@ -81,9 +81,11 @@ class Auth extends Component {
               }>
               <Signup />
               <br />
-              <a onClick={() => this.toggleForm('none')} className='small'>
+              <div
+                onClick={() => this.toggleForm('none')}
+                className='alink small'>
                 Cancel
-              </a>
+              </div>
             </div>
 
             {/* LOGIN */}
@@ -93,13 +95,16 @@ class Auth extends Component {
               }>
               <Login />
               <br />
-              <a onClick={() => this.toggleForm('none')} className='small'>
+              <div
+                onClick={() => this.toggleForm('none')}
+                className='alink small'>
                 Cancel
-              </a>
+              </div>
             </div>
           </div>
 
           <img
+            alt='icon'
             src='/images/orange-wedge.png'
             draggable='false'
             className={
@@ -124,14 +129,13 @@ class Auth extends Component {
           <div id='split-blurb'>
             {authType !== 'signup' && <p className='split-title'>Split.</p>}
 
-            {(authType === 'login' && window.height > 600) && (
-              <p>
-                Welcome back! Sign in to start splitting bills!
-              </p>
+            {authType === 'login' && window.height > 600 && (
+              <p>Welcome back! Sign in to start splitting bills!</p>
             )}
-              {authType === 'none' && (
+            {authType === 'none' && (
               <p>
-                Tired of paying for someone else's food or groceries? <i>Split</i> your bill so you only pay for what you ordered! 
+                Tired of paying for someone else's food or groceries?{' '}
+                <i>Split</i> your bill so you only pay for what you ordered!
               </p>
             )}
           </div>

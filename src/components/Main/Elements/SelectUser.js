@@ -81,6 +81,7 @@ class SelectUser extends Component {
             {selected.id ? (
               <div>
                 <img
+                  alt='icon'
                   src='/images/remove.svg'
                   className='icon grey left'
                   onClick={this.removeSelected}
@@ -89,7 +90,11 @@ class SelectUser extends Component {
               </div>
             ) : (
               <div className='search-div' style={{ border: 'none' }}>
-                <img src='/images/search.svg' className='icon grey' />
+                <img
+                  alt='icon'
+                  src='/images/search.svg'
+                  className='icon grey'
+                />
                 <input
                   className='textarea-only'
                   placeholder='Add a friend...'
@@ -101,6 +106,7 @@ class SelectUser extends Component {
               </div>
             )}
             <img
+              alt='icon'
               onClick={this.toggleDropdown}
               src='/images/down-arrow.svg'
               className={`icon right grey selectuserdropdownarrow ${
@@ -137,6 +143,7 @@ class SelectUser extends Component {
         </div>
         <div className='round-icon-button' onClick={this.addUser}>
           <img
+            alt='icon'
             src='/images/add.svg'
             className='icon'
             style={{ filter: 'invert(0.4)' }}

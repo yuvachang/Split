@@ -1,5 +1,5 @@
 import * as actions from './actionTypes'
-import { getFirebase } from 'react-redux-firebase'
+// import { getFirebase } from 'react-redux-firebase'
 import { getFirestore } from 'redux-firestore'
 import { getCurrentUser, getDataWithRef, getUserByEmail } from './utilActions'
 
@@ -87,7 +87,7 @@ export const cancelOutgoingRequest = (
     // get friend reference and data
     const friendRef = await firestore.collection('users').doc(friendId)
     // get current user reference
-    const { userRef, userData } = await getCurrentUser(currentUID)
+    const { userRef } = await getCurrentUser(currentUID)
 
     const batch = firestore.batch()
 
@@ -162,7 +162,7 @@ export const dismissConfirm = (friendId, currentUID) => async dispatch => {
     const friendRef = await firestore.collection('users').doc(friendId)
 
     // get current user reference
-    const { userRef, userData } = await getCurrentUser(currentUID)
+    const { userRef } = await getCurrentUser(currentUID)
 
     await userRef.update({
       'pending.friends.confirmed': firestore.FieldValue.arrayRemove(friendRef),
@@ -181,10 +181,9 @@ export const rejectFriendRequest = (friendId, currentUID) => async dispatch => {
 
     // get friend reference and data
     const friendRef = await firestore.collection('users').doc(friendId)
-    const friendData = await getDataWithRef(friendRef)
 
     // get current user reference
-    const { userRef, userData } = await getCurrentUser(currentUID)
+    const { userRef } = await getCurrentUser(currentUID)
 
     const batch = firestore.batch()
 
@@ -209,7 +208,7 @@ export const fetchPending = currentUID => async dispatch => {
   try {
     console.log('inside fetchPending')
     // get current user reference
-    const { userRef, userData } = await getCurrentUser(currentUID)
+    const { userData } = await getCurrentUser(currentUID)
 
     let confirmed,
       madeRequest,
@@ -285,7 +284,7 @@ export const removeFriend = (email, currentUID) => async dispatch => {
     const friendRef = await firestore.collection('users').doc(friendId)
 
     // get current user reference
-    const { userRef, userData } = await getCurrentUser(currentUID)
+    const { userRef } = await getCurrentUser(currentUID)
 
     const batch = firestore.batch()
 

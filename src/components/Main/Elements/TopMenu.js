@@ -7,21 +7,20 @@ class TopMenu extends Component {
   }
 
   updateNotifs = async () => {
-    const hasNotifs =
-      !!this.props.pPending.receivedRequest[0] ||
-      // !!this.props.pPending.madeRequest[0] ||
-      !!this.props.pPending.confirmed[0]
-    // console.log('hasnotifs?', hasNotifs)
-    if (!this.state.notifs && hasNotifs) {
-      // console.log('turn on notifs')
-      await this.setState({
-        notifs: true,
-      })
-    } else if (this.state.notifs && !hasNotifs) {
-      // console.log('turn off notifs')
-      await this.setState({
-        notifs: false,
-      })
+    if (!!Object.keys(this.props.pPending.friends).length) {
+      const hasNotifs =
+        !!this.props.pPending.friends.receivedRequest.length ||
+        // !!this.props.pPending.madeRequest.length ||
+        !!this.props.pPending.friends.confirmed.length
+      if (!this.state.notifs && hasNotifs) {
+        await this.setState({
+          notifs: true,
+        })
+      } else if (this.state.notifs && !hasNotifs) {
+        await this.setState({
+          notifs: false,
+        })
+      }
     }
   }
 
@@ -60,6 +59,7 @@ class TopMenu extends Component {
             }`}
             onClick={b1Click}>
             <img
+              alt='icon'
               src={b1Src}
               className='icon'
               style={
@@ -78,7 +78,7 @@ class TopMenu extends Component {
                 ? 'search-div'
                 : 'search-div hidden'
             }>
-            <img src='./images/search.svg' className='icon grey' />
+            <img alt='icon' src='./images/search.svg' className='icon grey' />
             <input
               className='textarea-only'
               // placeholder={
@@ -101,6 +101,7 @@ class TopMenu extends Component {
             }`}
             onClick={b2Click}>
             <img
+              alt='icon'
               src={b2Src}
               className='icon'
               style={
@@ -122,6 +123,7 @@ class TopMenu extends Component {
               }`}
               onClick={b3Click}>
               <img
+                alt='icon'
                 src={b3Src}
                 className='icon'
                 style={view === 'add' ? {} : { filter: 'invert(0.4)' }}
@@ -135,7 +137,7 @@ class TopMenu extends Component {
 }
 
 const mapState = state => ({
-  pPending: state.firebase.profile.pending.friends,
+  pPending: state.firebase.profile.pending,
 })
 
 export default connect(mapState)(TopMenu)

@@ -3,8 +3,8 @@ import { getFirebase } from 'react-redux-firebase'
 import { getFirestore } from 'redux-firestore'
 import {
   getCurrentUser,
-  getDataWithRef,
-  getUserByEmail,
+  // getDataWithRef,
+  // getUserByEmail,
   indexFunc,
 } from './utilActions'
 
@@ -20,14 +20,9 @@ googleAuthProvider.addScope('https://www.googleapis.com/auth/contacts.readonly')
 googleAuthProvider.addScope('https://www.googleapis.com/auth/userinfo.profile')
 
 // THUNK CREATORS
-export const checkUserNotifs = currentUID => async dispatch => {
-  try {
-  } catch (error) {
-    console.log('ERROR: checkUserNotifs => ', error)
-  }
-}
 
 export const checkUserIndex = currentUID => async dispatch => {
+  // console.log('inside checkUserIndex')
   try {
     // get current user reference
     const { userRef, userData } = await getCurrentUser(currentUID)
@@ -41,6 +36,12 @@ export const checkUserIndex = currentUID => async dispatch => {
       const index = emailIndex.concat(nameIndex)
       batch.update(userRef, {
         index,
+      })
+    }
+
+    if (!userData.friends) {
+      batch.update(userRef, {
+        friends: [],
       })
     }
 
@@ -121,26 +122,6 @@ export const googleLoginThunk = () => async dispatch => {
     await firebase.auth().signInWithRedirect(googleAuthProvider)
   } catch (error) {
     console.error(error)
-    // // handle account-already-exists-with-different-credential
-    // if (error.code === 'auth/account-exists-with-different-credential') {
-    //   const pendingCred = error.credential
-    //   const email = error.email
-    //   const signInMethods = await oauthRes.fetchSignInMethodsForEmail(email)
-    //   // account exists with email/password
-    //   if (signInMethods[0] === 'password') {
-    //     const password = await promptUserForPassword() // TODO: implement promptUserForPassword.
-    //     const passwordUser = await oauthRes.signInWithEmailAndPassword(
-    //       email,
-    //       password
-    //     )
-    //     await passwordUser.linkWithCredential(pendingCred)
-    //   }
-    //   // account exists with external provider(s)
-    //   const provider = getProviderForProviderId(methods[0])
-    //   const providerSignIn = await oauthRes.signInWithPopup(provider)
-    //   await providerSignIn.user.linkAndRetrieveDataWithCredential(pendingCred)
-
-    // }
 
     dispatch({ type: actions.AUTH_FAIL, payload: error.message })
   }
@@ -192,4 +173,3 @@ export const logoutThunk = () => async dispatch => {
     dispatch({ type: actions.AUTH_FAIL, payload: error.message })
   }
 }
-

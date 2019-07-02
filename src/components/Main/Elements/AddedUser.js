@@ -6,7 +6,7 @@ const AddedUser = ({ user, removeUser }) => {
       <div className='added-user-row'>{user.displayName || user.name}</div>
 
       <div className='round-icon-button red' onClick={() => removeUser(user)}>
-        <img src='/images/remove.svg' className='icon' />
+        <img alt='icon' src='/images/remove.svg' className='icon' />
       </div>
     </div>
   )

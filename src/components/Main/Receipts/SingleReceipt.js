@@ -1,17 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import {
-  deleteReceipt,
-  fetchReceipts,
-} from '../../../store/actions/receiptsActions'
+import { deleteReceipt } from '../../../store/actions/receiptsActions'
 import Modal from '../Elements/Modal'
 import ScrollContainer from '../Elements/ScrollContainer'
 
 class SingleReceipt extends Component {
   state = {
     displayModal: false,
-    showDropdown: false,
     rowItems: [],
   }
 
@@ -21,10 +17,6 @@ class SingleReceipt extends Component {
 
   closeModal = async () => {
     await this.setState({ displayModal: false })
-  }
-
-  toggleDropdown = () => {
-    this.setState({ showDropdown: !this.state.showDropdown })
   }
 
   componentDidMount = () => {
@@ -51,7 +43,7 @@ class SingleReceipt extends Component {
       return <h3>Receipt doesn't exist.</h3>
     } else {
       const { receipt, deleteReceipt, backToList, fetchReceipts } = this.props
-      const { displayModal, showDropdown, rowItems } = this.state
+      const { displayModal, rowItems } = this.state
       return (
         <ScrollContainer>
           <Modal
@@ -100,7 +92,7 @@ class SingleReceipt extends Component {
                 Items:
                 <ul
                   style={{ listStyleType: 'none', width: '100%', margin: '0' }}>
-                  {rowItems.map((item,idx) => {
+                  {rowItems.map((item, idx) => {
                     return (
                       <li key={idx}>
                         Name:
@@ -117,12 +109,12 @@ class SingleReceipt extends Component {
             ) : null}
           </div>
           <br />
-          <a
+          <div
             onClick={this.openModal}
             style={{ color: '#7f7f7f', margin: '6px 0' }}
-            className='small'>
+            className='alink small'>
             Delete receipt
-          </a>
+          </div>
         </ScrollContainer>
       )
     }

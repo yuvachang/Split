@@ -102,6 +102,7 @@ class ScrollContainer extends Component {
             onTouchEnd={this.endScroll}
             onTouchCancel={this.endScroll}>
             <img
+              alt='Scroll up'
               className='icon upsidedown scrollArrowID'
               src='/images/down-arrow.png'
               style={{
@@ -132,6 +133,7 @@ class ScrollContainer extends Component {
             onTouchEnd={this.endScroll}
             onTouchCancel={this.endScroll}>
             <img
+              alt='Scroll down'
               className='icon scrollArrowID'
               src='/images/down-arrow.png'
               style={{ width: '30px', filter: 'invert(0.4)' }}

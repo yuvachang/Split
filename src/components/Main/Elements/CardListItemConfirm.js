@@ -15,6 +15,7 @@ const CardListItemConfirm = ({
     onClick={showConfirm || item.error ? () => null : onClick}>
     {showConfirm && (
       <img
+        alt='icon'
         src='/images/remove.svg'
         className='icon left'
         onClick={leftAction ? leftAction : () => null}
@@ -29,6 +30,7 @@ const CardListItemConfirm = ({
     </div>
     {showConfirm && (
       <img
+        alt='icon'
         src='/images/check.svg'
         className='icon right'
         onClick={rightAction ? rightAction : null}

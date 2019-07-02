@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 import CreateReceipt from './CreateReceipt'
-import TopMenu from '../Elements/TopMenu'
-import ReceiptHeader from './ReceiptHeader'
 import CreateGroup from '../Groups/CreateGroup'
-import ScrollContainer from '../Elements/ScrollContainer'
 
 const styles = {
   page: {
     width: '100%',
     height: '100%',
     display: 'flex',
-    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fafafa',
     flexDirection: 'column',
