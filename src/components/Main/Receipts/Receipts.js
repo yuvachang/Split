@@ -8,6 +8,7 @@ import {
 import SingleReceipt from './SingleReceipt'
 import TopMenu from '../Elements/TopMenu'
 import CardList from '../Elements/CardList'
+import AddReceiptPage from './AddReceiptPage';
 
 class Receipts extends Component {
   state = {
@@ -20,7 +21,6 @@ class Receipts extends Component {
     if (receipt) {
       await this.props.selectReceipt(receipt.id)
       await this.setState({
-        // singleReceipt: receipt,
         view: 'singleView',
       })
     } else {
@@ -42,16 +42,25 @@ class Receipts extends Component {
     }
   }
 
+  componentDidUpdate = async prevProps => {
+    if (prevProps.receipts.length !== this.props.receipts.length) {
+      await this.setState({
+        receipts: this.props.receipts,
+      })
+    }
+  }
+
   componentDidMount = async () => {
     await this.props.fetchReceipts(this.props.currentUID)
 
+    // set receipts to state to allow indexing for local filtering
     await this.setState({
       receipts: this.props.receipts,
     })
   }
 
   render() {
-    const { currentUID, fetchReceipts } = this.props
+    const { currentUID, fetchReceipts, history } = this.props
     const { view, receipts, searchInput } = this.state
     return (
       <div id='receipts'>
@@ -70,7 +79,10 @@ class Receipts extends Component {
             <br /> Create a receipt:
           </div>
         )}
-        {view === 'add' && <CreateReceipt />}
+        {/* {view === 'add' && <CreateReceipt history={history} />} */}
+        {/* {view === 'add' && <CreateReceipt />} */}
+        {view === 'add' && <AddReceiptPage />}
+        
 
         {view === 'list' && (
           <div>
@@ -88,39 +100,27 @@ class Receipts extends Component {
         {view === 'singleView' && (
           <div id='groups-list'>
             <SingleReceipt
-              // receiptId={this.state.singleReceipt.id}
               backToList={() => this.switchView('list')}
-              // group={singleReceipt}
-              // deleteGroup={deleteGroup}
-              // loading={loading}
+              fetchReceipts={() => fetchReceipts(currentUID)}
             />
           </div>
         )}
       </div>
     )
-
-    return null
   }
 }
 
 const mapState = state => ({
   currentUID: state.firebase.auth.uid,
   receipts: state.receipts.receipts,
-  // loading: state.receipts.loading,
 })
 
 const mapDispatch = dispatch => ({
   fetchReceipts: uid => dispatch(fetchReceipts(uid)),
   selectReceipt: RID => dispatch(selectReceipt(RID)),
-  // createGroup: (group, uid) => dispatch(createGroup(group, uid)),
-  // fetchFriends: uid => dispatch(fetchFriends(uid)),
-  // createGroupInProgress: group => dispatch(createGroupInProgress(group)),
-  // deleteGroup: groupId => dispatch(deleteGroup(groupId)),
 })
 
 export default connect(
   mapState,
   mapDispatch
 )(Receipts)
-
-// export default Receipts

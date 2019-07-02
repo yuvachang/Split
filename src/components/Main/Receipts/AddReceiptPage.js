@@ -39,19 +39,14 @@ class AddReceiptPage extends Component {
 
   render() {
     const { showCreateGroup } = this.state
+    const showMenu = window.location.pathname === '/receipts/create'
     return (
       <div style={styles.page}>
-        <div className='menu'>Create a Receipt</div>
-        <br />
-        <div
-          className='button card'
-          style={styles.button}
-          onClick={this.toggleCreateGroup}>
-          {showCreateGroup ? 'Back to receipt form' : 'Create a group'}
-        </div>
+        {showMenu && <div className='menu'>Create a Receipt</div>}
+        {showMenu && <br/>}
         {showCreateGroup && <CreateGroup backToForm={this.toggleCreateGroup} />}
-        {!showCreateGroup && <CreateReceipt />}
-      </div>
+        {!showCreateGroup && <CreateReceipt toggleCreateGroup={this.toggleCreateGroup}/>}
+      </div> 
     )
   }
 }

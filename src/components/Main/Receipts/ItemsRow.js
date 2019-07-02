@@ -37,31 +37,41 @@ class ItemsRow extends Component {
     if (e.target.name === 'item') {
       this.updateUserAmountsAndRow('item')
     } else {
-      // check if all item costs + this item cost < receipt.total
-      let targetValue = Number(e.target.value)
-
+      let updateTotal = false
       const { rows, total: receiptTotal } = this.props.receipt
-      const itemsTotal = Object.keys(rows)
-        .map(rowIdx =>
-          rowIdx === this.props.rowIdx
-            ? 0
-            : rows[rowIdx].deletePending
-            ? 0
-            : Number(rows[rowIdx].cost)
-        )
-        .reduce((a, b) => a + b)
-      const remainderCost = Number(receiptTotal) - itemsTotal
+      let targetValue = Math.abs(Number(e.target.value))
+      // if receiptTotal has input
+      // check if all item costs + this item cost < receipt.total
+      // if (receiptTotal > 0) {
+        //find total of all items
+        const itemsTotal = Object.keys(rows)
+          .map(rowIdx =>
+            rowIdx === this.props.rowIdx
+              ? 0
+              : rows[rowIdx].deletePending
+              ? 0
+              : Number(rows[rowIdx].cost)
+          )
+          .reduce((a, b) => a + b)
+        const remainderCost = Number(receiptTotal) - itemsTotal
+        console.log('itemsTotal, remainderCost', itemsTotal, remainderCost)
 
-      if (remainderCost < 0) {
-        targetValue = 0
-      } else {
-        if (targetValue > remainderCost) {
-          targetValue = remainderCost
-        } else if (targetValue < 0) {
-          targetValue = Math.abs(targetValue)
+        if (remainderCost === 0) {
+          // total should be the same as sum of all items
+          // total should be updating with addition/subtraction of items
+          updateTotal = itemsTotal + targetValue
+        } else if (remainderCost < 0) {
+          targetValue = 0
+        } else {
+          if (targetValue > remainderCost) {
+            targetValue = remainderCost
+          } else if (targetValue < 0) {
+            targetValue = Math.abs(targetValue)
+          }
         }
-      }
+      // }
 
+      // check if user changed input from last-saved value
       if (targetValue !== e.target.value) {
         await this.setState({
           rowData: {
@@ -71,7 +81,11 @@ class ItemsRow extends Component {
         })
       }
 
-      this.updateUserAmountsAndRow()
+      if (!!updateTotal) {
+        this.updateUserAmountsAndRow(updateTotal)
+      } else {
+        this.updateUserAmountsAndRow()
+      }
     }
   }
 
@@ -165,14 +179,15 @@ class ItemsRow extends Component {
     const { userAmounts, rowIdx, row } = this.props
     const { users: usersIds, cost, item } = this.state.rowData
 
-    // return if nothing changed
     if (!whatChanged && row.cost === cost && row.item === item) return
-    // no userAmounts update if only name changed
+    // return if nothing changed
     else if (whatChanged === 'item') {
       this.updateRow()
       return
+      // no userAmounts update if only name changed
     } else {
       // else update receipt.userAmounts
+
       const amount = Number((cost / usersIds.length).toFixed(2))
 
       Object.keys(userAmounts).forEach(userId => {
@@ -185,16 +200,21 @@ class ItemsRow extends Component {
         userAmounts[userId].amount = this.sumCosts(userAmounts[userId].items)
 
         // calculate owe against paid
-        if (userAmounts[userId].amount > userAmounts[userId].paid) {
-          userAmounts[userId].owe =
-            userAmounts[userId].amount - userAmounts[userId].paid
-        } else {
-          userAmounts[userId].owe = 0
-        }
+        // if (userAmounts[userId].amount > userAmounts[userId].paid) {
+        //   userAmounts[userId].owe =
+        //     userAmounts[userId].amount - userAmounts[userId].paid
+        // } else {
+        //   userAmounts[userId].owe = 0
+        // }
       })
 
       // pass to props backend handler
-      this.updateRow(userAmounts)
+      console.log('whatChanged', typeof whatChanged, whatChanged)
+      if (typeof whatChanged === 'number') {
+        this.updateRow(userAmounts, whatChanged)
+      } else {
+        this.updateRow(userAmounts)
+      }
     }
   }
 
@@ -202,9 +222,7 @@ class ItemsRow extends Component {
 
   deleteRow = async (e, pendRowDelete) => {
     if (pendRowDelete) {
-      // if (pendRowDelete === 'perm-delete') {
-      //   this.props.deleteRow(rowIdx, userAmounts)
-      // }
+      // mark row for deletion
       const { userAmounts, rowIdx, row } = this.props
 
       row.users.forEach(userId => {
@@ -214,7 +232,9 @@ class ItemsRow extends Component {
       })
 
       await this.props.toggleDeleteRow(rowIdx, userAmounts)
+
     } else {
+      // permanently delete row
       const { item, cost } = this.state.rowData
       if (item || cost) {
         // trigger modal/alert
@@ -225,15 +245,22 @@ class ItemsRow extends Component {
       } else {
         this.props.deleteRow()
       }
+
     }
   }
 
-  updateRow = async userAmounts => {
+  updateRow = async (userAmounts, receiptTotal) => {
     const { rowIdx, updateRow } = this.props
     if (userAmounts) {
-      await updateRow(rowIdx, this.state.rowData, userAmounts)
+      if (receiptTotal) {
+        console.log('receiptTotal detected')
+        await updateRow(rowIdx, this.state.rowData, userAmounts, receiptTotal)
+      } else {
+        console.log('no receiptTotal detected')
+        await updateRow(rowIdx, this.state.rowData, userAmounts, null)
+      }
     } else {
-      await updateRow(rowIdx, this.state.rowData, null)
+      await updateRow(rowIdx, this.state.rowData, null, null)
     }
   }
 

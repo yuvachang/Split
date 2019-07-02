@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { deleteReceipt } from '../../../store/actions/receiptsActions'
+import {
+  deleteReceipt,
+  fetchReceipts,
+} from '../../../store/actions/receiptsActions'
 import Modal from '../Elements/Modal'
 import ScrollContainer from '../Elements/ScrollContainer'
 
@@ -9,6 +12,7 @@ class SingleReceipt extends Component {
   state = {
     displayModal: false,
     showDropdown: false,
+    rowItems: [],
   }
 
   openModal = async () => {
@@ -23,12 +27,31 @@ class SingleReceipt extends Component {
     this.setState({ showDropdown: !this.state.showDropdown })
   }
 
+  componentDidMount = () => {
+    // filter empty items from list
+    const { rows } = this.props.receipt
+    const rowItems = []
+    Object.keys(rows).forEach(rowIdx => {
+      if (rows[rowIdx].item || rows[rowIdx].cost || rows[rowIdx].users[0]) {
+        rowItems.push(rows[rowIdx])
+      }
+    })
+
+    if (!!rowItems.length) {
+      this.setState({
+        rowItems,
+      })
+    }
+  }
+
   render() {
     if (!this.props.receipt.id) {
       return <h3>Error: No receipt selected.</h3>
+    } else if (this.props.receipt.id === 'DNE') {
+      return <h3>Receipt doesn't exist.</h3>
     } else {
-      const { receipt, deleteReceipt, backToList } = this.props
-      const { displayModal, showDropdown } = this.state
+      const { receipt, deleteReceipt, backToList, fetchReceipts } = this.props
+      const { displayModal, showDropdown, rowItems } = this.state
       return (
         <ScrollContainer>
           <Modal
@@ -36,32 +59,33 @@ class SingleReceipt extends Component {
             message={`Delete ${receipt.receiptName} forever?`}
             yesAction={async () => {
               await deleteReceipt(receipt.id)
+              await fetchReceipts()
               this.closeModal()
               backToList()
             }}
             noAction={this.closeModal}
           />
-          <div className='profile'>
-            <h3>{receipt.receiptName}</h3>
-            <img
-              src='./images/down-arrow.svg'
-              className={showDropdown ? 'icon upsidedown grey' : 'icon grey'}
-              onClick={this.toggleDropdown}
-            />
-          </div>
-          <div
-            className={showDropdown ? 'profile-menu' : 'profile-menu hidden'}>
-            <Link to={`/receipts/${receipt.id}`}>
-              <img src='./images/edit.svg' className='icon grey' />
-            </Link>
-            <img
-              src='./images/trash.svg'
-              className='icon grey'
-              onClick={this.openModal}
-            />
-          </div>
-          <div style={{ margin: '3px 0px' }}>
+          <h3>{receipt.receiptName}</h3>
+          <Link
+            to={`/receipts/${receipt.id}`}
+            style={{ color: '#7f7f7f', margin: '6px 0' }}
+            className='small'>
+            Edit receipt
+          </Link>
+
+          <br />
+          <div style={{ textAlign: 'left' }}>
+            Receipt subtotal: ${receipt.subtotal}
+            <br />
+            <br />
+            Receipt tip: {receipt.tip}%
+            <br />
+            <br />
+            Receipt total: ${receipt.total}
+            <br />
+            <br />
             Group: {receipt.group.groupName}
+            <br />
             <br />
             <ul className='comma-list'>
               Members:
@@ -69,29 +93,35 @@ class SingleReceipt extends Component {
                 <li key={userId}>{receipt.userAmounts[userId].name}</li>
               ))}
             </ul>
+            <br />
+            <br />
+            {!!rowItems.length ? (
+              <div>
+                Items:
+                <ul
+                  style={{ listStyleType: 'none', width: '100%', margin: '0' }}>
+                  {rowItems.map(item => {
+                    return (
+                      <li>
+                        Item:
+                        {item.item ? item.item : ''}, Cost: $
+                        {item.cost ? item.cost : ''}, Users:
+                        {!item.users[0]
+                          ? ''
+                          : item.users.map(user => user.displayName)}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            ) : null}
           </div>
-          <br />
-          Items:
-          <ul style={{ listStyleType: 'none', width: '100%', margin: '0' }}>
-            {Object.keys(receipt.rows).map(rowIdx => {
-              return (
-                <li key={rowIdx} style={{ margin: '3px 0px' }}>
-                  Item:{' '}
-                  {receipt.rows[rowIdx].item
-                    ? receipt.rows[rowIdx].item
-                    : 'n/a'}
-                  , Cost: ${' '}
-                  {receipt.rows[rowIdx].cost
-                    ? receipt.rows[rowIdx].cost
-                    : 'n/a'}
-                  , Users:{' '}
-                  {!receipt.rows[rowIdx].users[0]
-                    ? 'n/a'
-                    : receipt.rows[rowIdx].users.map(user => user.displayName)}
-                </li>
-              )
-            })}
-          </ul>
+          <a
+            onClick={this.openModal}
+            style={{ color: '#7f7f7f', margin: '6px 0' }}
+            className='small'>
+            Delete receipt
+          </a>
         </ScrollContainer>
       )
     }

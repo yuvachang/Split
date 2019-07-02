@@ -24,17 +24,19 @@ class ReceiptAmountsPanel extends Component {
   }
 
   setColors = async () => {
-    const { userAmounts } = this.props.receipt
-    const userIds = Object.keys(userAmounts)
-    if (userIds.filter(userId => !userAmounts[userId].color).length) {
+    const usrAmts = { ...this.props.receipt.userAmounts }
+    const userIds = Object.keys(usrAmts)
+
+    if (userIds.filter(userId => !usrAmts[userId].color).length) {
       console.log('setting user colors')
       let hslIncrement = 360 / userIds.length
       userIds.forEach(userId => {
-        userAmounts[userId].color =
+        usrAmts[userId].color =
           'hsla(' + Math.floor(hslIncrement % 360) + ',' + '90%,' + '60%,1)'
         hslIncrement += 360 / userIds.length
       })
-      await this.props.updateUserAmounts(userAmounts, this.props.receipt.id)
+      console.log('ReceiptAmountsPanel.setColors(): usrAmts', usrAmts)
+      await this.props.updateUserAmounts(usrAmts, this.props.receipt.id)
     }
   }
 
@@ -51,7 +53,7 @@ class ReceiptAmountsPanel extends Component {
 
   componentDidUpdate = async prevProps => {
     if (prevProps !== this.props) {
-      console.log('componentDidUpdate receiptAmountPanel')
+      console.log('componentDidUpdate receiptAmountsPanel')
       await this.setTotalPaid()
     }
   }
@@ -85,6 +87,10 @@ class ReceiptAmountsPanel extends Component {
               amount={receipt.subtotal}
               handleEditAmount={val => this.handleEditAmount(val, 'subtotal')}
               allowEdit={true}
+              style={{
+                maxHeight: '30px',
+                minHeight: '30px',
+              }}
             />
             <AmountsCard
               label='Tip'

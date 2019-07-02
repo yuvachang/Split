@@ -257,12 +257,16 @@ export const fetchFriends = currentUID => async dispatch => {
     // get current user reference
     const { userData } = await getCurrentUser(currentUID)
 
-    // convert friends refs to data array
-    const friends = await Promise.all(
-      userData.friends.map(async friend => {
-        return getDataWithRef(friend)
-      })
-    )
+    const friends = []
+
+    if (userData.friends) {
+      friends = await Promise.all(
+        userData.friends.map(async friend => {
+          return getDataWithRef(friend)
+        })
+      )
+    }
+
     dispatch({ type: actions.FRIENDS_LIST, payload: friends })
   } catch (error) {
     console.error('ERROR: fetchFriends => ', error)

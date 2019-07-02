@@ -143,6 +143,7 @@ const calcDebts = userAmounts => {
   const payers = []
   const debtors = []
   const userIds = Object.keys(userAmounts)
+  console.log('calcDebts, userAmounts:', userAmounts)
 
   // fill in payers && debtors
   userIds.forEach(uid => {
@@ -156,6 +157,8 @@ const calcDebts = userAmounts => {
       debtors.push(usrAmt)
     }
   })
+
+  if (!payers.length) return userAmounts
 
   let usersHaveItemizedCosts = false
 
@@ -175,6 +178,7 @@ const calcDebts = userAmounts => {
   debtors.forEach(usrAmt => {
     const { id: uid } = usrAmt
     let userOwes = Number(usrAmt.owe)
+    console.log(payers[0])
     let payerPaid = Number(payers[0].paid)
     let pid = payers[0].id
     let payerAmount = Number(payers[0].amount)

@@ -363,36 +363,6 @@
   }
 }
 
-// .row-item {
-//   background-color: $button-success-bg-color;
-//   position: relative;
-
-//   border: 1.5px solid white;
-//   border-radius: 5px;
-
-//   box-sizing: border-box;
-//   padding: 4px 5px;
-//   margin: 8px 0px;
-//   text-align: center;
-
-//   width: 100%;
-//   min-height: min-content;
-//   color: white;
-//   font-weight: bold;
-//   font-size: 1em;
-
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-
-//   & > .innertext {
-//     width: 65%;
-//     white-space: nowrap;
-//     overflow: hidden;
-//     text-overflow: ellipsis;
-//   }
-// }
-
 table {
   border-collapse: collapse;
 }
@@ -416,7 +386,6 @@ table {
     & > td {
       position: relative;
       padding: 0px;
-      // border: 1.5px solid #ccc;
 
       & > input {
         padding: 0;
@@ -425,14 +394,11 @@ table {
       }
     }
 
-    & > .editbutton
-    // & > .deletebutton 
- {
+    & > .editbutton {
       max-width: 25px;
     }
 
     & > .item {
-      // min-width: 100px;
       max-width: 70px;
       overflow: hidden;
       white-space: nowrap;
@@ -443,134 +409,11 @@ table {
     & > .cost {
       max-width: 40px;
       white-space: nowrap;
-      // display: inline;
     }
 
     & > .users {
-      // padding: 0px;
-      // min-width: 250px;
       max-width: 95px;
       text-align: left;
-      // white-space: nowrap;
-      // display: inline;
     }
   }
 }
-
-// .receipt {
-//   &-edit {
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     margin-top: 5vh;
-//     text-align: center;
-
-//     width: 90%;
-
-//     & > ul {
-//       display: flex;
-//       justify-content: space-around;
-//       margin: 1px;
-//       max-width: 60vw;
-//     }
-
-//     & > * {
-//       max-width: 100%;
-//     }
-//   }
-// }
-
-// .mao {
-//   age: 10;
-//   health: 76;
-//   heart: 55;
-//   generation: 2;
-
-//   maoGame(){
-//     while(true){
-//       playwithmao();
-//     }
-//   }
-
-//   feedmao(){
-//     maoTummy += cookie;
-//   }
-// }
-
-// .select-user {
-//   &.container {
-//     position: relative;
-
-//     box-sizing: border-box;
-//     width: 100%;
-//     min-height: 30px;
-
-//     border: 1.5px solid #ccc;
-//     border-radius: 5px;
-
-//     margin-top: 1.5px;
-//     padding: 10px;
-
-//     text-align: center;
-//     // padding: 0px 8px;
-//   }
-
-//   &.menu {
-//     // display: flex;
-//   }
-
-//   &.open {
-//     position: relative;
-
-//     width: 100%;
-//     height: auto;
-//     max-height: 235px;
-//     overflow: scroll;
-//     // transform: scaleY(1);
-//     transition: max-height 0.3s;
-//     & > .button {
-//       padding: 0;
-//       filter: drop-shadow($no-shadow);
-//     }
-//   }
-
-//   &.closed {
-//     position: relative;
-
-//     max-height: 0px;
-//     width: 100%;
-//     overflow: scroll;
-//     border: none;
-//     // transform: scaleY(0);
-//     transition: max-height 0.3s;
-//     & > .button {
-//       filter: drop-shadow($no-shadow);
-//     }
-//   }
-
-//   &.message {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-
-//     text-align: center;
-//     font-size: 1em;
-
-//     // overflow: hidden;
-//     // white-space: nowrap;
-//     // text-overflow: ellipsis;
-//     margin-right: 35px;
-
-//     & > .comma-list {
-//       margin: 0;
-//       & > li {
-//         align-content: center;
-//       }
-//       // @media (hover: hover) {
-//       //   & > li:hover {
-//       //     cursor: pointer;
-//       //   }
-//       // }
-//     }
-//   }
-// }

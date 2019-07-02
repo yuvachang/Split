@@ -12,12 +12,13 @@ import {
 import ScrollContainer from '../Elements/ScrollContainer'
 import SelectGroupDropdown from '../Groups/SelectGroupDropdown'
 import SelectUserDropdown from '../Elements/SelectUserDropdown'
+import history from '../../../history'
 
 class CreateReceipt extends Component {
   state = {
     selectedGroup: {},
 
-    error: null,
+    error: '',
 
     formData: {
       subtotal: 0,
@@ -38,12 +39,23 @@ class CreateReceipt extends Component {
 
   handleSubmit = async e => {
     e.preventDefault()
-    // make sure payer and group selected
+
+    // validation
     if (
       // !this.state.formData.payer ||
       !this.state.formData.groupId
-    )
+    ) {
+      this.setState({
+        error: 'group',
+      })
       return
+    } 
+    if (!this.state.formData.receiptName){
+      this.setState({
+        error: 'name',
+      })
+      return
+    }
 
     // set and save date as UTC
     const created = new Date()
@@ -55,7 +67,8 @@ class CreateReceipt extends Component {
     })
 
     // redirect to view/edit receipt
-    this.props.history.push(`/receipts/${newReceipt.id}`)
+    // this.props.history.push(`/receipts/${newReceipt.id}`)
+    history.push(`/receipts/${newReceipt.id}`)
   }
 
   selectGroup = async group => {
@@ -234,22 +247,44 @@ class CreateReceipt extends Component {
 
   render() {
     const { groups, loading, selectedGroup } = this.props
-    const { payer, subtotal, tip, total, date } = this.state.formData
+    const { subtotal, tip, total, date } = this.state.formData
+    const { error } = this.state
     return (
-      <ScrollContainer showButtons={true}>
-        {loading && <h3>Saving...</h3>}
+      <ScrollContainer showButtons={false}>
+        {loading && (
+          <h3>
+            Saving...
+            <br />
+          </h3>
+        )}
 
-        {this.state.error && `Error: ${this.state.error}`}
-
+        <label
+          style={{
+            width: '75%',
+            marginBottom: '6px',
+            color: error.includes('group') ? 'red' : '#7f7f7f',
+          }}>
+          {error.includes('group')
+            ? 'Please select a group first:'
+            : 'Select a group:'}
+        </label>
         <SelectGroupDropdown
           clickAction={this.selectGroup}
           groups={groups}
           clearAction={this.deselectGroup}
           placeholder={'Select a group...'}
         />
+        <a
+          onClick={this.props.toggleCreateGroup}
+          style={{ color: '#7f7f7f', margin: '6px 0 4px 0' }}
+          className='small'>
+          Or create a group
+        </a>
 
-        <br />
-
+        <label style={{ width: '75%', margin: '10px 0 6px 0' }}>
+          If someone paid the entire <br />
+          bill, add them here:
+        </label>
         <SelectUserDropdown
           users={selectedGroup.members || []}
           clickAction={this.selectPayer}
@@ -260,12 +295,17 @@ class CreateReceipt extends Component {
         />
         <br />
         <form onSubmit={this.handleSubmit} style={{ width: '75%' }}>
-          <label>Receipt Name:</label>
+          <label
+          style={{
+            color: error.includes('name') ? 'red' : '#7f7f7f',
+          }}>{error.includes('name')
+          ? 'Please enter a receipt name:'
+          : 'Receipt Name:'}</label>
           <input
             className='outline-only'
             placeholder='Receipt name'
             type='text'
-            required={true}
+            // required={true}
             value={this.state.formData.receiptName}
             name='receiptName'
             onChange={this.handleChange}
@@ -350,6 +390,7 @@ class CreateReceipt extends Component {
             name='rows'
             onChange={this.handleChange}
           />
+
           <button
             className='button card'
             type='submit'

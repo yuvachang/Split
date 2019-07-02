@@ -92,6 +92,7 @@ export const createReceipt = data => async dispatch => {
 
     // append receipt to redux store
     newReceipt.id = receiptRef.id
+    console.log('inside createReceipt: newReceipt: ', newReceipt)
 
     dispatch({ type: actions.RECEIPTS_CREATE, payload: newReceipt })
     dispatch({ type: actions.RECEIPTS_ENDLOADING })
@@ -143,38 +144,42 @@ export const fetchReceipts = currentUID => async dispatch => {
     // get current user
     const { userData, userRef } = await getCurrentUser(currentUID)
 
-    //check if all receipts exist, if any are undefined
-    const undefinedReceipts = []
+    //check if user has receipts array
+    let userReceipts = []
+    if (userData.receipts) {
+      //check if all receipts exist, if any are undefined
+      const undefinedReceipts = []
 
-    // get data of all receipts
-    const userReceipts = await Promise.all(
-      userData.receipts.map(async receiptRef => {
-        const receiptData = await getDataWithRef(receiptRef)
-        if (!receiptData) {
-          undefinedReceipts.push(receiptRef)
-        }
-        return receiptData
-      })
-    )
-
-    if (undefinedReceipts.length) {
-      //filter undefined from userReceipts
-      // !!!!moved to front end list component: filter=>map
-      // userReceipts.forEach((receipt, idx) => {
-      //   if (!receipt) {
-      //     userReceipts.splice(idx, 1)
-      //   }
-      // })
-
-      // delete undefined receiptRefs from db
-      const batch = firestore.batch()
-      undefinedReceipts.forEach(receiptRef => {
-        batch.update(userRef, {
-          receipts: firestore.FieldValue.arrayRemove(receiptRef),
+      // get data of all receipts
+      userReceipts = await Promise.all(
+        userData.receipts.map(async receiptRef => {
+          const receiptData = await getDataWithRef(receiptRef)
+          if (!receiptData) {
+            undefinedReceipts.push(receiptRef)
+          }
+          return receiptData
         })
-      })
-      await batch.commit()
-      console.log('undefinedReceipts removed')
+      )
+
+      if (undefinedReceipts.length) {
+        //filter undefined from userReceipts
+        // !!!!moved to front end list component: filter=>map
+        // userReceipts.forEach((receipt, idx) => {
+        //   if (!receipt) {
+        //     userReceipts.splice(idx, 1)
+        //   }
+        // })
+
+        // delete undefined receiptRefs from db
+        const batch = firestore.batch()
+        undefinedReceipts.forEach(receiptRef => {
+          batch.update(userRef, {
+            receipts: firestore.FieldValue.arrayRemove(receiptRef),
+          })
+        })
+        await batch.commit()
+        console.log('undefinedReceipts removed')
+      }
     }
 
     dispatch({ type: actions.RECEIPTS_FETCH, payload: userReceipts })
@@ -188,10 +193,15 @@ export const updateRow = (
   rowIdx,
   row,
   userAmounts,
+  receiptTotal,
   receiptId
 ) => async dispatch => {
   try {
-    console.log('inside updateRow thunk')
+    console.log('inside updateRow thunk', rowIdx,
+    row,
+    userAmounts,
+    receiptTotal,
+    receiptId)
 
     const batch = firestore.batch()
     const receiptRef = await firestore.collection('receipts').doc(receiptId)
@@ -210,6 +220,12 @@ export const updateRow = (
       const newUsrAmts = calcOwesAndDebts(userAmounts)
       batch.update(receiptRef, {
         userAmounts: newUsrAmts,
+      })
+    }
+
+    if (receiptTotal) {
+      batch.update(receiptRef, {
+        total: receiptTotal,
       })
     }
 
@@ -338,7 +354,7 @@ export const listenReceipt = receiptId => async dispatch => {
       .collection('receipts')
       .doc(receiptId)
       .onSnapshot(async function(doc) {
-        const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server'
+        // const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server'
         // && source === 'Server'
         if (doc.exists) {
           const receiptData = await doc.data()
@@ -373,27 +389,29 @@ export const unlistenReceipt = receiptId => async dispatch => {
 // get user stats
 export const getUserStats = currentUID => async dispatch => {
   try {
-    console.log(currentUID)
-    const { userRef, userData } = await getCurrentUser(currentUID)
+    const { userData } = await getCurrentUser(currentUID)
     const stats = {}
 
-    const userReceipts = await Promise.all(
-      userData.receipts.map(async receiptRef => {
-        const receiptData = await getDataWithRef(receiptRef)
+    let userReceipts = []
 
-        if (!receiptData) {
-          return 0
-        } else {
-          return (
-            receiptData.userAmounts[currentUID].amount ||
-            receiptData.userAmounts[currentUID].owe ||
-            0
-          )
-        }
-      })
-    )
+    if (userData.receipts) {
+      userReceipts = await Promise.all(
+        userData.receipts.map(async receiptRef => {
+          const receiptData = await getDataWithRef(receiptRef)
+          if (!receiptData) {
+            return 0
+          } else {
+            return (
+              receiptData.userAmounts[currentUID].amount ||
+              receiptData.userAmounts[currentUID].owe ||
+              0
+            )
+          }
+        })
+      )
 
-    stats.totalSpending = rdNum2(userReceipts.reduce((a, b) => a + b))
+      stats.totalSpending = rdNum2(userReceipts.reduce((a, b) => a + b))
+    }
 
     dispatch({ type: actions.RECEIPTS_STATS, payload: stats })
   } catch (error) {

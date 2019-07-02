@@ -19,14 +19,12 @@ class Home extends Component {
   }
 
   componentDidMount = async () => {
-    console.log(this.props.currentUID)
     await this.props.getUserStats(this.props.currentUID)
   }
 
   render() {
     const { isLoaded, isLoggedIn, stats } = this.props
     const { view } = this.state
-    console.log('!!!', stats)
     return (
       <div id='homepage'>
         <TopMenu

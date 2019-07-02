@@ -14,8 +14,7 @@
     "redux": "^4.0.1",
     "redux-firestore": "^0.7.3",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0",
-    "styled-components": "^4.2.0"
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "npm run react-app-start & npm run scss",

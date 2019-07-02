@@ -57,12 +57,14 @@ class CreateGroup extends Component {
     const { groupName, members } = this.state.createGroup
     const existingGroupNames = this.props.groups.map(group => group.groupName)
 
-    if (!members.length) {
-      this.setState({
-        error: 'Please add one or more friends.',
-      })
-      return
-    }
+    // allow groups by self
+    // if (!members.length) {
+    //   this.setState({
+    //     error: 'Please add one or more friends.',
+    //   })
+    //   return
+    // }
+
     if (existingGroupNames.includes(groupName)) {
       this.setState({
         error: 'Group name already taken.',
@@ -127,13 +129,22 @@ class CreateGroup extends Component {
   }
 
   render() {
-    const { friends, loading } = this.props
+    const { friends, loading, backToForm } = this.props
     const { createGroup, error, unaddedFriends } = this.state
     const { members } = this.state.createGroup
 
     return (
       <ScrollContainer showButtons={true}>
         {loading && <h3>Saving...</h3>}
+        {backToForm && (
+          <a
+            onClick={backToForm}
+            style={{ color: '#7f7f7f', margin: '6px 0 4px 0' }}
+            className='small'>
+            Back to Create Receipt
+          </a>
+        )}
+
         <form onSubmit={this.handleSubmit} style={{ width: '75%' }}>
           <input
             className='outline-only'
@@ -147,8 +158,13 @@ class CreateGroup extends Component {
             autoCapitalize='off'
           />
           <br />
-          {unaddedFriends[0] && (
+          {unaddedFriends[0] ? (
             <SelectUser addUser={this.addMember} users={unaddedFriends} />
+          ) : (
+            <label>
+              It's just you in this group. <br />
+              Add some friends to your profile to add them here!
+            </label>
           )}
 
           {members[0] &&
@@ -165,6 +181,7 @@ class CreateGroup extends Component {
           <button className='card' type='submit' style={{ width: '100%' }}>
             Create Group
           </button>
+          {error && <p>{error}</p>}
         </form>
       </ScrollContainer>
     )

@@ -84,9 +84,12 @@ class Groups extends Component {
           </div>
         )}
 
-        {view === 'list' && (
-          <CardList list={groups} onClick={this.switchView} />
-        )}
+        {view === 'list' &&
+          (groups[0] ? (
+            <CardList list={groups} onClick={this.switchView} />
+          ) : (
+            'You have no groups...'
+          ))}
 
         {view === 'singleView' && (
           <SingleGroup
