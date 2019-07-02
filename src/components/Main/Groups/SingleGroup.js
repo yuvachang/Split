@@ -25,6 +25,7 @@ class SingleGroup extends Component {
   render() {
     const { group, deleteGroup, backToList } = this.props
     const { displayModal, showDropdown } = this.state
+    console.log(group.receipts.map(r => r.total).reduce((a, b) => a + b))
     return (
       <ScrollContainer>
         <Modal
@@ -38,60 +39,51 @@ class SingleGroup extends Component {
           noAction={this.closeModal}
         />
 
-        <div className='profile'>
-          <h3>{group.groupName}</h3>
-          <img
-            src='./images/down-arrow.svg'
-            className={showDropdown ? 'icon upsidedown grey' : 'icon grey'}
-            onClick={this.toggleDropdown}
-          />
-        </div>
-
-        <div className={showDropdown ? 'profile-menu' : 'profile-menu hidden'}>
-          <img
-            src='./images/poke.png'
-            className='icon grey'
-            style={{ transform: 'rotate(90deg)' }}
-          />
-          <img
-            src='./images/trash.svg'
-            className='icon grey'
-            onClick={this.openModal}
-          />
-        </div>
-
-        <div>
-          <div>
-            group receipts
-            <br />
-            group spendings
-          </div>
+        <h3>{group.groupName}</h3>
+        <br />
+        <div style={{ textAlign: 'left' }}>
+          Receipts total: $
+          {!!group.receipts.length
+            ? group.receipts.map(r => r.total).reduce((a, b) => a + b)
+            : 0}
           <br />
-          <div>Group members:</div>
-          <ul className='comma-list'>
-            {group.members[0]
-              ? group.members.map(member => (
-                  <li key={member.id}>{member.displayName}</li>
-                ))
-              : null}
-          </ul>
+          <br />
+          Receipts:{' '}
+          {!!group.receipts.length ? (
+            <ul style={{ listStyleType: 'none', width: '100%', margin: '0' }}>
+              {group.receipts.map(receiptObj => {
+                return <li key={receiptObj.id}>{receiptObj.receiptName}</li>
+              })}
+            </ul>
+          ) : (
+            'No receipts.'
+          )}
+          <br />
+          <br />
+          {!!group.members.length ? (
+            <div>
+              Members:
+              <ul
+                style={{
+                  listStyleType: 'none',
+                  width: '100%',
+                  margin: '0',
+                  textAlign: '',
+                }}>
+                {group.members.map(member => {
+                  return <li key={member.id}>{member.displayName}</li>
+                })}
+              </ul>
+            </div>
+          ) : null}
         </div>
-
-        <div className='button card' onClick={backToList}>
-          Back to list
-        </div>
-        {/* <div className='button card' onClick={this.toggleDropdown}>
-          {showDropdown ? 'Cancel' : 'Delete group'}
-        </div> */}
-        {/* <button
-          className={`card red ${!showDropdown && 'collapsed'}`}
-          onClick={async () => {
-            await deleteGroup(group.id)
-            this.closeModal()
-            backToList()
-          }}>
-          Delete group forever
-        </button> */}
+        <br />
+        <a
+          onClick={this.openModal}
+          style={{ color: '#7f7f7f', margin: '6px 0' }}
+          className='small'>
+          Delete receipt
+        </a>
       </ScrollContainer>
     )
   }

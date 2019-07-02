@@ -68,7 +68,7 @@ class ItemsList extends Component {
 
     const { editing } = this.state
     return (
-      <ScrollContainer showButtons={true}>
+      <ScrollContainer showButtons={false}>
         {!!Object.keys(rows).length &&
           Object.keys(rows).map(rowIdx => {
             // if row deleted, render RowDeleted
@@ -105,8 +105,8 @@ class ItemsList extends Component {
                   rowIdx={rowIdx}
                   userAmounts={receipt.userAmounts}
                   receipt={receipt}
-                  updateRow={(rowIdx, row, usrAmts, receiptTot) =>
-                    updateRow(rowIdx, row, usrAmts, receiptTot, receipt.id)
+                  updateRow={(rowIdx, row, usrAmts) =>
+                    updateRow(rowIdx, row, usrAmts, receipt.id)
                   }
                   toggleDeleteRow={(rowIdx, ua) =>
                     toggleDeleteRow(rowIdx, ua, receipt.id)
@@ -135,8 +135,8 @@ const mapState = state => ({
 const mapDispatch = dispatch => ({
   toggleDeleteRow: (rowIdx, ua, RID) =>
     dispatch(toggleDeleteRow(rowIdx, ua, RID)),
-  updateRow: (rowIdx, row, ua, rTot, RID) =>
-    dispatch(updateRow(rowIdx, row, ua, rTot, RID)),
+  updateRow: (rowIdx, row, ua, RID) =>
+    dispatch(updateRow(rowIdx, row, ua, RID)),
   deleteRow: (rowIdx, RID) => dispatch(deleteRow(rowIdx, RID)),
   addRow: (idx, RID) => dispatch(addRow(idx, RID)),
 })

@@ -257,7 +257,7 @@ export const fetchFriends = currentUID => async dispatch => {
     // get current user reference
     const { userData } = await getCurrentUser(currentUID)
 
-    const friends = []
+    let friends = []
 
     if (userData.friends) {
       friends = await Promise.all(

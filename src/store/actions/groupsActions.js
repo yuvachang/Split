@@ -122,8 +122,7 @@ export const fetchGroups = currentUID => async dispatch => {
 
 export const selectGroup = groupId => async dispatch => {
   try {
-    // dispatch({ type: actions.GROUPS_LOADING })
-
+    console.log('inside selectGroup')
     const groupRef = await firestore.collection('groups').doc(groupId)
 
     const groupData = await getDataWithRef(groupRef)
@@ -134,10 +133,24 @@ export const selectGroup = groupId => async dispatch => {
       })
     )
 
+    const groupReceipts = await Promise.all(
+      groupData.receipts.map(async receiptRef => {
+        const data = await getDataWithRef(receiptRef)
+        return {
+          receiptName: data.receiptName,
+          id: receiptRef.id,
+          total: data.total,
+        }
+      })
+    )
+
+    groupData.receipts = groupReceipts
+
     groupData.members = groupMembers
 
+    console.log(groupData.receipts, groupData.members)
+
     dispatch({ type: actions.GROUPS_SELECT, payload: groupData })
-    // dispatch({ type: actions.GROUPS_ENDLOADING })
   } catch (error) {
     console.log('ERROR: selectGroup => ', error)
     dispatch({ type: actions.GROUPS_ERROR, payload: error.message })

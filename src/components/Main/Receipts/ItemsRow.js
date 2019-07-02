@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import SelectUser from '../Elements/SelectUser'
 import AddedUser from '../Elements/AddedUser'
-import CardItemInnertext from '../Elements/CardItemInnertext'
+
+let timeoutId //clearing errors
 
 class ItemsRow extends Component {
   state = {
     open: false,
-    // minHeight: 0,
     maxHeight: 0,
     isEdit: false,
     inputValue: 0,
@@ -15,6 +15,7 @@ class ItemsRow extends Component {
     },
     unaddedUsers: [],
     showModal: false,
+    error: '',
   }
 
   toggleEdit = async () => {
@@ -27,65 +28,90 @@ class ItemsRow extends Component {
 
   handleSave = async () => {
     // adjust maxHeight for number of added users
+    // +10 to adjust for editbutton in place of dropdown list
+    const maxHeight = !!this.state.unaddedUsers.length
+      ? this.bottomRows.scrollHeight
+      : this.bottomRows.scrollHeight + 10
     await this.setState({
       isEdit: false,
-      maxHeight: this.bottomRows.scrollHeight,
+      maxHeight,
     })
+  }
+
+  setRemainderCost = async () => {
+    const { rows, total: receiptTotal } = this.props.receipt
+    let targetValue = Number(this.state.rowData.cost)
+    const itemsTotal = Object.keys(rows)
+      .map(rowIdx =>
+        rowIdx === this.props.rowIdx
+          ? 0
+          : rows[rowIdx].deletePending
+          ? 0
+          : Number(rows[rowIdx].cost)
+      )
+      .reduce((a, b) => a + b)
+    const remainderCost = Number(receiptTotal) - itemsTotal
+
+    if (remainderCost < 0) {
+      // error total is less than items total
+      await this.setState({
+        error: "Remainder can't be negative",
+      })
+      timeoutId = window.setTimeout(() => {
+        this.setState({
+          error: '',
+        })
+      }, 5000)
+
+      return
+    } else if (targetValue === remainderCost) {
+      // error: already same
+      await this.setState({
+        error: 'Same value already',
+      })
+      timeoutId = window.setTimeout(() => {
+        this.setState({
+          error: '',
+        })
+      }, 5000)
+
+      return
+    } else if (targetValue < remainderCost) {
+      targetValue = remainderCost
+    }
+
+    if (targetValue !== this.state.rowData.cost) {
+      window.clearTimeout(timeoutId)
+      await this.setState({
+        rowData: {
+          ...this.state.rowData,
+          cost: targetValue,
+        },
+        error: '',
+      })
+    }
+
+    this.updateUserAmountsAndRow()
   }
 
   saveOnBlur = async e => {
     if (e.target.name === 'item') {
       this.updateUserAmountsAndRow('item')
     } else {
-      let updateTotal = false
-      const { rows, total: receiptTotal } = this.props.receipt
       let targetValue = Math.abs(Number(e.target.value))
-      // if receiptTotal has input
-      // check if all item costs + this item cost < receipt.total
-      // if (receiptTotal > 0) {
-        //find total of all items
-        const itemsTotal = Object.keys(rows)
-          .map(rowIdx =>
-            rowIdx === this.props.rowIdx
-              ? 0
-              : rows[rowIdx].deletePending
-              ? 0
-              : Number(rows[rowIdx].cost)
-          )
-          .reduce((a, b) => a + b)
-        const remainderCost = Number(receiptTotal) - itemsTotal
-        console.log('itemsTotal, remainderCost', itemsTotal, remainderCost)
-
-        if (remainderCost === 0) {
-          // total should be the same as sum of all items
-          // total should be updating with addition/subtraction of items
-          updateTotal = itemsTotal + targetValue
-        } else if (remainderCost < 0) {
-          targetValue = 0
-        } else {
-          if (targetValue > remainderCost) {
-            targetValue = remainderCost
-          } else if (targetValue < 0) {
-            targetValue = Math.abs(targetValue)
-          }
-        }
-      // }
-
       // check if user changed input from last-saved value
       if (targetValue !== e.target.value) {
+        window.clearTimeout(timeoutId)
         await this.setState({
           rowData: {
             ...this.state.rowData,
             cost: targetValue,
           },
+          error: '',
         })
       }
 
-      if (!!updateTotal) {
-        this.updateUserAmountsAndRow(updateTotal)
-      } else {
-        this.updateUserAmountsAndRow()
-      }
+      this.updateUserAmountsAndRow()
     }
   }
 
@@ -103,20 +129,17 @@ class ItemsRow extends Component {
   }
 
   toggleDropdown = action => {
+    console.log('toggledropdown', this.bottomRows.scrollHeight)
     if (action === 'close') {
       this.setState({
         open: false,
         isEdit: false,
       })
     } else if (action === 'open') {
-      this.setState({ open: true, maxHeight: this.bottomRows.scrollHeight })
-    } else {
-      const toggle = !this.state.open
-      let isEdit = this.state.isEdit
-      if (!toggle) {
-        isEdit = false
-      }
-      this.setState({ open: toggle, isEdit })
+      this.setState({
+        open: true,
+        maxHeight: this.bottomRows.scrollHeight,
+      })
     }
   }
 
@@ -187,9 +210,7 @@ class ItemsRow extends Component {
       // no userAmounts update if only name changed
     } else {
       // else update receipt.userAmounts
-
       const amount = Number((cost / usersIds.length).toFixed(2))
-
       Object.keys(userAmounts).forEach(userId => {
         if (usersIds.includes(userId)) {
           userAmounts[userId].items[rowIdx] = amount
@@ -198,23 +219,10 @@ class ItemsRow extends Component {
         }
 
         userAmounts[userId].amount = this.sumCosts(userAmounts[userId].items)
-
-        // calculate owe against paid
-        // if (userAmounts[userId].amount > userAmounts[userId].paid) {
-        //   userAmounts[userId].owe =
-        //     userAmounts[userId].amount - userAmounts[userId].paid
-        // } else {
-        //   userAmounts[userId].owe = 0
-        // }
       })
 
       // pass to props backend handler
-      console.log('whatChanged', typeof whatChanged, whatChanged)
-      if (typeof whatChanged === 'number') {
-        this.updateRow(userAmounts, whatChanged)
-      } else {
-        this.updateRow(userAmounts)
-      }
+      this.updateRow(userAmounts)
     }
   }
 
@@ -232,7 +240,6 @@ class ItemsRow extends Component {
       })
 
       await this.props.toggleDeleteRow(rowIdx, userAmounts)
-
     } else {
       // permanently delete row
       const { item, cost } = this.state.rowData
@@ -245,22 +252,15 @@ class ItemsRow extends Component {
       } else {
         this.props.deleteRow()
       }
-
     }
   }
 
-  updateRow = async (userAmounts, receiptTotal) => {
+  updateRow = async userAmounts => {
     const { rowIdx, updateRow } = this.props
     if (userAmounts) {
-      if (receiptTotal) {
-        console.log('receiptTotal detected')
-        await updateRow(rowIdx, this.state.rowData, userAmounts, receiptTotal)
-      } else {
-        console.log('no receiptTotal detected')
-        await updateRow(rowIdx, this.state.rowData, userAmounts, null)
-      }
+      await updateRow(rowIdx, this.state.rowData, userAmounts)
     } else {
-      await updateRow(rowIdx, this.state.rowData, null, null)
+      await updateRow(rowIdx, this.state.rowData, null)
     }
   }
 
@@ -302,6 +302,7 @@ class ItemsRow extends Component {
 
   componentWillUnmount = () => {
     document.removeEventListener('mousedown', this.clickListener)
+    window.clearTimeout(timeoutId)
   }
 
   render() {
@@ -314,6 +315,7 @@ class ItemsRow extends Component {
       rowData,
       unaddedUsers,
       showModal,
+      error,
     } = this.state
     return (
       <div className='items-row container' ref={node => (this.item = node)}>
@@ -439,12 +441,40 @@ class ItemsRow extends Component {
               : { maxHeight: '0' }
           }
           ref={node => (this.bottomRows = node)}>
+          {/* CALC REMAINDER BUTTON */}
+          {open && isEdit && (
+            <div>
+              {error && (
+                <a
+                  style={{
+                    color: '#7f7f7f',
+                    marginBottom: '6px',
+                    textDecoration: 'none',
+                  }}
+                  className='small'>
+                  {error}
+                  <br />
+                </a>
+              )}
+
+              <a
+                style={{ color: '#7f7f7f', marginBottom: '6px' }}
+                className='small'
+                onClick={this.setRemainderCost}>
+                Set cost as remainder of receipt total.
+              </a>
+            </div>
+          )}
           {/* EDIT BUTTON OR ADD USER DROPDOWN */}
-          <div className='items-row row'>
+          <div
+            className='items-row row'
+            style={isEdit && !unaddedUsers.length ? { minHeight: '0' } : null}>
             {isEdit ? (
-              <div>
-                <SelectUser addUser={this.addUser} users={unaddedUsers} />
-              </div>
+              !!unaddedUsers.length && (
+                <div>
+                  <SelectUser addUser={this.addUser} users={unaddedUsers} />
+                </div>
+              )
             ) : (
               <div>
                 <div className='row-button' onClick={this.toggleEdit}>

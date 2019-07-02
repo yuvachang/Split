@@ -100,10 +100,10 @@ class SingleReceipt extends Component {
                 Items:
                 <ul
                   style={{ listStyleType: 'none', width: '100%', margin: '0' }}>
-                  {rowItems.map(item => {
+                  {rowItems.map((item,idx) => {
                     return (
-                      <li>
-                        Item:
+                      <li key={idx}>
+                        Name:
                         {item.item ? item.item : ''}, Cost: $
                         {item.cost ? item.cost : ''}, Users:
                         {!item.users[0]
@@ -116,6 +116,7 @@ class SingleReceipt extends Component {
               </div>
             ) : null}
           </div>
+          <br />
           <a
             onClick={this.openModal}
             style={{ color: '#7f7f7f', margin: '6px 0' }}

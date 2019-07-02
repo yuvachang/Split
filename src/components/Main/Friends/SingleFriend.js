@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import Modal from '../Elements/Modal'
 import ScrollContainer from '../Elements/ScrollContainer'
+import { getUserStats } from '../../../store/actions/receiptsActions'
 
 class SingleFriend extends Component {
   state = {
@@ -20,9 +22,14 @@ class SingleFriend extends Component {
     this.setState({ showDropdown: !this.state.showDropdown })
   }
 
+  componentDidMount = async () => {
+    await this.props.getUserStats(this.props.friend.id)
+  }
+
   render() {
     const { friend, removeFriend, backToList, loading } = this.props
     const { displayModal, showDropdown } = this.state
+    console.log(this.props.stats)
     return (
       <ScrollContainer>
         <Modal
@@ -36,44 +43,42 @@ class SingleFriend extends Component {
           noAction={this.closeModal}
         />
 
-        <div className='profile'>
+        {friend.avatarUrl && (
           <img
-            src={friend.avatarUrl ? friend.avatarUrl : './images/person.svg'}
+            src={friend.avatarUrl}
             className='icon large'
-            style={{filter: 'invert(0)', borderRadius: '50%'}}
+            style={{ filter: 'invert(0)', borderRadius: '50%' }}
           />
-          <img
-            src='./images/down-arrow.svg'
-            className={showDropdown ? 'icon upsidedown grey' : 'icon grey'}
-            onClick={this.toggleDropdown}
-          />
-        </div>
+        )}
+        <h3>{friend.displayName}</h3>
 
-        <div className={showDropdown ? 'profile-menu' : 'profile-menu hidden'}>
-          <img
-            src='./images/poke.png'
-            className='icon grey'
-            style={{ transform: 'rotate(90deg)' }}
-          />
-          <img
-            src='./images/dislike.svg'
-            className='icon grey'
-            onClick={this.openModal}
-          />
+        <br />
+        <div style={{ textAlign: 'left' }}>
+          Total spendings: ${this.props.stats.totalSpending || 0}
+          <br />
+          <br />
         </div>
-
-
-        {friend.displayName}:
         <br />
-        <br />
-        <div>friend iou's here and stats here</div>
-        <br />
-        <div className='button card' onClick={backToList}>
-          Back to list
-        </div>
+        <a
+          onClick={this.openModal}
+          style={{ color: '#7f7f7f', margin: '6px 0' }}
+          className='small'>
+          Unfriend {friend.displayName}
+        </a>
       </ScrollContainer>
     )
   }
 }
 
-export default SingleFriend
+const mapState = state => ({
+  stats: state.receipts.stats,
+})
+
+const mapDispatch = dispatch => ({
+  getUserStats: uid => dispatch(getUserStats(uid)),
+})
+
+export default connect(
+  mapState,
+  mapDispatch
+)(SingleFriend)

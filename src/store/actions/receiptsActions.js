@@ -88,6 +88,15 @@ export const createReceipt = data => async dispatch => {
         { merge: true }
       )
     })
+
+    batch.set(
+      groupRef,
+      {
+        receipts: firestore.FieldValue.arrayUnion(receiptRef),
+      },
+      { merge: true }
+    )
+
     batch.commit()
 
     // append receipt to redux store
@@ -193,15 +202,10 @@ export const updateRow = (
   rowIdx,
   row,
   userAmounts,
-  receiptTotal,
   receiptId
 ) => async dispatch => {
   try {
-    console.log('inside updateRow thunk', rowIdx,
-    row,
-    userAmounts,
-    receiptTotal,
-    receiptId)
+    console.log('inside updateRow thunk')
 
     const batch = firestore.batch()
     const receiptRef = await firestore.collection('receipts').doc(receiptId)
@@ -220,12 +224,6 @@ export const updateRow = (
       const newUsrAmts = calcOwesAndDebts(userAmounts)
       batch.update(receiptRef, {
         userAmounts: newUsrAmts,
-      })
-    }
-
-    if (receiptTotal) {
-      batch.update(receiptRef, {
-        total: receiptTotal,
       })
     }
 
@@ -387,9 +385,9 @@ export const unlistenReceipt = receiptId => async dispatch => {
 }
 
 // get user stats
-export const getUserStats = currentUID => async dispatch => {
+export const getUserStats = UID => async dispatch => {
   try {
-    const { userData } = await getCurrentUser(currentUID)
+    const { userData } = await getCurrentUser(UID)
     const stats = {}
 
     let userReceipts = []
@@ -402,8 +400,8 @@ export const getUserStats = currentUID => async dispatch => {
             return 0
           } else {
             return (
-              receiptData.userAmounts[currentUID].amount ||
-              receiptData.userAmounts[currentUID].owe ||
+              receiptData.userAmounts[UID].amount ||
+              receiptData.userAmounts[UID].owe ||
               0
             )
           }
