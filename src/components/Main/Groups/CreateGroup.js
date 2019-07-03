@@ -121,7 +121,7 @@ class CreateGroup extends Component {
   }
 
   render() {
-    const { loading, backToForm } = this.props
+    const { loading, backToForm, friends } = this.props
     const { createGroup, error, unaddedFriends } = this.state
     const { members } = this.state.createGroup
 
@@ -152,6 +152,8 @@ class CreateGroup extends Component {
           <br />
           {unaddedFriends[0] ? (
             <SelectUser addUser={this.addMember} users={unaddedFriends} />
+          ) : friends[0] ? (
+            <label>You've added all your friends!</label>
           ) : (
             <label>
               It's just you in this group. <br />

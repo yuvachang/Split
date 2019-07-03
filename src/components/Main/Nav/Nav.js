@@ -82,18 +82,21 @@ class Nav extends Component {
   }
 
   updateNotifs = async () => {
+    const {receivedRequest, madeRequest, confirmed} = this.props.pPending.friends
     const hasNotifs =
-      !!this.props.pPending.friends.receivedRequest[0] ||
-      // !!this.props.pPending.madeRequest[0] ||
-      !!this.props.pPending.friends.confirmed[0]
-    // console.log('hasnotifs?', hasNotifs)
+      !!receivedRequest[0] ||
+      // !!madeRequest[0] ||
+      !!confirmed[0]
+
+    //if !!confirmed.length, run add friends.
+    //if groups.confirmed.length, run add group
+    //if receipts.confirmed.length, run add receipt...
+
     if (!this.state.notifs && hasNotifs) {
-      // console.log('turn on notifs')
       await this.setState({
         notifs: true,
       })
     } else if (this.state.notifs && !hasNotifs) {
-      // console.log('turn off notifs')
       await this.setState({
         notifs: false,
       })
@@ -216,7 +219,7 @@ class Nav extends Component {
         </div>
         <div className='nav-footer'>
           <div
-          className='alink'
+            className='alink'
             onClick={e => {
               e.preventDefault()
               logout()

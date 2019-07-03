@@ -140,6 +140,7 @@ export const confirmFriendRequest = (
       })
     }
 
+    // NEEDS SECURITY FIX: only update own profile.friends;
     batch.update(friendRef, {
       friends: firestore.FieldValue.arrayUnion(userRef),
       'pending.friends.confirmed': firestore.FieldValue.arrayUnion(userRef),

@@ -77,7 +77,7 @@ class SingleGroup extends Component {
           onClick={this.openModal}
           style={{ color: '#7f7f7f', margin: '6px 0' }}
           className='alink small'>
-          Delete receipt
+          Delete group
         </div>
       </ScrollContainer>
     )
