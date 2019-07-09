@@ -38,6 +38,7 @@ class ScrollContainer extends Component {
       })
     }, 100)
   }
+  
   scrollt = dir => {
     this.list.scrollBy({
       top: dir === 'up' ? -55 : 55,

@@ -26,6 +26,7 @@ class Home extends Component {
       // isLoaded,
       // isLoggedIn,
       stats,
+      logout,
     } = this.props
     const { view } = this.state
     return (
@@ -55,6 +56,14 @@ class Home extends Component {
               <br />
               You've spent ${stats.totalSpending || '0'} in total.
             </div>
+            {window.innerWidth < 420 && <div
+              className='alink small footer'
+              onClick={e => {
+                e.preventDefault()
+                logout()
+              }}>
+              Log out
+            </div>}
           </div>
         )}
 

@@ -1196,3 +1196,6 @@ table {
     border: 1px solid #d6dbe0;
     border-radius: 5px;
     font-size: 0.9em; }
+  #homepage .footer {
+    position: absolute;
+    bottom: 20px; }

@@ -82,7 +82,11 @@ class Nav extends Component {
   }
 
   updateNotifs = async () => {
-    const {receivedRequest, madeRequest, confirmed} = this.props.pPending.friends
+    const {
+      receivedRequest,
+      // madeRequest,
+      confirmed,
+    } = this.props.pPending.friends
     const hasNotifs =
       !!receivedRequest[0] ||
       // !!madeRequest[0] ||
